@@ -1,9 +1,8 @@
-![carbonizedlogo](./img/banner.png)
-
 <h1 align="center">Prossa</h1>
 
+![prossaLogo](./img/banner.png)
 
-![carbonizedscreen](./img/screen.png)
+![prossaScreen](./img/screen.png)
 
 <p align="center">
 Prossa is a <b>Free</b> and <b>Open Source</b> Web-Based Ebook Reader. Made with ❤️ and VueJS in 🇨🇺</p>
