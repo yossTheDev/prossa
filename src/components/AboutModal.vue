@@ -14,7 +14,7 @@ import {
 		<p class="text-xl font-bold">About</p>
 
 		<div class="flex flex-auto flex-col p-2">
-			<ProssaIcon class="mx-auto h-28 w-28"></ProssaIcon>
+			<ProssaIcon class="mx-auto h-28 max-h-28 w-28"></ProssaIcon>
 
 			<p class="mt-2 text-center text-3xl font-bold">Prossa</p>
 			<p class="mt-2 w-60 text-center">
