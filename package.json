@@ -1,0 +1,52 @@
+{
+	"name": "prossa",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vue-tsc && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@capacitor/android": "^4.6.3",
+		"@capacitor/core": "^4.6.3",
+		"@headlessui-float/vue": "^0.11.1",
+		"@headlessui/vue": "^1.7.8",
+		"@hyjiacan/vue-slideout": "^3.0.2",
+		"@tabler/icons-vue": "^2.1.2",
+		"@vueuse/core": "^9.12.0",
+		"daisyui": "^2.51.5",
+		"epubjs": "^0.3.93",
+		"localforage": "^1.10.0",
+		"luxon": "^3.3.0",
+		"pinia": "^2.0.30",
+		"pinia-plugin-persistedstate-2": "^2.0.11",
+		"vue": "^3.2.45",
+		"vue-router": "^4.1.6",
+		"vue3-touch-events": "^4.1.0"
+	},
+	"devDependencies": {
+		"@capacitor/cli": "^4.6.3",
+		"@types/luxon": "^3.3.0",
+		"@typescript-eslint/eslint-plugin": "^5.0.0",
+		"@vitejs/plugin-vue": "^4.0.0",
+		"autoprefixer": "^10.4.13",
+		"eslint": "^8.0.1",
+		"eslint-config-prettier": "^8.6.0",
+		"eslint-config-standard-with-typescript": "latest",
+		"eslint-plugin-import": "^2.25.2",
+		"eslint-plugin-n": "^15.0.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-prettier-vue": "^4.2.0",
+		"eslint-plugin-promise": "^6.0.0",
+		"eslint-plugin-vue": "latest",
+		"postcss": "^8.4.21",
+		"prettier": "^2.8.3",
+		"prettier-plugin-tailwindcss": "^0.2.2",
+		"tailwindcss": "^3.2.4",
+		"typescript": "*",
+		"vite": "^4.0.0",
+		"vue-tsc": "^1.0.11"
+	}
+}
