@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
-import { IconArrowLeft, IconArrowRight, IconLetterA } from '@tabler/icons-vue';
+import { IconArrowLeft, IconArrowRight, IconBook2 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book } from 'epubjs';
+import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
@@ -18,6 +19,12 @@ const currentPos = ref(0);
 
 /* App Store */
 const store = useAppStore();
+
+/* Chapters */
+const chapters = ref();
+
+/* Component State */
+const showChapters = ref(false);
 
 const _book = store.getBook(props.id);
 
@@ -77,15 +84,26 @@ onMounted(async () => {
 
 		/* Set Current Position */
 		currentPos.value = Math.floor(percentage * 100);
+
+		chapters.value = book.navigation.toc;
+
+		// console.log(book.navigation.toc);
 	});
 
 	/* On Book Ready */
-	book.ready.then(() => {
-		book.locations.generate(150);
-		// book.storage.put(book.resources)
-		// console.log('Locations generated');
-		// console.log(book.locations);
-		// console.log('lenght ' + book.locations.length());
+	book.ready.then(async () => {
+		/* Load Locations */
+		const loc = await localforage.getItem(`${_book?.key} -locations`);
+		if (loc != null) {
+			book.locations.load(loc as unknown as string);
+		} else {
+			await book.locations.generate(1600);
+
+			const nl = book.locations.save();
+			await localforage.setItem(`${_book?.key} -locations`, nl);
+		}
+
+		setPercent();
 	});
 });
 
@@ -93,6 +111,23 @@ onMounted(async () => {
 onUnmounted(() => {
 	book.destroy();
 });
+
+/* Set Current Read Percent */
+function setPercent() {
+	/* Get Current Location */
+	const current = book.rendition.currentLocation();
+
+	/* Start Index */
+	const { start } = current as unknown as any;
+	/* Get Actual Book Completion Percent */
+	const percentage = book.locations.percentageFromCfi(start.cfi);
+
+	/* Set Current Position */
+	currentPos.value = Math.floor(percentage * 100);
+
+	/* Save Current Pos */
+	store.setBookCFI(props.id, start.cfi, start.percentage);
+}
 
 /* Functions */
 
@@ -102,19 +137,7 @@ async function next() {
 	await book.rendition.next();
 
 	/* Get Current Location */
-	const current = book.rendition.currentLocation();
-
-	/* Start Index */
-	const { start } = current as unknown as any;
-
-	/* Get Actual Book Completion Percent */
-	const percentage = book.locations.percentageFromCfi(start.cfi);
-
-	/* Set Current Position */
-	currentPos.value = Math.floor(percentage * 100);
-
-	/* Save Current Pos */
-	store.setBookCFI(props.id, start.cfi, start.percentage);
+	setPercent();
 
 	console.log('book id ' + props.id);
 	console.log(store.books);
@@ -125,6 +148,14 @@ async function next() {
 async function back() {
 	/* Go To Previous Page */
 	await book.rendition.prev();
+
+	setPercent();
+}
+
+/* Go To Chapter */
+async function toChapter(href: string) {
+	/* Render Specific Page */
+	await book.rendition.display(href);
 
 	/* Get Current Location */
 	const current = book.rendition.currentLocation();
@@ -146,6 +177,11 @@ async function back() {
 function toggleControls() {
 	showControls.value = !showControls.value;
 	console.log(showControls);
+}
+
+/* Show Chapters Panel */
+function toggleChapters() {
+	showChapters.value = !showChapters.value;
 }
 </script>
 
@@ -200,11 +236,13 @@ function toggleControls() {
 					leave-to="opacity-0"
 				>
 					<!-- Controls -->
-					<div class="mx-auto flex w-96 flex-auto overflow-auto">
+					<div
+						class="mx-auto flex w-96 flex-auto select-none flex-col overflow-auto"
+					>
 						<div
-							class="z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-white p-1 text-gray-400 shadow dark:bg-base-dark-light/20 md:mx-2"
+							class="z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-white p-1 text-gray-400 shadow dark:bg-base-dark-light/80 md:mx-2"
 						>
-							<div class="flex flex-auto">
+							<div class="flex w-1/3 flex-auto">
 								<!-- Arrow Back -->
 								<div
 									class="my-auto cursor-pointer select-none rounded p-2 hover:bg-gray-200/70 dark:hover:bg-base-dark-light"
@@ -222,13 +260,35 @@ function toggleControls() {
 								</div>
 							</div>
 
-							<div class="flex flex-auto">
-								<!-- Percentage -->
-								<p class="my-auto ml-auto">{{ currentPos + '%' }}</p>
+							<div class="flex w-1/3 flex-auto">
+								<!-- Percent -->
+								<p class="my-auto mx-auto">{{ currentPos + '%' }}</p>
+							</div>
 
-								<!-- Setting -->
-								<div class="my-auto flex hover:bg-gray-200/70">
-									<IconLetterA></IconLetterA>
+							<div class="flex w-1/3 flex-auto items-end">
+								<!-- Chapters -->
+								<div
+									@click="toggleChapters"
+									class="my-auto ml-auto flex rounded-xl p-2 transition-all hover:bg-neutral active:scale-90"
+								>
+									<IconBook2></IconBook2>
+								</div>
+							</div>
+						</div>
+
+						<div
+							v-if="showChapters"
+							class="my-2 flex max-h-64 flex-auto flex-col rounded-xl bg-white p-2 shadow-xl"
+						>
+							<p class="ml-1 mb-2 text-xl font-bold">Chapters</p>
+							<div class="flex flex-auto select-none flex-col overflow-auto">
+								<div
+									@click="toChapter(item.href)"
+									:key="item.id"
+									v-for="item in chapters"
+									class="rounded-xl p-1 hover:bg-neutral"
+								>
+									<div>{{ item.label }}</div>
 								</div>
 							</div>
 						</div>

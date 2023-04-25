@@ -8,6 +8,7 @@ interface Book {
 	percent: string;
 	img: string;
 	book: any;
+	added: string;
 	metadata: PackagingMetadataObject;
 }
 
@@ -51,6 +52,7 @@ export const useAppStore = defineStore('app-store', {
 							img: this.books[i].img,
 							book: this.books[i].book,
 							metadata: this.books[i].metadata,
+							added: this.books[i].added,
 							percent: percent,
 							currentCfi: cfi,
 					  })

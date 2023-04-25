@@ -72,6 +72,7 @@ function handleAddBook(event: any) {
 						metadata: meta, // Book Metadata
 						currentCfi: '',
 						percent: '0',
+						added: DateTime.now().toISO() as unknown as string,
 					});
 				};
 			} else {
