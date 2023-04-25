@@ -262,13 +262,13 @@ function onClosing() {
 					<p class="mr-1 font-bold">Stats</p>
 				</div>
 
-				<div class="flex flex-row items-start gap-1 overflow-auto">
+				<div class="flex flex-row items-start gap-1 overflow-auto p-2">
 					<!-- Days Of Reading-->
 					<DaysOfReading class="my-auto"></DaysOfReading>
 
 					<!-- Reading Time-->
 					<div
-						class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
+						class="my-auto flex h-fit min-w-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 					>
 						<IconClock></IconClock>
 						<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
@@ -287,7 +287,7 @@ function onClosing() {
 
 					<!-- Last Reading Time-->
 					<div
-						class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
+						class="my-auto flex h-fit min-w-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 					>
 						<IconClock></IconClock>
 						<p class="my-auto mr-1 hidden font-bold md:block">
