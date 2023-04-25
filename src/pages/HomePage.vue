@@ -254,7 +254,7 @@ function onClosing() {
 		>
 			<!--Stats-->
 			<div class="flex h-fit select-none gap-1 p-2 md:p-1">
-				<!-- Last Reading Time-->
+				<!-- Stats-->
 				<div
 					class="my-auto ml-2 flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 				>
@@ -262,35 +262,41 @@ function onClosing() {
 					<p class="mr-1 font-bold">Stats</p>
 				</div>
 
-				<!-- Days Of Reading-->
-				<DaysOfReading class="my-auto ml-auto"></DaysOfReading>
+				<div class="flex flex-row items-start gap-1 overflow-auto">
+					<!-- Days Of Reading-->
+					<DaysOfReading class="my-auto"></DaysOfReading>
 
-				<!-- Reading Time-->
-				<div
-					class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
-				>
-					<IconClock></IconClock>
-					<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
-					<p class="my-auto">
-						{{
-							Interval.fromISO(store.readingTimeThisMonth)
-								.toDuration(['hours', 'minutes'])
-								.toHuman({ listStyle: 'short' })
-						}}
-					</p>
-				</div>
+					<!-- Reading Time-->
+					<div
+						class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
+					>
+						<IconClock></IconClock>
+						<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
+						<p class="my-auto">
+							{{
+								Interval.fromISO(store.readingTimeThisMonth)
+									.toDuration(['hours', 'minutes'])
+									.toHuman({
+										listStyle: 'short',
+										unitDisplay: 'short',
+										maximumFractionDigits: 0,
+									})
+							}}
+						</p>
+					</div>
 
-				<!-- Last Reading Time-->
-				<div
-					class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
-				>
-					<IconClock></IconClock>
-					<p class="my-auto mr-1 hidden font-bold md:block">
-						Last Reading Time:
-					</p>
-					<p class="my-auto">
-						{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
-					</p>
+					<!-- Last Reading Time-->
+					<div
+						class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
+					>
+						<IconClock></IconClock>
+						<p class="my-auto mr-1 hidden font-bold md:block">
+							Last Reading Time:
+						</p>
+						<p class="my-auto">
+							{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
+						</p>
+					</div>
 				</div>
 			</div>
 

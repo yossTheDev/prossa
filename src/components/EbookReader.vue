@@ -121,7 +121,9 @@ onUnmounted(() => {
 	} else {
 		/* Update Reading Time in Store */
 		store.setReadingTimeThisMonth(
-			Interval.fromDateTimes(startTime, DateTime.now()).toISO()
+			Interval.fromDateTimes(startTime, DateTime.now())
+				.union(Interval.fromISO(store.readingTimeThisMonth))
+				.toISO()
 		);
 	}
 });
