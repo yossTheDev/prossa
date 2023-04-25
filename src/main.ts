@@ -26,7 +26,7 @@ localforage.config({ driver: localforage.INDEXEDDB });
 /* Create Pinia Store */
 const pinia = createPinia();
 
-/* Add Local Forage Plugi */
+/* Add Local Forage Plugin */
 pinia.use(
 	createPersistedStatePlugin({
 		storage: {

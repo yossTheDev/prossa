@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import { useAppStore } from '../stores/AppStore';
 import { IconCalendarStats } from '@tabler/icons-vue';
-import { DateTime } from 'luxon';
+
 /* App Store */
 const store = useAppStore();
-
-if (
-	DateTime.fromISO(store.lastReadingTime).day ===
-	DateTime.now().minus({ days: 1 }).day
-) {
-	store.addDayOfReading();
-	console.log('Add Day');
-}
 </script>
 
 <template>

@@ -23,6 +23,14 @@ const timeInterval = setInterval(() => {
 
 	if (time === 60 * 10) {
 		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
+
+		if (
+			DateTime.fromISO(store.lastReadingTime).day ===
+			DateTime.now().minus({ days: 1 }).day
+		) {
+			store.addDayOfReading();
+			console.log('Add Day');
+		}
 	}
 }, 1000);
 
