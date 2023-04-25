@@ -9,7 +9,7 @@ import {
 	IconChartBar,
 } from '@tabler/icons-vue';
 import { Book } from 'epubjs';
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 import { ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
 import BookList from '../components/BookList.vue';
@@ -256,7 +256,7 @@ function onClosing() {
 			<div class="flex h-fit select-none gap-1 p-2 md:p-1">
 				<!-- Last Reading Time-->
 				<div
-					class="my-auto ml-2 flex h-fit flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
+					class="my-auto ml-2 flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 				>
 					<IconChartBar></IconChartBar>
 					<p class="mr-1 font-bold">Stats</p>
@@ -265,9 +265,24 @@ function onClosing() {
 				<!-- Days Of Reading-->
 				<DaysOfReading class="my-auto ml-auto"></DaysOfReading>
 
+				<!-- Reading Time-->
+				<div
+					class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
+				>
+					<IconClock></IconClock>
+					<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
+					<p class="my-auto">
+						{{
+							Interval.fromISO(store.readingTimeThisMonth)
+								.toDuration(['hours', 'minutes'])
+								.toHuman({ listStyle: 'short' })
+						}}
+					</p>
+				</div>
+
 				<!-- Last Reading Time-->
 				<div
-					class="my-auto flex h-fit flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
+					class="my-auto flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 				>
 					<IconClock></IconClock>
 					<p class="my-auto mr-1 hidden font-bold md:block">

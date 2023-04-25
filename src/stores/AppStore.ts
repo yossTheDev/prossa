@@ -1,6 +1,6 @@
 import { PackagingMetadataObject } from 'epubjs/types/packaging';
 import { defineStore } from 'pinia';
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 
 interface Book {
 	key: string;
@@ -16,6 +16,7 @@ interface AppStore {
 	currentBook: string;
 	daysOfReading: number;
 	lastReadingTime: string;
+	readingTimeThisMonth: string;
 	books: Book[];
 }
 
@@ -26,6 +27,10 @@ export const useAppStore = defineStore('app-store', {
 			books: [],
 			lastReadingTime: DateTime.now().toISO() as unknown as string,
 			daysOfReading: 0,
+			readingTimeThisMonth: Interval.fromDateTimes(
+				DateTime.now(),
+				DateTime.now()
+			).toISO(),
 		};
 	},
 
@@ -66,6 +71,10 @@ export const useAppStore = defineStore('app-store', {
 			for (const book of this.books) {
 				if (book.key === bookID) return book;
 			}
+		},
+
+		setReadingTimeThisMonth(interval: string) {
+			this.readingTimeThisMonth = interval;
 		},
 
 		addDayOfReading() {

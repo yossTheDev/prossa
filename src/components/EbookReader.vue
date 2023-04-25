@@ -7,6 +7,7 @@ import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
+import { DateTime, Interval } from 'luxon';
 
 const props = defineProps<{
 	id: string;
@@ -16,6 +17,7 @@ const props = defineProps<{
 const image = ref('');
 const showControls = ref(true);
 const currentPos = ref(0);
+const startTime = DateTime.now();
 
 /* App Store */
 const store = useAppStore();
@@ -110,6 +112,18 @@ onMounted(async () => {
 /* Destroy Book Instance */
 onUnmounted(() => {
 	book.destroy();
+
+	if (DateTime.fromISO(store.lastReadingTime).month !== DateTime.now().month) {
+		/* Restart Reading Time */
+		store.setReadingTimeThisMonth(
+			Interval.after(DateTime.now(), { second: 0 }).toISO()
+		);
+	} else {
+		/* Update Reading Time in Store */
+		store.setReadingTimeThisMonth(
+			Interval.fromDateTimes(startTime, DateTime.now()).toISO()
+		);
+	}
 });
 
 /* Set Current Read Percent */
@@ -240,12 +254,12 @@ function toggleChapters() {
 						class="mx-auto flex w-96 flex-auto select-none flex-col overflow-auto"
 					>
 						<div
-							class="z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-white p-1 text-gray-400 shadow dark:bg-base-dark-light/80 md:mx-2"
+							class="z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-white p-1 text-gray-400 shadow dark:bg-base-200/80 md:mx-2"
 						>
 							<div class="flex w-1/3 flex-auto">
 								<!-- Arrow Back -->
 								<div
-									class="my-auto cursor-pointer select-none rounded p-2 hover:bg-gray-200/70 dark:hover:bg-base-dark-light"
+									class="my-auto cursor-pointer select-none rounded-xl p-2 hover:bg-neutral"
 									@click="back"
 								>
 									<IconArrowLeft></IconArrowLeft>
@@ -253,7 +267,7 @@ function toggleChapters() {
 
 								<!-- Arrow Next -->
 								<div
-									class="my-auto cursor-pointer select-none rounded p-2 hover:bg-gray-200/70 dark:hover:bg-base-dark-light"
+									class="my-auto cursor-pointer select-none rounded-xl p-2 hover:bg-neutral"
 									@click="next"
 								>
 									<IconArrowRight></IconArrowRight>
@@ -278,7 +292,7 @@ function toggleChapters() {
 
 						<div
 							v-if="showChapters"
-							class="my-2 flex max-h-64 flex-auto flex-col rounded-xl bg-white p-2 shadow-xl"
+							class="my-2 flex max-h-64 flex-auto flex-col rounded-xl bg-white/80 p-2 shadow-xl dark:bg-base-200/80 dark:text-white"
 						>
 							<p class="ml-1 mb-2 text-xl font-bold">Chapters</p>
 							<div class="flex flex-auto select-none flex-col overflow-auto">

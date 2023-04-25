@@ -10,7 +10,7 @@ const store = useAppStore();
 	<!--Stats-->
 	<div class="flex select-none gap-1 p-1">
 		<div
-			class="mx-2 ml-auto flex flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
+			class="mx-2 ml-auto flex flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
 		>
 			<IconCalendarStats></IconCalendarStats>
 			<p class="my-auto mr-1 hidden font-bold md:block">Days Of Reading:</p>
