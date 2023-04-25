@@ -13,8 +13,8 @@ const store = useAppStore();
 			class="mx-2 ml-auto flex flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
 		>
 			<IconCalendarStats></IconCalendarStats>
-			<p class="mr-1 font-bold">Days Of Reading:</p>
-			<p>{{ store.daysOfReading }}</p>
+			<p class="my-auto mr-1 hidden font-bold md:block">Days Of Reading:</p>
+			<p class="my-auto">{{ store.daysOfReading }}</p>
 		</div>
 	</div>
 </template>

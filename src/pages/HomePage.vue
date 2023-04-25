@@ -4,7 +4,6 @@ import {
 	IconBook,
 	IconBooks,
 	IconInfoCircle,
-	IconMenu,
 	IconPlus,
 	IconClock,
 	IconChartBar,
@@ -138,7 +137,7 @@ function onClosing() {
 
 				<!-- Info -->
 				<div
-					class="rounded-full p-2 transition-all hover:bg-neutral active:scale-90"
+					class="hidden rounded-full p-2 transition-all hover:bg-neutral active:scale-90 md:block"
 				>
 					<IconInfoCircle
 						@click="showModal = true"
@@ -146,10 +145,15 @@ function onClosing() {
 					></IconInfoCircle>
 				</div>
 
-				<IconMenu
-					@click="onClosing"
-					class="mr-auto ml-2 h-6 md:hidden md:h-9"
-				></IconMenu>
+				<!-- Info Mobile -->
+				<div
+					class="rounded-full p-2 transition-all hover:bg-neutral active:scale-90 md:hidden"
+				>
+					<IconInfoCircle
+						@click="showModal = true"
+						class="mx-auto"
+					></IconInfoCircle>
+				</div>
 			</div>
 
 			<!-- Center -->
@@ -163,11 +167,14 @@ function onClosing() {
 			<div
 				class="my-auto flex w-1/3 flex-auto md:mx-auto md:mt-auto md:hidden md:w-full"
 			>
+				<!-- Add Book -->
 				<div
-					class="my-auto mr-1 ml-auto cursor-pointer rounded-full bg-slate-200/20 p-1 hover:bg-violet-400 hover:text-white hover:shadow hover:transition-all md:mx-auto md:ml-0 md:hidden"
+					class="my-auto ml-auto cursor-pointer rounded-full bg-slate-200/20 bg-primary p-1 transition-all hover:bg-primary hover:text-white hover:shadow hover:transition-all active:scale-90 dark:text-black md:hidden md:text-white"
 				>
-					<label class="cursor-pointer" for="input">
-						<IconPlus class="mx-auto h-6"></IconPlus>
+					<label class="cursor my-auto mx-auto cursor-pointer" for="input">
+						<IconPlus
+							class="mx-auto my-auto text-white dark:text-black"
+						></IconPlus>
 
 						<input
 							id="input"
@@ -188,7 +195,7 @@ function onClosing() {
 	<div class="z-20 flex flex-auto flex-col overflow-hidden lg:flex-row">
 		<!-- Current Book -->
 		<div
-			class="flex h-full max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 lg:h-full lg:max-h-full lg:w-1/3"
+			class="mt-2 flex h-full max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
 		>
 			<!-- Book Hero -->
 			<div class="flex flex-auto select-none flex-row gap-2">
@@ -245,7 +252,7 @@ function onClosing() {
 			class="flex h-full flex-auto flex-col overflow-hidden lg:w-full lg:grow-0 lg:bg-gray-200 dark:lg:bg-black/25"
 		>
 			<!--Stats-->
-			<div class="flex h-fit select-none gap-1 p-1">
+			<div class="flex h-fit select-none gap-1 p-2 md:p-1">
 				<!-- Last Reading Time-->
 				<div
 					class="my-auto ml-2 flex h-fit flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
@@ -262,8 +269,12 @@ function onClosing() {
 					class="my-auto flex h-fit flex-row gap-1 rounded-2xl bg-base-200 p-2 dark:text-white"
 				>
 					<IconClock></IconClock>
-					<p class="mr-1 font-bold">Last Reading Time:</p>
-					<p>{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}</p>
+					<p class="my-auto mr-1 hidden font-bold md:block">
+						Last Reading Time:
+					</p>
+					<p class="my-auto">
+						{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
+					</p>
 				</div>
 			</div>
 

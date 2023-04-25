@@ -34,7 +34,7 @@ const handleDeleteBook = (e: MouseEvent) => {
 			@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
 			@contextmenu="handleContextMenu"
 		>
-			<div class="flex p-2">
+			<div class="flex min-w-fit p-2">
 				<img
 					class="h-36 rounded shadow-sm hover:scale-105 hover:shadow-2xl hover:transition-all md:mx-auto md:h-60 md:w-44 md:shadow-2xl"
 					:src="JSON.parse(props.img)"
