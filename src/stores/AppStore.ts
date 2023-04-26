@@ -30,7 +30,9 @@ export const useAppStore = defineStore('app-store', {
 			readingTimeThisMonth: Interval.fromDateTimes(
 				DateTime.now(),
 				DateTime.now()
-			).toISO(),
+			)
+				.toDuration(['hours', 'minutes'])
+				.toISO() as unknown as string,
 		};
 	},
 

@@ -9,7 +9,7 @@ import {
 	IconChartBar,
 } from '@tabler/icons-vue';
 import { Book } from 'epubjs';
-import { DateTime, Interval } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import { ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
 import BookList from '../components/BookList.vue';
@@ -274,13 +274,11 @@ function onClosing() {
 						<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
 						<p class="my-auto">
 							{{
-								Interval.fromISO(store.readingTimeThisMonth)
-									.toDuration(['hours', 'minutes'])
-									.toHuman({
-										listStyle: 'short',
-										unitDisplay: 'short',
-										maximumFractionDigits: 0,
-									})
+								Duration.fromISO(store.readingTimeThisMonth).toHuman({
+									listStyle: 'short',
+									unitDisplay: 'short',
+									maximumFractionDigits: 0,
+								})
 							}}
 						</p>
 					</div>

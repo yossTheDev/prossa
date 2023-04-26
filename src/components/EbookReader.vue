@@ -7,7 +7,6 @@ import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
-import { DateTime, Interval } from 'luxon';
 
 const props = defineProps<{
 	id: string;
@@ -17,7 +16,6 @@ const props = defineProps<{
 const image = ref('');
 const showControls = ref(true);
 const currentPos = ref(0);
-const startTime = DateTime.now();
 
 /* App Store */
 const store = useAppStore();
@@ -112,20 +110,6 @@ onMounted(async () => {
 /* Destroy Book Instance */
 onUnmounted(() => {
 	book.destroy();
-
-	if (DateTime.fromISO(store.lastReadingTime).month !== DateTime.now().month) {
-		/* Restart Reading Time */
-		store.setReadingTimeThisMonth(
-			Interval.after(DateTime.now(), { second: 0 }).toISO()
-		);
-	} else {
-		/* Update Reading Time in Store */
-		store.setReadingTimeThisMonth(
-			Interval.fromDateTimes(startTime, DateTime.now())
-				.union(Interval.fromISO(store.readingTimeThisMonth))
-				.toISO()
-		);
-	}
 });
 
 /* Set Current Read Percent */
@@ -231,14 +215,14 @@ function toggleChapters() {
 	</TransitionRoot>
 
 	<!-- Virtual Controls-->
-	<div class="absolute z-10 flex h-screen w-full flex-row">
+	<div class="absolute z-10 flex h-full w-full flex-row">
 		<div @click="back" class="flex flex-auto"></div>
 		<div @click="toggleControls" class="flex flex-auto"></div>
 		<div @click="next" class="flex flex-auto"></div>
 	</div>
 
 	<!-- Controls Panel -->
-	<div class="absolute h-screen w-screen">
+	<div class="absolute flex h-full w-full flex-auto">
 		<div class="flex h-full w-full">
 			<!-- Controls -->
 			<div class="z-20 mt-auto mb-4 flex flex-auto flex-col">

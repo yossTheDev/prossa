@@ -3,7 +3,7 @@ import { onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import EbookReader from '../components/EbookReader.vue';
 import { useAppStore } from '../stores/AppStore';
-import { DateTime } from 'luxon';
+import { DateTime, Duration, Interval } from 'luxon';
 
 /* App Store */
 const store = useAppStore();
@@ -34,8 +34,27 @@ const timeInterval = setInterval(() => {
 	}
 }, 1000);
 
+const startTime = DateTime.now();
+
 onUnmounted(() => {
 	clearInterval(timeInterval);
+
+	if (DateTime.fromISO(store.lastReadingTime).month !== DateTime.now().month) {
+		/* Restart Reading Time */
+		store.setReadingTimeThisMonth(
+			Interval.after(DateTime.now(), DateTime.now())
+				.toDuration(['hours', 'minutes'])
+				.toISO() as unknown as string
+		);
+	} else {
+		/* Update Reading Time in Store */
+		store.setReadingTimeThisMonth(
+			Interval.fromDateTimes(startTime, DateTime.now())
+				.toDuration(['hours', 'minutes'])
+				.plus(Duration.fromISO(store.readingTimeThisMonth))
+				.toISO() as unknown as string
+		);
+	}
 });
 </script>
 
