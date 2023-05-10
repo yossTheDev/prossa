@@ -24,3 +24,4 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw?
+yarn.lock

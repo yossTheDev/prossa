@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAppStore } from '../stores/AppStore';
-import { Float } from '@headlessui-float/vue';
 import { ref } from 'vue';
 
 /* App Store */
@@ -14,25 +13,30 @@ const props = defineProps<{
 	img: string;
 }>();
 
-const contextMenu = ref(false);
+const open = ref('');
 
 const handleContextMenu = (e: MouseEvent) => {
 	e.preventDefault();
-	contextMenu.value = !contextMenu.value;
+	if (open.value === '') {
+		open.value = 'dropdown-open';
+	} else {
+		open.value = '';
+	}
 };
 
 const handleDeleteBook = (e: MouseEvent) => {
-	console.log(props.bookKey);
 	store.deleteBook(props.bookKey);
 };
 </script>
 
 <template>
-	<Float placement="left-start" :show="contextMenu" as="div">
+	<div :class="'dropdown-bottom dropdown-end dropdown ' + open">
 		<div
+			tabindex="0"
 			class="flex flex-auto cursor-pointer select-none transition-all active:scale-90"
 			@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
 			@contextmenu="handleContextMenu"
+			@blur="open = ''"
 		>
 			<div class="flex min-w-fit p-2">
 				<img
@@ -50,8 +54,12 @@ const handleDeleteBook = (e: MouseEvent) => {
 		</div>
 
 		<!-- Context Menu -->
-		<div class="rounded-xl bg-base-200 p-4 shadow dark:text-white">
+		<div
+			tabindex="0"
+			class="dropdown-content rounded-xl bg-base-200 p-4 shadow dark:text-white"
+			@blur="open = ''"
+		>
 			<button @click="handleDeleteBook">Delete</button>
 		</div>
-	</Float>
+	</div>
 </template>
