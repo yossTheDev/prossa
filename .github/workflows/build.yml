@@ -1,9 +1,8 @@
 name: 'publish'
 on:
   push:
-    branches:
-      - release
-
+    tags:
+      - 'app-v*'
 jobs:
   publish-tauri:
     permissions:
