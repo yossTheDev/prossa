@@ -3362,6 +3362,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dom7@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "dom7@npm:4.0.6"
+  dependencies:
+    ssr-window: ^4.0.0
+  checksum: 616a68cbae59eaea2e717ada5855346f0ffa4ac10ab96713bb42b90efabce367213c3c491c4bf5502d177b0865c63d8abd298cc8e12bdda171340c853d6b515a
+  languageName: node
+  linkType: hard
+
 "ejs@npm:^3.1.6":
   version: 3.1.9
   resolution: "ejs@npm:3.1.9"
@@ -4138,6 +4147,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"framework7-vue@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "framework7-vue@npm:8.3.0"
+  checksum: a3af4490f8de6ff22af7d8066ffd8da2dbef8b012c4b1a02e48106c6fb5983e3bfd7f3e2bc9936c3ea0d4f6af9e88c36f057f4b278995de98eb8f36a4f5b1fd0
+  languageName: node
+  linkType: hard
+
+"framework7@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "framework7@npm:8.3.0"
+  dependencies:
+    dom7: ^4.0.6
+    htm: ^3.1.1
+    path-to-regexp: ^6.2.0
+    skeleton-elements: ^4.0.1
+    ssr-window: ^4.0.2
+    swiper: ^10.2.0
+  checksum: 863abd91a3adb8480a1e45c3473ef60de91cb2184ef099d70568ca4b7fdc768852129bfd08acc5a03e9883f534142729d5b6b99472b02fbd28e1eaa4634dd3f7
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^9.0.0, fs-extra@npm:^9.0.1":
   version: 9.1.0
   resolution: "fs-extra@npm:9.1.0"
@@ -4458,6 +4488,13 @@ __metadata:
   bin:
     he: bin/he
   checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
+  languageName: node
+  linkType: hard
+
+"htm@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "htm@npm:3.1.1"
+  checksum: 1827a0cafffcff69690b048a4df59944086d7503fe5eb7c10b40834439205bdf992941e7aa25e92b3c2c086170565b4ed7c365bc072d31067c6e7a4e478776bd
   languageName: node
   linkType: hard
 
@@ -5688,6 +5725,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-to-regexp@npm:^6.2.0":
+  version: 6.2.1
+  resolution: "path-to-regexp@npm:6.2.1"
+  checksum: f0227af8284ea13300f4293ba111e3635142f976d4197f14d5ad1f124aebd9118783dd2e5f1fe16f7273743cc3dbeddfb7493f237bb27c10fdae07020cc9b698
+  languageName: node
+  linkType: hard
+
 "path-type@npm:^4.0.0":
   version: 4.0.0
   resolution: "path-type@npm:4.0.0"
@@ -6022,6 +6066,8 @@ __metadata:
     eslint-plugin-prettier-vue: ^4.2.0
     eslint-plugin-promise: ^6.0.0
     eslint-plugin-vue: latest
+    framework7: ^8.3.0
+    framework7-vue: ^8.3.0
     konsta: ^3.0.1
     localforage: ^1.10.0
     luxon: ^3.3.0
@@ -6478,6 +6524,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"skeleton-elements@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "skeleton-elements@npm:4.0.1"
+  checksum: f612258f05931c3649bf95ae6983c8e93727ee65b4f69edc90264b5c0bb4bb850093c889ee509f32c36c586a0febc8ed8137a3ab27ba6e47a00c2ec6c0fd1d6f
+  languageName: node
+  linkType: hard
+
 "slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -6568,6 +6621,13 @@ __metadata:
   version: 4.1.0
   resolution: "split2@npm:4.1.0"
   checksum: ec581597cb74c13cdfb5e2047543dd40cb1e8e9803c7b1e0c29ede05f2b4f049b2d6e7f2788a225d544549375719658b8f38e9366364dec35dc7a12edfda5ee5
+  languageName: node
+  linkType: hard
+
+"ssr-window@npm:^4.0.0, ssr-window@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "ssr-window@npm:4.0.2"
+  checksum: df182600927f4f3225224cf8c02338ea637c9750519505bbfb9a9236741a2a7ec088386fb948bca7b447b8303d9109e7dc7672e3de041c79ac2a0e03665af7d2
   languageName: node
   linkType: hard
 
@@ -6728,6 +6788,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"swiper@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "swiper@npm:10.2.0"
+  checksum: b81fe81c72b92d0c7d0ba0eb1ea96a7e29de6b67d059fc9d01a0c5285dcadd66f25d258f32c05f87bf54663cf8b09d26b38be5029c064c4822768782772cc025
   languageName: node
   linkType: hard
 
