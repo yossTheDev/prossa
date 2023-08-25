@@ -18,6 +18,7 @@
 		"@vueuse/core": "^9.12.0",
 		"daisyui": "^2.51.5",
 		"epubjs": "^0.3.93",
+		"konsta": "^3.0.1",
 		"localforage": "^1.10.0",
 		"luxon": "^3.3.0",
 		"pinia": "^2.0.30",

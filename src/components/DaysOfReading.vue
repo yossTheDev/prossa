@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '../stores/AppStore';
 import { IconCalendarStats } from '@tabler/icons-vue';
+import { kChip } from 'konsta/vue';
 
 /* App Store */
 const store = useAppStore();
@@ -8,9 +9,11 @@ const store = useAppStore();
 
 <template>
 	<!--Stats-->
-	<div class="flex flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white">
-		<IconCalendarStats></IconCalendarStats>
-		<p class="my-auto mr-1 hidden font-bold md:block">Days Of Reading:</p>
-		<p class="my-auto">{{ store.daysOfReading }}</p>
-	</div>
+	<k-chip class="m-0.5">
+		<template #media>
+			<IconCalendarStats class="mr-1"></IconCalendarStats>
+		</template>
+		Days Of Reading: {{ ' ' }}
+		{{ store.daysOfReading }}
+	</k-chip>
 </template>

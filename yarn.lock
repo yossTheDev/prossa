@@ -5042,6 +5042,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"konsta@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "konsta@npm:3.0.1"
+  checksum: fbbd9fd8c3199331e3b1546eafae5af7d478c42ed6af4840d2e6dfb26a150f741c14054901d87f03e30d969d0b1e15ebbbb516a7ab15bd4136e034dfbe0b2428
+  languageName: node
+  linkType: hard
+
 "leven@npm:^3.1.0":
   version: 3.1.0
   resolution: "leven@npm:3.1.0"
@@ -6015,6 +6022,7 @@ __metadata:
     eslint-plugin-prettier-vue: ^4.2.0
     eslint-plugin-promise: ^6.0.0
     eslint-plugin-vue: latest
+    konsta: ^3.0.1
     localforage: ^1.10.0
     luxon: ^3.3.0
     pinia: ^2.0.30

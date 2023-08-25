@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
+import { IconBooks, IconPlus, IconClock } from '@tabler/icons-vue';
 import {
-	IconBook,
-	IconBooks,
-	IconInfoCircle,
-	IconPlus,
-	IconClock,
-	IconChartBar,
-} from '@tabler/icons-vue';
+	kChip,
+	kList,
+	kFab,
+	kToast,
+	kBlockTitle,
+	kBlock,
+	kNavbar,
+} from 'konsta/vue';
 import { Book } from 'epubjs';
 import { DateTime, Duration } from 'luxon';
 import { ref } from 'vue';
@@ -15,7 +17,6 @@ import { Base64Binary } from '../../src/utilities/base';
 import BookList from '../components/BookList.vue';
 import DaysOfReading from '../components/DaysOfReading.vue';
 import AboutModal from '../components/AboutModal.vue';
-import ProssaIcon from '../components/Icons/ProssaIcon.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
 
@@ -99,104 +100,17 @@ function onClosing() {
 </script>
 
 <template>
-	<!-- Nav Bar -->
-	<div
-		class="z-20 mt-3 flex max-h-12 flex-auto select-none md:my-auto md:h-96 md:max-h-full md:max-w-fit"
-	>
-		<div
-			class="my-auto mx-4 flex flex-auto rounded-full bg-white p-2 dark:bg-base-200 dark:text-white md:mx-0 md:ml-2 md:w-16 md:flex-col"
-		>
-			<!-- Left -->
-			<div
-				class="my-auto flex h-full w-1/3 md:my-0 md:mx-auto md:mb-auto md:w-full md:flex-col md:gap-3"
-			>
-				<!-- App Logo-->
-				<div class="mx-auto my-auto mt-2 hidden h-9 md:flex">
-					<ProssaIcon></ProssaIcon>
-				</div>
-
-				<!-- Add Book -->
-				<div
-					class="my-auto ml-auto hidden h-6 cursor-pointer rounded-full bg-slate-200/20 bg-black p-1 transition-all hover:bg-primary hover:text-white hover:shadow hover:transition-all active:scale-90 dark:text-black md:mx-auto md:mt-2 md:flex md:h-10 md:w-10 md:bg-primary md:text-white"
-				>
-					<label class="cursor my-auto mx-auto cursor-pointer" for="input">
-						<IconPlus
-							class="mx-auto my-auto text-white dark:text-black"
-						></IconPlus>
-
-						<input
-							id="input"
-							name="input"
-							accept="*.epub"
-							class="rounded bg-gray-200"
-							@change="handleAddBook"
-							hidden
-							type="file"
-						/>
-					</label>
-				</div>
-
-				<!-- Info -->
-				<div
-					class="hidden rounded-full p-2 transition-all hover:bg-neutral active:scale-90 md:block"
-				>
-					<IconInfoCircle
-						@click="showModal = true"
-						class="mx-auto mt-auto hidden h-9 md:flex"
-					></IconInfoCircle>
-				</div>
-
-				<!-- Info Mobile -->
-				<div
-					class="rounded-full p-2 transition-all hover:bg-neutral active:scale-90 md:hidden"
-				>
-					<IconInfoCircle
-						@click="showModal = true"
-						class="mx-auto"
-					></IconInfoCircle>
-				</div>
-			</div>
-
-			<!-- Center -->
-			<div class="my-auto flex w-1/3 flex-auto md:mx-auto md:hidden md:w-full">
-				<div class="mx-auto my-auto h-8">
-					<ProssaIcon></ProssaIcon>
-				</div>
-			</div>
-
-			<!-- Right -->
-			<div
-				class="my-auto flex w-1/3 flex-auto md:mx-auto md:mt-auto md:hidden md:w-full"
-			>
-				<!-- Add Book -->
-				<div
-					class="my-auto ml-auto cursor-pointer rounded-full bg-slate-200/20 bg-primary p-1 transition-all hover:bg-primary hover:text-white hover:shadow hover:transition-all active:scale-90 dark:text-black md:hidden md:text-white"
-				>
-					<label class="cursor my-auto mx-auto cursor-pointer" for="input">
-						<IconPlus
-							class="mx-auto my-auto text-white dark:text-black"
-						></IconPlus>
-
-						<input
-							id="input"
-							name="input"
-							accept="*.epub"
-							class="rounded bg-gray-200"
-							@change="handleAddBook"
-							hidden
-							type="file"
-						/>
-					</label>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--Nab Bar-->
+	<k-navbar title="Prossa" class="sticky top-0 md:hidden" :large="true">
+	</k-navbar>
 
 	<!-- Content -->
-	<div class="z-20 flex flex-auto flex-col overflow-hidden lg:flex-row">
+	<div
+		class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden md:rounded-none lg:flex-row"
+	>
 		<!-- Current Book -->
 		<div
-			class="mt-2 flex h-full max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+			class="mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
 		>
 			<!-- Book Hero -->
 			<div class="flex flex-auto select-none flex-row gap-2">
@@ -207,7 +121,7 @@ function onClosing() {
 				/>
 				<div
 					v-if="store.currentBook !== ''"
-					class="flex flex-auto flex-col gap-1 text-gray-500"
+					class="flex flex-auto flex-col gap-1"
 				>
 					<div class="my-auto">
 						<p class="font-bold md:text-xl">
@@ -250,76 +164,52 @@ function onClosing() {
 
 		<!-- Book List -->
 		<div
-			class="flex h-full flex-auto flex-col overflow-hidden lg:w-full lg:grow-0 lg:bg-gray-200 dark:lg:bg-black/25"
+			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:bg-md-light-surface-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 		>
 			<!--Stats-->
-			<div class="flex h-fit select-none gap-1 p-2 md:p-1">
+			<k-block-title>Stats</k-block-title>
+			<k-block strong-ios outline-ios>
 				<!-- Stats-->
-				<div
-					class="my-auto ml-2 flex h-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
-				>
-					<IconChartBar></IconChartBar>
-					<p class="mr-1 font-bold">Stats</p>
-				</div>
 
-				<div class="flex flex-row items-start gap-1 overflow-auto p-2">
-					<!-- Days Of Reading-->
-					<DaysOfReading class="my-auto"></DaysOfReading>
+				<!-- Days Of Reading-->
+				<DaysOfReading></DaysOfReading>
 
-					<!-- Reading Time-->
-					<div
-						class="my-auto flex h-fit min-w-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
-					>
-						<IconClock></IconClock>
-						<p class="my-auto mr-1 hidden font-bold md:block">Reading Time:</p>
-						<p class="my-auto">
-							{{
-								Duration.fromISO(store.readingTimeThisMonth).toHuman({
-									listStyle: 'short',
-									unitDisplay: 'short',
-									maximumFractionDigits: 0,
-								})
-							}}
-						</p>
-					</div>
+				<!-- Reading Time-->
+				<k-chip class="m-0.5">
+					<template #media>
+						<IconClock class="mr-1"></IconClock>
+					</template>
 
-					<!-- Last Reading Time-->
-					<div
-						class="my-auto flex h-fit min-w-fit flex-row gap-1 rounded-full bg-base-200 p-2 dark:text-white"
-					>
-						<IconClock></IconClock>
-						<p class="my-auto mr-1 hidden font-bold md:block">
-							Last Reading Time:
-						</p>
-						<p class="my-auto">
-							{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
-						</p>
-					</div>
-				</div>
-			</div>
+					Reading Time: {{ ' ' }}
+					{{
+						Duration.fromISO(store.readingTimeThisMonth).toHuman({
+							listStyle: 'short',
+							unitDisplay: 'short',
+							maximumFractionDigits: 0,
+						})
+					}}
+				</k-chip>
 
-			<!-- Separator -->
-			<div
-				class="ml-4 mt-4 flex select-none flex-row gap-2 text-gray-500 md:mt-5"
-			>
-				<IconBook class="my-auto" :size="18"></IconBook>
-				<p class="my-auto text-xs lg:text-xl">Library</p>
-				<div
-					class="my-auto ml-2 h-1 w-full rounded-full bg-gray-200/50 dark:bg-base-dark-light md:hidden"
-				></div>
-			</div>
+				<!-- Last Reading Time-->
+				<k-chip class="m-0.5">
+					<template #media>
+						<IconClock class="mr-1"></IconClock>
+					</template>
+					Last Reading Time: {{ ' ' }}
+					{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
+				</k-chip>
+			</k-block>
 
 			<!-- Book List -->
 			<div
+				id="book_list"
 				v-if="store.books.length > 0"
-				class="flex flex-auto overflow-hidden p-3"
+				class="-mt-8 flex flex-auto flex-col md:overflow-auto"
 			>
-				<div
-					class="flex flex-auto flex-col overflow-auto md:flex-row md:flex-wrap"
-				>
-					<!--Book Item-->
+				<k-block-title>Library</k-block-title>
+				<k-list strong-ios outline-ios>
 					<BookList></BookList>
-				</div>
+				</k-list>
 			</div>
 
 			<!-- Empty State -->
@@ -341,15 +231,10 @@ function onClosing() {
 	</div>
 
 	<!-- Toast -->
-	<div v-if="message !== ''" class="toast">
-		<div
-			class="alert alert-info bg-black text-white dark:bg-white dark:text-black"
-		>
-			<div>
-				<span>{{ message }}</span>
-			</div>
-		</div>
-	</div>
+	<k-toast position="center" :opened="message !== ''">
+		<template #button> </template>
+		<div class="shrink">{{ message }}</div>
+	</k-toast>
 
 	<!--About Modal-->
 	<div
@@ -384,4 +269,21 @@ function onClosing() {
 			</div>
 		</TransitionRoot>
 	</div>
+
+	<!-- FAB -->
+	<label for="file-input">
+		<k-fab class="fixed z-20 right-4-safe bottom-4-safe">
+			<template #icon>
+				<IconPlus></IconPlus>
+			</template>
+		</k-fab>
+
+		<input
+			hidden
+			accept=".epub"
+			@input="handleAddBook"
+			type="file"
+			id="file-input"
+		/>
+	</label>
 </template>

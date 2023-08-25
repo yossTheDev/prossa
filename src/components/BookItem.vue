@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useAppStore } from '../stores/AppStore';
+import { kListItem, kDialog, kDialogButton } from 'konsta/vue';
 import { ref } from 'vue';
+import { useAppStore } from '../stores/AppStore';
 
 /* App Store */
 const store = useAppStore();
@@ -13,15 +14,11 @@ const props = defineProps<{
 	img: string;
 }>();
 
-const open = ref('');
+const open = ref(false);
 
 const handleContextMenu = (e: MouseEvent) => {
 	e.preventDefault();
-	if (open.value === '') {
-		open.value = 'dropdown-open';
-	} else {
-		open.value = '';
-	}
+	open.value = true;
 };
 
 const handleDeleteBook = (e: MouseEvent) => {
@@ -30,36 +27,32 @@ const handleDeleteBook = (e: MouseEvent) => {
 </script>
 
 <template>
-	<div :class="'dropdown-bottom dropdown-end dropdown ' + open">
-		<div
-			tabindex="0"
-			class="flex flex-auto cursor-pointer select-none transition-all active:scale-90"
-			@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
-			@contextmenu="handleContextMenu"
-			@blur="open = ''"
-		>
-			<div class="flex min-w-fit p-2">
-				<img
-					class="h-36 rounded shadow-sm hover:scale-105 hover:shadow-2xl hover:transition-all md:mx-auto md:h-60 md:w-44 md:shadow-2xl"
-					:src="JSON.parse(props.img)"
-				/>
-			</div>
+	<k-list-item
+		@contextmenu="handleContextMenu"
+		:chevron-material="false"
+		@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
+		link
+		:title="title"
+		:subtitle="creator"
+		:text="
+			description.length > 240 ? description.slice(0, 237) + '...' : description
+		"
+	>
+		<template #media>
+			<img
+				class="mx-2 material:w-24 ios:w-20"
+				:src="JSON.parse(props.img)"
+				width="80"
+				alt="demo"
+			/>
+		</template>
+	</k-list-item>
 
-			<div class="flex flex-auto flex-col p-2 text-gray-400 md:hidden">
-				<div class="my-auto">
-					<p class="font-bold">{{ props.title }}</p>
-					<p class="text-xs">{{ props.creator }}</p>
-				</div>
-			</div>
-		</div>
+	<k-dialog :opened="open" @backdropclick="() => (open = false)">
+		<template #title>Delete Book?</template>
 
-		<!-- Context Menu -->
-		<div
-			tabindex="0"
-			class="dropdown-content rounded-xl bg-base-200 p-4 shadow dark:text-white"
-			@blur="open = ''"
-		>
-			<button @click="handleDeleteBook">Delete</button>
-		</div>
-	</div>
+		<template #buttons>
+			<k-dialog-button @click="handleDeleteBook"> Delete </k-dialog-button>
+		</template>
+	</k-dialog>
 </template>
