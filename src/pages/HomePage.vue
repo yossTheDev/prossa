@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
-import { IconBooks, IconPlus, IconClock } from '@tabler/icons-vue';
+import {
+	IconBooks,
+	IconPlus,
+	IconClock,
+	IconChartLine,
+} from '@tabler/icons-vue';
 import { kChip, kFab, kToast, kBlockTitle, kBlock, kNavbar } from 'konsta/vue';
 import { Book } from 'epubjs';
 import { DateTime, Duration } from 'luxon';
@@ -102,7 +107,7 @@ function onClosing() {
 	>
 		<!-- Current Book -->
 		<div
-			class="mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+			class="sticky mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
 		>
 			<!-- Book Hero -->
 			<div class="flex flex-auto select-none flex-row gap-2">
@@ -159,7 +164,9 @@ function onClosing() {
 			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 		>
 			<!--Stats-->
-			<k-block-title>Stats</k-block-title>
+			<k-block-title>
+				<div><IconChartLine></IconChartLine> Stats</div></k-block-title
+			>
 			<k-block strong-ios outline-ios>
 				<!-- Stats-->
 

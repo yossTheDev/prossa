@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { kListGroup, kListItem, kList, kBlockTitle } from 'konsta/vue';
+import { IconBooks } from '@tabler/icons-vue';
 import BookItem from './BookItem.vue';
 
 /* App Store */
@@ -54,7 +55,13 @@ onMounted(() => {
 </script>
 
 <template>
-	<k-block-title>Library</k-block-title>
+	<k-block-title>
+		<div>
+			<IconBooks></IconBooks>
+			<p>Library</p>
+		</div>
+	</k-block-title>
+
 	<k-list strong-ios outline-ios>
 		<k-list-group :key="group.name" v-for="group in groups">
 			<k-list-item
