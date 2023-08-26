@@ -1,4 +1,4 @@
-package com.yossthedev.rewolf;
+package com.example.app;
 
 import com.getcapacitor.BridgeActivity;
 
