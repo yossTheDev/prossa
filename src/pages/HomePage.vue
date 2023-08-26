@@ -98,7 +98,7 @@ function onClosing() {
 
 	<!-- Content -->
 	<div
-		class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden md:rounded-none lg:flex-row"
+		class="flex h-fit flex-auto flex-col bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden lg:flex-row"
 	>
 		<!-- Current Book -->
 		<div
@@ -156,7 +156,7 @@ function onClosing() {
 
 		<!-- Book List -->
 		<div
-			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:bg-md-light-surface-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
+			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 		>
 			<!--Stats-->
 			<k-block-title>Stats</k-block-title>

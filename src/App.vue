@@ -20,6 +20,8 @@ onMounted(() => {
 </script>
 
 <template>
+	<div id="popup-target"></div>
+
 	<k-provider theme="md">
 		<k-app theme="material">
 			<div class="flex h-screen w-screen flex-auto overflow-hidden">

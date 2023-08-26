@@ -23,6 +23,7 @@ const handleContextMenu = (e: MouseEvent) => {
 
 const handleDeleteBook = (e: MouseEvent) => {
 	store.deleteBook(props.bookKey);
+	open.value = false;
 };
 </script>
 
@@ -48,11 +49,13 @@ const handleDeleteBook = (e: MouseEvent) => {
 		</template>
 	</k-list-item>
 
-	<k-dialog :opened="open" @backdropclick="() => (open = false)">
-		<template #title>Delete Book?</template>
+	<Teleport to="#popup-target">
+		<k-dialog class="z-50" :opened="open" @backdropclick="() => (open = false)">
+			<template #title>Delete Book?</template>
 
-		<template #buttons>
-			<k-dialog-button @click="handleDeleteBook"> Delete </k-dialog-button>
-		</template>
-	</k-dialog>
+			<template #buttons>
+				<k-dialog-button @click="handleDeleteBook"> Delete </k-dialog-button>
+			</template>
+		</k-dialog>
+	</Teleport>
 </template>

@@ -60,10 +60,14 @@ onMounted(() => {
 			<k-list-item
 				:title="group.name"
 				group-title
-				class="sticky material:top-16-safe ios:top-11-safe md:hidden"
+				class="sticky my-1 material:top-16-safe ios:top-11-safe md:hidden"
 			/>
 
-			<k-list-item :title="group.name" group-title class="hidden md:flex" />
+			<k-list-item
+				:title="group.name"
+				group-title
+				class="my-1 hidden md:flex"
+			/>
 			<BookItem
 				:key="book.key"
 				v-for="book in group.books"
