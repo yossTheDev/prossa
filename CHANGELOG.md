@@ -3,6 +3,7 @@
 ## v 1.1.1
 
 * feat: Order books alphabetically
+* fix: Dialog Position using Teleport
 
 ## v 1.1.0
 
