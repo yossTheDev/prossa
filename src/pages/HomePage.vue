@@ -102,7 +102,7 @@ function onClosing() {
 		<template #title
 			><!-- Current Book -->
 			<div
-				class="sticky mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+				class="flex max-h-40 flex-auto flex-col p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
 			>
 				<!-- Book Hero -->
 				<div class="flex flex-auto select-none flex-row gap-2">
@@ -113,10 +113,10 @@ function onClosing() {
 					/>
 					<div
 						v-if="store.currentBook !== ''"
-						class="flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"
+						class="flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
 					>
 						<div class="my-auto">
-							<p class="font-bold md:text-xl">
+							<p class="max-w-[16rem] font-bold md:text-xl">
 								{{ store.getBook(store.currentBook)?.metadata.title }}
 							</p>
 							<p class="mb-6 text-xs">
@@ -135,7 +135,7 @@ function onClosing() {
 
 	<!-- Content -->
 	<div
-		class="flex h-fit flex-auto flex-col bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden lg:flex-row"
+		class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden md:rounded-none lg:flex-row"
 	>
 		<!-- Current Book -->
 		<div

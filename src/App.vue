@@ -26,7 +26,10 @@ onMounted(() => {
 		<k-app theme="material">
 			<div class="flex h-screen w-screen flex-auto overflow-hidden">
 				<k-page
-					class="relative flex flex-col bg-md-light-surface-2 dark:bg-md-dark-surface-2"
+					:colors="{
+						bgMaterial: 'bg-md-light-surface-2 dark:bg-md-dark-surface-2',
+					}"
+					class="relative flex flex-col"
 				>
 					<!--Router Outlet-->
 					<router-view></router-view>
