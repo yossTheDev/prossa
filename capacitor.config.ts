@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.yossthedev.rewolf',
-  appName: 'rewolf',
+  appId: 'com.yossthedev.prossa',
+  appName: 'prossa',
   webDir: 'dist',
   bundledWebRuntime: false
 };

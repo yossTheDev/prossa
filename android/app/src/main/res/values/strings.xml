@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Prossa</string>
-    <string name="title_activity_main">Prossa</string>
-    <string name="package_name">com.example.app</string>
-    <string name="custom_url_scheme">com.example.app</string>
+    <string name="app_name">prossa</string>
+    <string name="title_activity_main">prossa</string>
+    <string name="package_name">com.yossthedev.prossa</string>
+    <string name="custom_url_scheme">com.yossthedev.prossa</string>
 </resources>
