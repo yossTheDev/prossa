@@ -17,13 +17,14 @@ import {
 	kToast,
 } from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
 import AboutModal from '../components/AboutModal.vue';
 import BookList from '../components/BookList.vue';
 import DaysOfReading from '../components/DaysOfReading.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
+import { StatusBar } from '@capacitor/status-bar';
 
 const store = useAppStore();
 
@@ -102,6 +103,11 @@ function handleAddBook(event: any) {
 function onClosing() {
 	visible.value = !visible.value;
 }
+
+/* Show Status Bar */
+onMounted(() => {
+	StatusBar.show();
+});
 </script>
 
 <template>

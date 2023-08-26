@@ -8,10 +8,10 @@ onMounted(() => {
 	useDark({
 		onChanged: (isDark) => {
 			if (isDark) {
-				StatusBar.setBackgroundColor({ color: '#1B1B1F' });
+				StatusBar.setBackgroundColor({ color: '#272931' });
 				StatusBar.setStyle({ style: Style.Dark });
 			} else {
-				StatusBar.setBackgroundColor({ color: '#F1F3FC' });
+				StatusBar.setBackgroundColor({ color: '#EAEEFA' });
 				StatusBar.setStyle({ style: Style.Light });
 			}
 		},

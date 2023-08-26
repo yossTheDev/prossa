@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import EbookReader from '../components/EbookReader.vue';
 import { useAppStore } from '../stores/AppStore';
 import { DateTime, Duration, Interval } from 'luxon';
 import { kPage } from 'konsta/vue';
+import { StatusBar } from '@capacitor/status-bar';
 
 /* App Store */
 const store = useAppStore();
@@ -36,6 +37,11 @@ const timeInterval = setInterval(() => {
 }, 1000);
 
 const startTime = DateTime.now();
+
+/* Hide Status Bar */
+onMounted(() => {
+	StatusBar.hide();
+});
 
 onUnmounted(() => {
 	clearInterval(timeInterval);
