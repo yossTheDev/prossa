@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
 import { IconBooks, IconPlus, IconClock } from '@tabler/icons-vue';
-import {
-	kChip,
-	kList,
-	kFab,
-	kToast,
-	kBlockTitle,
-	kBlock,
-	kNavbar,
-} from 'konsta/vue';
+import { kChip, kFab, kToast, kBlockTitle, kBlock, kNavbar } from 'konsta/vue';
 import { Book } from 'epubjs';
 import { DateTime, Duration } from 'luxon';
 import { ref } from 'vue';
@@ -206,10 +198,7 @@ function onClosing() {
 				v-if="store.books.length > 0"
 				class="-mt-8 flex flex-auto flex-col md:overflow-auto"
 			>
-				<k-block-title>Library</k-block-title>
-				<k-list strong-ios outline-ios>
-					<BookList></BookList>
-				</k-list>
+				<BookList></BookList>
 			</div>
 
 			<!-- Empty State -->
