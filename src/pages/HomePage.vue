@@ -98,7 +98,39 @@ function onClosing() {
 
 <template>
 	<!--Nab Bar-->
-	<k-navbar title="Prossa" class="sticky top-0 md:hidden" :large="true">
+	<k-navbar class="sticky top-0 z-20 md:hidden" :large="true">
+		<template #title
+			><!-- Current Book -->
+			<div
+				class="sticky mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+			>
+				<!-- Book Hero -->
+				<div class="flex flex-auto select-none flex-row gap-2">
+					<img
+						class="my-auto flex h-36 rounded"
+						v-if="store.currentBook !== ''"
+						:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
+					/>
+					<div
+						v-if="store.currentBook !== ''"
+						class="flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"
+					>
+						<div class="my-auto">
+							<p class="font-bold md:text-xl">
+								{{ store.getBook(store.currentBook)?.metadata.title }}
+							</p>
+							<p class="mb-6 text-xs">
+								{{ store.getBook(store.currentBook)?.metadata.creator }}
+							</p>
+						</div>
+					</div>
+
+					<p class="mx-auto my-auto text-center text-gray-500" v-else>
+						Lets read a book
+					</p>
+				</div>
+			</div>
+		</template>
 	</k-navbar>
 
 	<!-- Content -->
@@ -107,7 +139,7 @@ function onClosing() {
 	>
 		<!-- Current Book -->
 		<div
-			class="sticky mt-2 flex max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+			class="hidden max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 md:flex lg:h-full lg:max-h-full lg:w-1/3"
 		>
 			<!-- Book Hero -->
 			<div class="flex flex-auto select-none flex-row gap-2">
@@ -121,14 +153,14 @@ function onClosing() {
 					class="flex flex-auto flex-col gap-1"
 				>
 					<div class="my-auto">
-						<p class="font-bold md:text-xl">
+						<p class="text-xl font-bold">
 							{{ store.getBook(store.currentBook)?.metadata.title }}
 						</p>
-						<p class="text-xs">
+						<p class="text md:text-xs">
 							{{ store.getBook(store.currentBook)?.metadata.creator }}
 						</p>
 
-						<p class="mt-2 text-xs">
+						<p class="mt-2 hidden text-xs">
 							{{
 								Math.round(
 									(store.getBook(store.currentBook)
@@ -164,7 +196,7 @@ function onClosing() {
 			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 		>
 			<!--Stats-->
-			<k-block-title>
+			<k-block-title class="mt-18 md:mt-2">
 				<div><IconChartLine></IconChartLine> Stats</div></k-block-title
 			>
 			<k-block strong-ios outline-ios>
