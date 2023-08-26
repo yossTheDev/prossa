@@ -2,18 +2,26 @@
 import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconBooks,
-	IconPlus,
-	IconClock,
 	IconChartLine,
+	IconClock,
+	IconPlus,
 } from '@tabler/icons-vue';
-import { kChip, kFab, kToast, kBlockTitle, kBlock, kNavbar } from 'konsta/vue';
 import { Book } from 'epubjs';
+import {
+	kBlock,
+	kBlockTitle,
+	kChip,
+	kFab,
+	kNavbar,
+	kPage,
+	kToast,
+} from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
 import { ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
+import AboutModal from '../components/AboutModal.vue';
 import BookList from '../components/BookList.vue';
 import DaysOfReading from '../components/DaysOfReading.vue';
-import AboutModal from '../components/AboutModal.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
 
@@ -97,30 +105,84 @@ function onClosing() {
 </script>
 
 <template>
-	<!--Nab Bar-->
-	<k-navbar class="sticky top-0 z-20 md:hidden" :large="true">
-		<template #title
-			><!-- Current Book -->
+	<k-page
+		:colors="{
+			bgMaterial: 'bg-md-light-surface-2 dark:bg-md-dark-surface-2',
+		}"
+		class="relative flex flex-col"
+	>
+		<!--Nab Bar-->
+		<k-navbar class="sticky top-0 z-20 md:hidden" :large="true">
+			<template #title
+				><!-- Current Book -->
+				<div
+					class="flex max-h-40 flex-auto flex-col p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+				>
+					<!-- Book Hero -->
+					<div class="flex flex-auto select-none flex-row gap-2">
+						<img
+							class="my-auto flex h-36 rounded"
+							v-if="store.currentBook !== ''"
+							:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
+						/>
+						<div
+							v-if="store.currentBook !== ''"
+							class="flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
+						>
+							<div class="my-auto">
+								<p class="max-w-[16rem] font-bold md:text-xl">
+									{{ store.getBook(store.currentBook)?.metadata.title }}
+								</p>
+								<p class="mb-6 text-xs">
+									{{ store.getBook(store.currentBook)?.metadata.creator }}
+								</p>
+							</div>
+						</div>
+
+						<p class="mx-auto my-auto text-center text-gray-500" v-else>
+							Lets read a book
+						</p>
+					</div>
+				</div>
+			</template>
+		</k-navbar>
+
+		<!-- Content -->
+		<div
+			class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface-1 md:overflow-hidden md:rounded-none md:dark:bg-md-dark-surface lg:flex-row"
+		>
+			<!-- Current Book -->
 			<div
-				class="flex max-h-40 flex-auto flex-col p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
+				class="hidden max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 md:flex lg:h-full lg:max-h-full lg:w-1/3"
 			>
 				<!-- Book Hero -->
 				<div class="flex flex-auto select-none flex-row gap-2">
 					<img
-						class="my-auto flex h-36 rounded"
+						class="my-auto h-36 rounded md:h-60"
 						v-if="store.currentBook !== ''"
 						:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
 					/>
 					<div
 						v-if="store.currentBook !== ''"
-						class="flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
+						class="flex flex-auto flex-col gap-1"
 					>
 						<div class="my-auto">
-							<p class="max-w-[16rem] font-bold md:text-xl">
+							<p class="text-xl font-bold">
 								{{ store.getBook(store.currentBook)?.metadata.title }}
 							</p>
-							<p class="mb-6 text-xs">
+							<p class="text md:text-xs">
 								{{ store.getBook(store.currentBook)?.metadata.creator }}
+							</p>
+
+							<p class="mt-2 hidden text-xs">
+								{{
+									Math.round(
+										(store.getBook(store.currentBook)
+											?.percent as unknown as number) * 100
+									)
+								}}
+
+								% - Complete
 							</p>
 						</div>
 					</div>
@@ -129,189 +191,142 @@ function onClosing() {
 						Lets read a book
 					</p>
 				</div>
-			</div>
-		</template>
-	</k-navbar>
 
-	<!-- Content -->
-	<div
-		class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface md:overflow-hidden md:rounded-none lg:flex-row"
-	>
-		<!-- Current Book -->
-		<div
-			class="hidden max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 md:flex lg:h-full lg:max-h-full lg:w-1/3"
-		>
-			<!-- Book Hero -->
-			<div class="flex flex-auto select-none flex-row gap-2">
-				<img
-					class="my-auto h-36 rounded md:h-60"
-					v-if="store.currentBook !== ''"
-					:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
-				/>
+				<!-- Book Description -->
 				<div
 					v-if="store.currentBook !== ''"
-					class="flex flex-auto flex-col gap-1"
+					class="hidden flex-auto select-none overflow-auto lg:flex"
 				>
-					<div class="my-auto">
-						<p class="text-xl font-bold">
-							{{ store.getBook(store.currentBook)?.metadata.title }}
-						</p>
-						<p class="text md:text-xs">
-							{{ store.getBook(store.currentBook)?.metadata.creator }}
-						</p>
-
-						<p class="mt-2 hidden text-xs">
-							{{
-								Math.round(
-									(store.getBook(store.currentBook)
-										?.percent as unknown as number) * 100
-								)
-							}}
-
-							% - Complete
-						</p>
-					</div>
+					<span
+						v-html="store.getBook(store.currentBook)?.metadata.description"
+						class="text-xs text-gray-500"
+					>
+					</span>
 				</div>
-
-				<p class="mx-auto my-auto text-center text-gray-500" v-else>
-					Lets read a book
-				</p>
 			</div>
-
-			<!-- Book Description -->
-			<div
-				v-if="store.currentBook !== ''"
-				class="hidden flex-auto select-none overflow-auto lg:flex"
-			>
-				<span
-					v-html="store.getBook(store.currentBook)?.metadata.description"
-					class="text-xs text-gray-500"
-				>
-				</span>
-			</div>
-		</div>
-
-		<!-- Book List -->
-		<div
-			class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
-		>
-			<!--Stats-->
-			<k-block-title class="mt-18 md:mt-2">
-				<div><IconChartLine></IconChartLine> Stats</div></k-block-title
-			>
-			<k-block strong-ios outline-ios>
-				<!-- Stats-->
-
-				<!-- Days Of Reading-->
-				<DaysOfReading></DaysOfReading>
-
-				<!-- Reading Time-->
-				<k-chip class="m-0.5">
-					<template #media>
-						<IconClock class="mr-1"></IconClock>
-					</template>
-
-					Reading Time: {{ ' ' }}
-					{{
-						Duration.fromISO(store.readingTimeThisMonth).toHuman({
-							listStyle: 'short',
-							unitDisplay: 'short',
-							maximumFractionDigits: 0,
-						})
-					}}
-				</k-chip>
-
-				<!-- Last Reading Time-->
-				<k-chip class="m-0.5">
-					<template #media>
-						<IconClock class="mr-1"></IconClock>
-					</template>
-					Last Reading Time: {{ ' ' }}
-					{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
-				</k-chip>
-			</k-block>
 
 			<!-- Book List -->
 			<div
-				id="book_list"
-				v-if="store.books.length > 0"
-				class="-mt-8 flex flex-auto flex-col md:overflow-auto"
+				class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 			>
-				<BookList></BookList>
-			</div>
+				<!--Stats-->
+				<k-block-title class="mt-18 md:mt-2">
+					<div><IconChartLine></IconChartLine> Stats</div></k-block-title
+				>
+				<k-block strong-ios outline-ios>
+					<!-- Stats-->
 
-			<!-- Empty State -->
-			<div class="mx-auto my-auto text-gray-400" v-else>
-				<div class="">
-					<IconBooks :size="84" class="mx-auto"></IconBooks>
-					<p class="mx-auto text-center">No Books</p>
+					<!-- Days Of Reading-->
+					<DaysOfReading></DaysOfReading>
+
+					<!-- Reading Time-->
+					<k-chip class="m-0.5">
+						<template #media>
+							<IconClock class="mr-1"></IconClock>
+						</template>
+
+						Reading Time: {{ ' ' }}
+						{{
+							Duration.fromISO(store.readingTimeThisMonth).toHuman({
+								listStyle: 'short',
+								unitDisplay: 'short',
+								maximumFractionDigits: 0,
+							})
+						}}
+					</k-chip>
+
+					<!-- Last Reading Time-->
+					<k-chip class="m-0.5">
+						<template #media>
+							<IconClock class="mr-1"></IconClock>
+						</template>
+						Last Reading Time: {{ ' ' }}
+						{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
+					</k-chip>
+				</k-block>
+
+				<!-- Book List -->
+				<div
+					id="book_list"
+					v-if="store.books.length > 0"
+					class="-mt-8 flex flex-auto flex-col md:overflow-auto"
+				>
+					<BookList></BookList>
+				</div>
+
+				<!-- Empty State -->
+				<div class="mx-auto my-auto text-gray-400" v-else>
+					<div class="">
+						<IconBooks :size="84" class="mx-auto"></IconBooks>
+						<p class="mx-auto text-center">No Books</p>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<!--Global Spinner-->
-	<div
-		v-if="loading"
-		class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
-	>
-		<SpinnerItem class="fill-white"></SpinnerItem>
-	</div>
-
-	<!-- Toast -->
-	<k-toast position="center" :opened="message !== ''">
-		<template #button> </template>
-		<div class="shrink">{{ message }}</div>
-	</k-toast>
-
-	<!--About Modal-->
-	<div
-		@click="showModal = false"
-		v-if="showModal"
-		class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
-	>
-		<AboutModal></AboutModal>
-	</div>
-
-	<!-- Drawer -->
-	<div class="absolute h-full w-full">
+		<!--Global Spinner-->
 		<div
-			@click="onClosing"
-			v-if="visible"
-			class="absolute z-20 flex h-full w-full flex-auto bg-gray-100/5"
-		></div>
-		<TransitionRoot
-			:show="visible"
-			enter="duration-150"
-			enter-from="-ml-96"
-			enter-to="ml-0"
-			leave="duration-150"
-			leave-from="opacity-100"
-			leave-to="-ml-96"
-			class="absolute z-20 h-full bg-yellow-300"
+			v-if="loading"
+			class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
 		>
+			<SpinnerItem class="fill-white"></SpinnerItem>
+		</div>
+
+		<!-- Toast -->
+		<k-toast position="center" :opened="message !== ''">
+			<template #button> </template>
+			<div class="shrink">{{ message }}</div>
+		</k-toast>
+
+		<!--About Modal-->
+		<div
+			@click="showModal = false"
+			v-if="showModal"
+			class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
+		>
+			<AboutModal></AboutModal>
+		</div>
+
+		<!-- Drawer -->
+		<div class="absolute h-full w-full">
 			<div
-				class="absolute flex h-full w-80 max-w-xs flex-auto bg-white dark:bg-base-dark-light"
+				@click="onClosing"
+				v-if="visible"
+				class="absolute z-20 flex h-full w-full flex-auto bg-gray-100/5"
+			></div>
+			<TransitionRoot
+				:show="visible"
+				enter="duration-150"
+				enter-from="-ml-96"
+				enter-to="ml-0"
+				leave="duration-150"
+				leave-from="opacity-100"
+				leave-to="-ml-96"
+				class="absolute z-20 h-full bg-yellow-300"
 			>
-				<p>Header</p>
-			</div>
-		</TransitionRoot>
-	</div>
+				<div
+					class="absolute flex h-full w-80 max-w-xs flex-auto bg-white dark:bg-base-dark-light"
+				>
+					<p>Header</p>
+				</div>
+			</TransitionRoot>
+		</div>
 
-	<!-- FAB -->
-	<label for="file-input">
-		<k-fab class="fixed z-20 right-4-safe bottom-4-safe">
-			<template #icon>
-				<IconPlus></IconPlus>
-			</template>
-		</k-fab>
+		<!-- FAB -->
+		<label for="file-input">
+			<k-fab class="fixed z-20 right-4-safe bottom-4-safe">
+				<template #icon>
+					<IconPlus></IconPlus>
+				</template>
+			</k-fab>
 
-		<input
-			hidden
-			accept=".epub"
-			@input="handleAddBook"
-			type="file"
-			id="file-input"
-		/>
-	</label>
+			<input
+				hidden
+				accept=".epub"
+				@input="handleAddBook"
+				type="file"
+				id="file-input"
+			/>
+		</label>
+	</k-page>
 </template>

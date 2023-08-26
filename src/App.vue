@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { kApp, kPage, kProvider } from 'konsta/vue';
+import { kApp, kProvider } from 'konsta/vue';
 import { useDark } from '@vueuse/core';
 import { onMounted } from 'vue';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -24,16 +24,9 @@ onMounted(() => {
 
 	<k-provider theme="md">
 		<k-app theme="material">
-			<div class="flex h-screen w-screen flex-auto overflow-hidden">
-				<k-page
-					:colors="{
-						bgMaterial: 'bg-md-light-surface-2 dark:bg-md-dark-surface-2',
-					}"
-					class="relative flex flex-col"
-				>
-					<!--Router Outlet-->
-					<router-view></router-view>
-				</k-page>
+			<div class="relative flex h-screen w-screen flex-auto overflow-hidden">
+				<!--Router Outlet-->
+				<router-view></router-view>
 			</div>
 		</k-app>
 	</k-provider>

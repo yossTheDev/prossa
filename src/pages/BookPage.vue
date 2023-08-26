@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import EbookReader from '../components/EbookReader.vue';
 import { useAppStore } from '../stores/AppStore';
 import { DateTime, Duration, Interval } from 'luxon';
+import { kPage } from 'konsta/vue';
 
 /* App Store */
 const store = useAppStore();
@@ -59,6 +60,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<!--Epub Reader-->
-	<EbookReader :id="id"></EbookReader>
+	<k-page class="relative flex h-full w-full flex-auto overflow-hidden">
+		<!--Epub Reader-->
+		<EbookReader :id="id"></EbookReader>
+	</k-page>
 </template>

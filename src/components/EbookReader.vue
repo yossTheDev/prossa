@@ -3,6 +3,14 @@ import { TransitionRoot } from '@headlessui/vue';
 import { IconArrowLeft, IconArrowRight, IconBook2 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book } from 'epubjs';
+import {
+	kBlock,
+	kBlockTitle,
+	kList,
+	kListItem,
+	kPage,
+	kPanel,
+} from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
@@ -223,80 +231,87 @@ function toggleChapters() {
 
 	<!-- Controls Panel -->
 	<div class="absolute flex h-full w-full flex-auto">
-		<div class="flex h-full w-full">
+		<TransitionRoot
+			class="mx-auto mt-auto mb-4 flex h-fit"
+			:show="showControls"
+			enter="transition-opacity duration-75"
+			enter-from="opacity-0"
+			enter-to="opacity-100"
+			leave="transition-opacity duration-150"
+			leave-from="opacity-100"
+			leave-to="opacity-0"
+		>
 			<!-- Controls -->
-			<div class="z-20 mt-auto mb-4 flex flex-auto flex-col">
-				<TransitionRoot
-					:show="showControls"
-					enter="transition-opacity duration-75"
-					enter-from="opacity-0"
-					enter-to="opacity-100"
-					leave="transition-opacity duration-150"
-					leave-from="opacity-100"
-					leave-to="opacity-0"
+			<div
+				class="mx-auto flex w-80 flex-auto select-none flex-col overflow-auto"
+			>
+				<div
+					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-md-light-surface-1 p-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
 				>
-					<!-- Controls -->
-					<div
-						class="mx-auto flex w-96 flex-auto select-none flex-col overflow-auto"
-					>
+					<div class="flex w-1/3 flex-auto">
+						<!-- Arrow Back -->
 						<div
-							class="z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-white p-1 text-gray-400 shadow dark:bg-base-200/80 md:mx-2"
+							class="hover:bg-neutral my-auto cursor-pointer select-none rounded-xl p-2"
+							@click="back"
 						>
-							<div class="flex w-1/3 flex-auto">
-								<!-- Arrow Back -->
-								<div
-									class="my-auto cursor-pointer select-none rounded-xl p-2 hover:bg-neutral"
-									@click="back"
-								>
-									<IconArrowLeft></IconArrowLeft>
-								</div>
-
-								<!-- Arrow Next -->
-								<div
-									class="my-auto cursor-pointer select-none rounded-xl p-2 hover:bg-neutral"
-									@click="next"
-								>
-									<IconArrowRight></IconArrowRight>
-								</div>
-							</div>
-
-							<div class="flex w-1/3 flex-auto">
-								<!-- Percent -->
-								<p class="my-auto mx-auto">{{ currentPos + '%' }}</p>
-							</div>
-
-							<div class="flex w-1/3 flex-auto items-end">
-								<!-- Chapters -->
-								<div
-									@click="toggleChapters"
-									class="my-auto ml-auto flex rounded-xl p-2 transition-all hover:bg-neutral active:scale-90"
-								>
-									<IconBook2></IconBook2>
-								</div>
-							</div>
+							<IconArrowLeft></IconArrowLeft>
 						</div>
 
+						<!-- Arrow Next -->
 						<div
-							v-if="showChapters"
-							class="my-2 flex max-h-64 flex-auto flex-col rounded-xl bg-white/80 p-2 shadow-xl dark:bg-base-200/80 dark:text-white"
+							class="hover:bg-neutral my-auto cursor-pointer select-none rounded-xl p-2"
+							@click="next"
 						>
-							<p class="ml-1 mb-2 text-xl font-bold">Chapters</p>
-							<div class="flex flex-auto select-none flex-col overflow-auto">
-								<div
-									@click="toChapter(item.href)"
-									:key="item.id"
-									v-for="item in chapters"
-									class="rounded-xl p-1 hover:bg-neutral"
-								>
-									<div>{{ item.label }}</div>
-								</div>
-							</div>
+							<IconArrowRight></IconArrowRight>
 						</div>
 					</div>
-				</TransitionRoot>
+
+					<div class="flex w-1/3 flex-auto">
+						<!-- Percent -->
+						<p class="my-auto mx-auto">{{ currentPos + '%' }}</p>
+					</div>
+
+					<div class="flex w-1/3 flex-auto items-end">
+						<!-- Chapters -->
+						<div
+							@click="toggleChapters"
+							class="hover:bg-neutral my-auto ml-auto flex rounded-xl p-2 transition-all active:scale-90"
+						>
+							<IconBook2></IconBook2>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+		</TransitionRoot>
 	</div>
+
+	<!-- Chapters Panel -->
+	<k-panel
+		side="left"
+		:opened="showChapters"
+		@backdropclick="() => (showChapters = false)"
+	>
+		<k-page>
+			<k-navbar title="Left Panel">
+				<template #right>
+					<k-link navbar @click="() => (showChapters = false)"> Close </k-link>
+				</template>
+			</k-navbar>
+			<k-block-title>Chapters</k-block-title>
+			<k-block class="space-y-4">
+				<k-list>
+					<k-list-item
+						:title="item.label"
+						@click="toChapter(item.href)"
+						:key="item.id"
+						link
+						v-for="item in chapters"
+						class="hover:bg-neutral rounded-xl p-1"
+					></k-list-item>
+				</k-list>
+			</k-block>
+		</k-page>
+	</k-panel>
 
 	<!-- Content -->
 	<div class="flex h-full w-full flex-auto flex-col">
