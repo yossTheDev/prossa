@@ -269,14 +269,12 @@ onMounted(() => {
 
 			<!-- Book List and Stats -->
 			<div
-				class="flex flex-auto flex-col gap-0 md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
+				class="flex flex-auto flex-col gap-0 md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:shadow-xl md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 			>
-				<div class="">
+				<div>
 					<!--Stats-->
 					<k-block-title class="mt-28 md:mt-2">Stats</k-block-title>
 					<k-block strong-ios outline-ios>
-						<!-- Stats-->
-
 						<!-- Days Of Reading-->
 						<DaysOfReading></DaysOfReading>
 
@@ -307,9 +305,9 @@ onMounted(() => {
 					</k-block>
 
 					<!-- Search Bar -->
-					<kBlock>
+					<kBlock class="hidden md:block">
 						<div
-							class="hidden gap-2 rounded-2xl bg-md-light-surface p-3 dark:bg-md-dark-surface md:flex"
+							class="flex gap-2 rounded-2xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface"
 						>
 							<IconSearch></IconSearch>
 							<input
@@ -322,6 +320,7 @@ onMounted(() => {
 					</kBlock>
 				</div>
 
+				<!-- Book List -->
 				<div class="md:overflow-auto">
 					<!-- Book List -->
 					<BookList
