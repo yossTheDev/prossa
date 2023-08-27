@@ -24,6 +24,7 @@ import BookList from '../components/BookList.vue';
 import DaysOfReading from '../components/DaysOfReading.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
+import localforage from 'localforage';
 
 const store = useAppStore();
 
@@ -71,17 +72,25 @@ function handleAddBook(event: any) {
 				readerImage.readAsDataURL(image);
 
 				/* And Save the New Book to the Store */
-				readerImage.onloadend = function () {
+				readerImage.onloadend = async function () {
 					// Add Book
 					store.addBook({
 						key: newBook.key(), // book unique identifier
 						img: JSON.stringify(readerImage.result) || '', // Image as Data Url
-						book: reader.result, // Book as Base64 String
 						metadata: meta, // Book Metadata
 						currentCfi: '',
 						percent: '0',
 						added: DateTime.now().toISO() as unknown as string,
 					});
+
+					/* Save Book on IndexedDB */
+					await localforage.setItem(
+						newBook.key(),
+						reader.result as unknown as string
+					);
+
+					console.log('Libro Guardado');
+					console.log(newBook.key());
 				};
 			} else {
 				message.value = 'This book is already in the library';

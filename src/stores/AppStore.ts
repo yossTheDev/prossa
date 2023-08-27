@@ -7,7 +7,6 @@ export interface Book {
 	currentCfi: string;
 	percent: string;
 	img: string;
-	book: any;
 	added: string;
 	metadata: PackagingMetadataObject;
 }
@@ -57,7 +56,6 @@ export const useAppStore = defineStore('app-store', {
 					? newArray.push({
 							key: this.books[i].key,
 							img: this.books[i].img,
-							book: this.books[i].book,
 							metadata: this.books[i].metadata,
 							added: this.books[i].added,
 							percent: percent,

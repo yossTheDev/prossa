@@ -33,18 +33,18 @@ const chapters = ref();
 
 /* Component State */
 const showChapters = ref(false);
-
-const _book = store.getBook(props.id);
-
-/* Load Book */
-const book = new Book(
-	Base64Binary.decodeArrayBuffer(
-		_book?.book.replace('data:application/epub+zip;base64', '')
-	) as unknown as string
-);
+let book: Book | null = null;
 
 /* Prepare and Load Ebook */
 onMounted(async () => {
+	const _book = await localforage.getItem(props.id);
+
+	book = new Book(
+		Base64Binary.decodeArrayBuffer(
+			(_book as any).replace('data:application/epub+zip;base64', '')
+		) as unknown as string
+	);
+
 	/* Render Ebook */
 	const rendition = book.renderTo('epub', {
 		flow: 'auto',
@@ -60,7 +60,7 @@ onMounted(async () => {
 	useDark({
 		onChanged: (isDark) => {
 			if (isDark) {
-				book.rendition.themes.default({ body: { color: '#78817d' } });
+				book?.rendition.themes.default({ body: { color: '#78817d' } });
 			}
 		},
 	});
@@ -82,18 +82,18 @@ onMounted(async () => {
 	/* On Book Display */
 	displayed.then(() => {
 		/* Get Current Location */
-		const current = book.rendition.currentLocation();
+		const current = book?.rendition.currentLocation();
 
 		/* Start Index */
 		const { start } = current as unknown as any;
 
 		/* Get Actual Book Completion Percent */
-		const percentage = book.locations.percentageFromCfi(start.cfi);
+		const percentage = book?.locations.percentageFromCfi(start.cfi);
 
 		/* Set Current Position */
-		currentPos.value = Math.floor(percentage * 100);
+		if (percentage) currentPos.value = Math.floor(percentage * 100);
 
-		chapters.value = book.navigation.toc;
+		chapters.value = book?.navigation.toc;
 
 		// console.log(book.navigation.toc);
 	});
@@ -101,14 +101,14 @@ onMounted(async () => {
 	/* On Book Ready */
 	book.ready.then(async () => {
 		/* Load Locations */
-		const loc = await localforage.getItem(`${_book?.key} -locations`);
+		const loc = await localforage.getItem(`${book?.key}-locations`);
 		if (loc != null) {
-			book.locations.load(loc as unknown as string);
+			book?.locations.load(loc as unknown as string);
 		} else {
-			await book.locations.generate(1600);
+			await book?.locations.generate(1600);
 
-			const nl = book.locations.save();
-			await localforage.setItem(`${_book?.key} -locations`, nl);
+			const nl = book?.locations.save();
+			await localforage.setItem(`${book?.key}-locations`, nl);
 		}
 
 		setPercent();
@@ -117,21 +117,21 @@ onMounted(async () => {
 
 /* Destroy Book Instance */
 onUnmounted(() => {
-	book.destroy();
+	book?.destroy();
 });
 
 /* Set Current Read Percent */
 function setPercent() {
 	/* Get Current Location */
-	const current = book.rendition.currentLocation();
+	const current = book?.rendition.currentLocation();
 
 	/* Start Index */
 	const { start } = current as unknown as any;
 	/* Get Actual Book Completion Percent */
-	const percentage = book.locations.percentageFromCfi(start.cfi);
+	const percentage = book?.locations.percentageFromCfi(start.cfi);
 
 	/* Set Current Position */
-	currentPos.value = Math.floor(percentage * 100);
+	if (percentage) currentPos.value = Math.floor(percentage * 100);
 
 	/* Save Current Pos */
 	store.setBookCFI(props.id, start.cfi, start.percentage);
@@ -142,7 +142,7 @@ function setPercent() {
 /* Next page */
 async function next() {
 	/* Go To Next Page */
-	await book.rendition.next();
+	await book?.rendition.next();
 
 	/* Get Current Location */
 	setPercent();
@@ -155,7 +155,7 @@ async function next() {
 /* Back page */
 async function back() {
 	/* Go To Previous Page */
-	await book.rendition.prev();
+	await book?.rendition.prev();
 
 	setPercent();
 }
@@ -163,19 +163,19 @@ async function back() {
 /* Go To Chapter */
 async function toChapter(href: string) {
 	/* Render Specific Page */
-	await book.rendition.display(href);
+	await book?.rendition.display(href);
 
 	/* Get Current Location */
-	const current = book.rendition.currentLocation();
+	const current = book?.rendition.currentLocation();
 
 	/* Start Index */
 	const { start } = current as unknown as any;
 
 	/* Get Actual Book Completion Percent */
-	const percentage = book.locations.percentageFromCfi(start.cfi);
+	const percentage = book?.locations.percentageFromCfi(start.cfi);
 
 	/* Set Current Position */
-	currentPos.value = Math.floor(percentage * 100);
+	if (percentage) currentPos.value = Math.floor(percentage * 100);
 
 	/* Save Current Pos */
 	store.setBookCFI(props.id, start.cfi, start.percentage);
