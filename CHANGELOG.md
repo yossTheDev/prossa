@@ -2,6 +2,7 @@
 
 ## v 1.1.2
 
+* Improve Loading Books and some performance Optimizations
 * feat: Search Books
 
 ## v 1.1.1
