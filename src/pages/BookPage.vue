@@ -41,6 +41,7 @@ const startTime = DateTime.now();
 /* Hide Status Bar */
 onMounted(() => {
 	StatusBar.hide();
+	StatusBar.setOverlaysWebView({ overlay: true });
 });
 
 onUnmounted(() => {

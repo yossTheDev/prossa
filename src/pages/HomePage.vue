@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
-import {
-	IconBooks,
-	IconChartLine,
-	IconClock,
-	IconPlus,
-} from '@tabler/icons-vue';
+import { IconBooks, IconClock, IconPlus, IconSearch } from '@tabler/icons-vue';
 import { Book } from 'epubjs';
 import {
 	kBlock,
@@ -15,6 +10,7 @@ import {
 	kNavbar,
 	kPage,
 	kToast,
+	kLink,
 } from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, ref } from 'vue';
@@ -107,6 +103,7 @@ function onClosing() {
 /* Show Status Bar */
 onMounted(() => {
 	StatusBar.show();
+	StatusBar.setOverlaysWebView({ overlay: false });
 });
 </script>
 
@@ -121,25 +118,23 @@ onMounted(() => {
 		<k-navbar class="sticky top-0 md:hidden" :large="true">
 			<template #title>
 				<!-- Current Book -->
-				<div
-					class="flex max-h-40 flex-auto flex-col p-4 md:mt-0 lg:h-full lg:max-h-full lg:w-1/3"
-				>
+				<div class="-mt-6 flex max-h-28 flex-auto flex-col overflow-hidden">
 					<!-- Book Hero -->
-					<div class="flex flex-auto select-none flex-row gap-2">
+					<div class="mb-8 flex flex-auto select-none flex-row gap-2">
 						<img
-							class="my-auto flex h-36 rounded"
+							class="my-auto flex h-24 rounded shadow"
 							v-if="store.currentBook !== ''"
 							:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
 						/>
 						<div
 							v-if="store.currentBook !== ''"
-							class="flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
+							class="my-auto flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
 						>
-							<div class="my-auto">
-								<p class="max-w-[16rem] font-bold md:text-xl">
+							<div class="my-auto flex flex-col">
+								<p class="max-w-[16rem] overflow-hidden text-lg font-bold">
 									{{ store.getBook(store.currentBook)?.metadata.title }}
 								</p>
-								<p class="mb-6 text-xs">
+								<p class="text-xs">
 									{{ store.getBook(store.currentBook)?.metadata.creator }}
 								</p>
 							</div>
@@ -151,11 +146,21 @@ onMounted(() => {
 					</div>
 				</div>
 			</template>
+
+			<template #subtitle>
+				<div class="mt-16 flex h-40 w-full">
+					<p class="-mt-3 text-2xl font-bold">Prossa</p>
+				</div>
+			</template>
+
+			<template #right>
+				<k-link navbar><IconSearch></IconSearch></k-link>
+			</template>
 		</k-navbar>
 
 		<!-- Content -->
 		<div
-			class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface dark:bg-md-dark-surface-1 md:overflow-hidden md:rounded-none md:dark:bg-md-dark-surface lg:flex-row"
+			class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface shadow-2xl dark:bg-md-dark-surface-1 md:overflow-hidden md:rounded-none md:shadow-none md:dark:bg-md-dark-surface lg:flex-row"
 		>
 			<!-- Current Book -->
 			<div
@@ -211,60 +216,54 @@ onMounted(() => {
 				</div>
 			</div>
 
-			<!-- Book List -->
+			<!-- Book List and Stats -->
 			<div
-				class="flex flex-auto flex-col gap-1 md:overflow-hidden md:rounded-l-xl md:bg-md-light-surface-1 md:p-2 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
+				class="flex flex-auto flex-col md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 			>
-				<!--Stats-->
-				<k-block-title class="mt-20 md:mt-2">
-					<div><IconChartLine></IconChartLine>Stats</div></k-block-title
-				>
-				<k-block strong-ios outline-ios>
-					<!-- Stats-->
+				<div class="md:overflow-auto">
+					<!--Stats-->
+					<k-block-title class="mt-28 md:mt-2">Stats</k-block-title>
+					<k-block strong-ios outline-ios>
+						<!-- Stats-->
 
-					<!-- Days Of Reading-->
-					<DaysOfReading></DaysOfReading>
+						<!-- Days Of Reading-->
+						<DaysOfReading></DaysOfReading>
 
-					<!-- Reading Time-->
-					<k-chip class="m-0.5">
-						<template #media>
-							<IconClock class="mr-1"></IconClock>
-						</template>
+						<!-- Reading Time-->
+						<k-chip class="m-0.5">
+							<template #media>
+								<IconClock class="mr-1"></IconClock>
+							</template>
 
-						Reading Time: {{ ' ' }}
-						{{
-							Duration.fromISO(store.readingTimeThisMonth).toHuman({
-								listStyle: 'short',
-								unitDisplay: 'short',
-								maximumFractionDigits: 0,
-							})
-						}}
-					</k-chip>
+							Reading Time: {{ ' ' }}
+							{{
+								Duration.fromISO(store.readingTimeThisMonth).toHuman({
+									listStyle: 'short',
+									unitDisplay: 'short',
+									maximumFractionDigits: 0,
+								})
+							}}
+						</k-chip>
 
-					<!-- Last Reading Time-->
-					<k-chip class="m-0.5">
-						<template #media>
-							<IconClock class="mr-1"></IconClock>
-						</template>
-						Last Reading Time: {{ ' ' }}
-						{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
-					</k-chip>
-				</k-block>
+						<!-- Last Reading Time-->
+						<k-chip class="m-0.5">
+							<template #media>
+								<IconClock class="mr-1"></IconClock>
+							</template>
+							Last Reading Time: {{ ' ' }}
+							{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
+						</k-chip>
+					</k-block>
 
-				<!-- Book List -->
-				<div
-					id="book_list"
-					v-if="store.books.length > 0"
-					class="flex flex-auto flex-col md:-mt-8 md:overflow-auto"
-				>
-					<BookList></BookList>
-				</div>
+					<!-- Book List -->
+					<BookList v-if="store.books.length > 0"></BookList>
 
-				<!-- Empty State -->
-				<div class="mx-auto my-auto text-gray-400" v-else>
-					<div class="">
-						<IconBooks :size="84" class="mx-auto"></IconBooks>
-						<p class="mx-auto text-center">No Books</p>
+					<!-- Empty State -->
+					<div class="mx-auto my-auto text-gray-400" v-else>
+						<div class="">
+							<IconBooks :size="84" class="mx-auto"></IconBooks>
+							<p class="mx-auto text-center">No Books</p>
+						</div>
 					</div>
 				</div>
 			</div>
