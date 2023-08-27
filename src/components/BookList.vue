@@ -70,6 +70,7 @@ const getGroups = () => {
 				:creator="book.metadata.creator"
 				:description="book.metadata.description"
 				:title="book.metadata.title"
+				:percent="book.percent"
 				:img="book.img"
 			></BookItem>
 		</k-list-group>

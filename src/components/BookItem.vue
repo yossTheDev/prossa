@@ -11,6 +11,7 @@ const props = defineProps<{
 	title: string;
 	description: string;
 	creator: string;
+	percent?: number;
 	img: string;
 }>();
 
@@ -37,10 +38,10 @@ const handleDeleteBook = (e: MouseEvent) => {
 		@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
 		link
 		:title="title"
-		:subtitle="creator"
 		:text="
-			description.length > 240 ? description.slice(0, 237) + '...' : description
+			description.length > 200 ? description.slice(0, 197) + '...' : description
 		"
+		:header="creator"
 	>
 		<template #media>
 			<img
@@ -49,6 +50,18 @@ const handleDeleteBook = (e: MouseEvent) => {
 				width="80"
 				alt="demo"
 			/>
+		</template>
+
+		<template #footer>
+			<div
+				v-if="percent && percent * 100 > 0"
+				class="flex h-1.5 w-full overflow-hidden rounded-full bg-md-light-surface-5 dark:bg-md-dark-surface-3 md:mt-2 md:w-80"
+			>
+				<div
+					:style="{ width: percent * 100 + '%' }"
+					class="flex rounded-r-full bg-primary"
+				></div>
+			</div>
 		</template>
 	</k-list-item>
 
