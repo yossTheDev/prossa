@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.2
+
+* feat: Search Books
+
 ## v 1.1.1
 
 * feat: Order books alphabetically
