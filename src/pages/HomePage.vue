@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { StatusBar } from '@capacitor/status-bar';
 import { TransitionRoot } from '@headlessui/vue';
 import { IconBooks, IconClock, IconPlus, IconSearch } from '@tabler/icons-vue';
 import { Book } from 'epubjs';
@@ -7,26 +8,30 @@ import {
 	kBlockTitle,
 	kChip,
 	kFab,
+	kLink,
+	kList,
 	kNavbar,
 	kPage,
+	kPopup,
 	kToast,
-	kLink,
 } from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
 import AboutModal from '../components/AboutModal.vue';
+import BookItem from '../components/BookItem.vue';
 import BookList from '../components/BookList.vue';
 import DaysOfReading from '../components/DaysOfReading.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
-import { StatusBar } from '@capacitor/status-bar';
 
 const store = useAppStore();
 
 const visible = ref(false);
 const loading = ref(false);
 const showModal = ref(false);
+const showSearch = ref(false);
+const query = ref('');
 const message = ref('');
 
 function handleAddBook(event: any) {
@@ -149,14 +154,60 @@ onMounted(() => {
 
 			<template #subtitle>
 				<div class="mt-16 flex h-40 w-full">
-					<p class="-mt-3 text-2xl font-bold">Prossa</p>
+					<p class="-mt-3 text-2xl">Prossa</p>
 				</div>
 			</template>
-
-			<template #right>
-				<k-link navbar><IconSearch></IconSearch></k-link>
-			</template>
 		</k-navbar>
+
+		<!-- Search Button Mobile -->
+		<div class="pointer-events-none absolute z-20 flex h-full w-full md:hidden">
+			<kLink
+				@click="() => (showSearch = true)"
+				class="pointer-events-auto fixed right-0 mt-2 ml-auto"
+				navbar
+				><IconSearch></IconSearch
+			></kLink>
+		</div>
+
+		<kPopup @backdropclick="() => (showSearch = false)" :opened="showSearch">
+			<kPage>
+				<kNavbar title="Search">
+					<template #right>
+						<k-link @click="() => (showSearch = false)">Cancel</k-link>
+					</template>
+				</kNavbar>
+
+				<kBlock>
+					<div
+						class="flex gap-2 rounded-2xl bg-md-light-surface-1 p-2 dark:bg-md-dark-surface-1"
+					>
+						<IconSearch></IconSearch>
+						<input class="w-full" v-model="query" type="text" />
+					</div>
+				</kBlock>
+
+				<kBlockTitle>Books</kBlockTitle>
+
+				<kBlock>
+					<kList>
+						<BookItem
+							:key="book.key"
+							v-for="book in store.books.filter(
+								(book) =>
+									book.metadata.title
+										.toUpperCase()
+										.indexOf(query.toUpperCase()) > -1
+							)"
+							:book-key="book.key"
+							:creator="book.metadata.creator"
+							:description="book.metadata.description"
+							:title="book.metadata.title"
+							:img="book.img"
+						></BookItem>
+					</kList>
+				</kBlock>
+			</kPage>
+		</kPopup>
 
 		<!-- Content -->
 		<div
@@ -218,9 +269,9 @@ onMounted(() => {
 
 			<!-- Book List and Stats -->
 			<div
-				class="flex flex-auto flex-col md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
+				class="flex flex-auto flex-col gap-0 md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 			>
-				<div class="md:overflow-auto">
+				<div class="">
 					<!--Stats-->
 					<k-block-title class="mt-28 md:mt-2">Stats</k-block-title>
 					<k-block strong-ios outline-ios>
@@ -255,8 +306,35 @@ onMounted(() => {
 						</k-chip>
 					</k-block>
 
+					<!-- Search Bar -->
+					<kBlock>
+						<div
+							class="hidden gap-2 rounded-2xl bg-md-light-surface p-3 dark:bg-md-dark-surface md:flex"
+						>
+							<IconSearch></IconSearch>
+							<input
+								class="w-full"
+								placeholder="Search"
+								v-model="query"
+								type="text"
+							/>
+						</div>
+					</kBlock>
+				</div>
+
+				<div class="md:overflow-auto">
 					<!-- Book List -->
-					<BookList v-if="store.books.length > 0"></BookList>
+					<BookList
+						:books="
+							store.books.filter(
+								(book) =>
+									book.metadata.title
+										.toUpperCase()
+										.indexOf(query.toUpperCase()) > -1
+							)
+						"
+						v-if="store.books.length > 0"
+					></BookList>
 
 					<!-- Empty State -->
 					<div class="mx-auto my-auto text-gray-400" v-else>

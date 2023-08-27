@@ -1,33 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { useAppStore } from '../stores/AppStore';
+import { Book } from '../stores/AppStore';
 import { kListGroup, kListItem, kList, kBlockTitle } from 'konsta/vue';
 import BookItem from './BookItem.vue';
 
 /* App Store */
-const store = useAppStore();
+const props = defineProps<{
+	books: Book[];
+}>();
 
 interface Group {
 	name: string;
 	books: any;
 }
 
-const groups = ref<Group[]>([]);
-
-watch([store.books], () => {
-	getGroups();
-});
-
 const getGroups = () => {
-	groups.value = [];
+	let groups: Group[] = [];
+
 	/* Get Groups */
-	for (const book of store.books) {
+	for (const book of props.books) {
 		const fistLetter = book.metadata.title[0];
 
-		if (!groups.value.find((item) => item.name === fistLetter)) {
-			groups.value = [...groups.value, { name: fistLetter, books: [book] }];
+		if (!groups.find((item) => item.name === fistLetter)) {
+			groups = [...groups, { name: fistLetter, books: [book] }];
 		} else {
-			groups.value = groups.value.map((item) =>
+			groups = groups.map((item) =>
 				item.name === fistLetter
 					? { ...item, books: [...item.books, book] }
 					: item
@@ -36,7 +32,7 @@ const getGroups = () => {
 	}
 
 	/* Sort */
-	groups.value = groups.value.sort((a, b) => {
+	groups.sort((a, b) => {
 		const nameA = a.name.toUpperCase();
 		const nameB = b.name.toUpperCase();
 
@@ -46,18 +42,16 @@ const getGroups = () => {
 
 		return 0;
 	});
-};
 
-onMounted(() => {
-	getGroups();
-});
+	return groups;
+};
 </script>
 
 <template>
 	<k-block-title>Library</k-block-title>
 
 	<k-list strong-ios outline-ios>
-		<k-list-group :key="group.name" v-for="group in groups">
+		<k-list-group :key="group.name" v-for="group in getGroups()">
 			<k-list-item
 				:title="group.name"
 				group-title

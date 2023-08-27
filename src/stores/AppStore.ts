@@ -2,7 +2,7 @@ import { PackagingMetadataObject } from 'epubjs/types/packaging';
 import { defineStore } from 'pinia';
 import { DateTime, Interval } from 'luxon';
 
-interface Book {
+export interface Book {
 	key: string;
 	currentCfi: string;
 	percent: string;
