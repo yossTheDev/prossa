@@ -4,6 +4,7 @@
 
 * Improve Loading Books and some performance Optimizations
 * feat: Search Books
+* fix: App Crash When Delete the last Book
 
 ## v 1.1.1
 
