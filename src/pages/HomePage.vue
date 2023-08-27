@@ -88,9 +88,6 @@ function handleAddBook(event: any) {
 						newBook.key(),
 						reader.result as unknown as string
 					);
-
-					console.log('Libro Guardado');
-					console.log(newBook.key());
 				};
 			} else {
 				message.value = 'This book is already in the library';
@@ -102,6 +99,7 @@ function handleAddBook(event: any) {
 				}, 2000);
 			}
 		});
+
 		/* Read */
 		reader.readAsDataURL(event.target.files[0]);
 
@@ -330,7 +328,7 @@ onMounted(() => {
 				</div>
 
 				<!-- Book List -->
-				<div class="md:overflow-auto">
+				<div class="md:flex md:h-full md:flex-col md:overflow-auto">
 					<!-- Book List -->
 					<BookList
 						:books="
@@ -345,8 +343,8 @@ onMounted(() => {
 					></BookList>
 
 					<!-- Empty State -->
-					<div class="mx-auto my-auto text-gray-400" v-else>
-						<div class="">
+					<div class="mx-auto my-auto flex h-full text-gray-400" v-else>
+						<div class="my-auto">
 							<IconBooks :size="84" class="mx-auto"></IconBooks>
 							<p class="mx-auto text-center">No Books</p>
 						</div>

@@ -22,6 +22,9 @@ const handleContextMenu = (e: MouseEvent) => {
 };
 
 const handleDeleteBook = (e: MouseEvent) => {
+	if (store.currentBook === props.bookKey) {
+		store.setCurrentBook('');
+	}
 	store.deleteBook(props.bookKey);
 	open.value = false;
 };
