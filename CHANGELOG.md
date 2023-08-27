@@ -3,6 +3,7 @@
 ## v 1.1.2
 
 * Improve Loading Books and some performance Optimizations
+* feat: Show Progress on Book Items
 * feat: Search Books
 * fix: App Crash When Delete the last Book
 
