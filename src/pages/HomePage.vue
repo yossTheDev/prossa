@@ -112,6 +112,11 @@ function onClosing() {
 	visible.value = !visible.value;
 }
 
+const handleCloseSearchModal = () => {
+	showSearch.value = false;
+	query.value = '';
+};
+
 /* Show Status Bar */
 onMounted(() => {
 	StatusBar.show();
@@ -176,11 +181,11 @@ onMounted(() => {
 			></kLink>
 		</div>
 
-		<kPopup @backdropclick="() => (showSearch = false)" :opened="showSearch">
+		<kPopup @backdropclick="handleCloseSearchModal" :opened="showSearch">
 			<kPage>
 				<kNavbar title="Search">
 					<template #right>
-						<k-link @click="() => (showSearch = false)">Cancel</k-link>
+						<k-link @click="handleCloseSearchModal">Cancel</k-link>
 					</template>
 				</kNavbar>
 
