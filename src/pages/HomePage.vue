@@ -22,6 +22,7 @@ import {
 	kPage,
 	kPopup,
 	kToast,
+	kListItem,
 } from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, ref } from 'vue';
@@ -40,6 +41,7 @@ const visible = ref(false);
 const loading = ref(false);
 const showModal = ref(false);
 const showSearch = ref(false);
+const showStats = ref(false);
 const query = ref('');
 const message = ref('');
 
@@ -140,9 +142,25 @@ onMounted(() => {
 		class="relative flex flex-col"
 	>
 		<!--Nab Bar-->
-		<k-navbar class="sticky top-0 md:hidden" :large="true">
+		<k-navbar class="sticky top-0 md:hidden" large>
 			<template #left>
 				<kLink navbar><IconMenu2></IconMenu2></kLink>
+			</template>
+
+			<template #right>
+				<div class="fixed right-0 mr-1 flex">
+					<kButton
+						@click="() => (showStats = true)"
+						rounded
+						tonal-material
+						small
+					>
+						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
+					>
+					<kLink class="mt-1" @click="() => (showSearch = true)" navbar
+						><IconSearch></IconSearch
+					></kLink>
+				</div>
 			</template>
 
 			<template #title>
@@ -187,25 +205,15 @@ onMounted(() => {
 			</template>
 		</k-navbar>
 
-		<!-- Search Button Mobile -->
-		<div class="pointer-events-none absolute z-20 flex h-full w-full md:hidden">
-			<div class="pointer-events-auto fixed right-0 ml-auto mt-4 flex">
-				<kButton rounded tonal-material small>
-					<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
-				>
-				<kLink class="mt-1" @click="() => (showSearch = true)" navbar
-					><IconSearch></IconSearch
-				></kLink>
-			</div>
-		</div>
-
 		<!-- Search Popup-->
 		<kPopup @backdropclick="handleCloseSearchModal" :opened="showSearch">
 			<kPage>
-				<kNavbar title="Search">
+				<kNavbar large title="Search">
 					<template #right>
-						<k-link @click="handleCloseSearchModal">Cancel</k-link>
-					</template>
+						<div class="fixed right-0 mr-1">
+							<kLink @click="handleCloseSearchModal" navbar>Cancel</kLink>
+						</div></template
+					>
 				</kNavbar>
 
 				<kBlock>
@@ -233,6 +241,52 @@ onMounted(() => {
 						:title="book.metadata.title"
 						:img="book.img"
 					></BookItem>
+				</kList>
+			</kPage>
+		</kPopup>
+
+		<!-- Stats Popup-->
+		<kPopup @backdropclick="() => (showStats = false)" :opened="showStats">
+			<kPage>
+				<kNavbar large title="Stats">
+					<template #right>
+						<div class="fixed right-0 mr-1">
+							<kLink @click="() => (showStats = false)" navbar>Cancel</kLink>
+						</div></template
+					>
+				</kNavbar>
+
+				<kBlockTitle>Reading</kBlockTitle>
+				<kList>
+					<kListItem
+						:after="store.daysOfReading?.toString()"
+						title="Days of Reading"
+					></kListItem>
+
+					<kListItem
+						:after="
+							Duration.fromISO(store.readingTimeThisMonth).toHuman({
+								listStyle: 'short',
+								unitDisplay: 'short',
+								maximumFractionDigits: 0,
+							})
+						"
+						title="Reading Time"
+					></kListItem>
+
+					<kListItem
+						:after="DateTime.fromISO(store.lastReadingTime).toRelative()!"
+						title="Last Reading Reading Time"
+					></kListItem>
+				</kList>
+
+				<kBlockTitle>Books</kBlockTitle>
+
+				<kList>
+					<kListItem
+						title="Total Books"
+						:after="store.books.length"
+					></kListItem>
 				</kList>
 			</kPage>
 		</kPopup>
@@ -346,7 +400,12 @@ onMounted(() => {
 							type="text"
 						/>
 					</div>
-					<kButton class="my-auto ml-auto max-w-[6rem]" rounded tonal-material>
+					<kButton
+						@click="() => (showStats = true)"
+						class="my-auto ml-auto max-w-[6rem]"
+						rounded
+						tonal-material
+					>
 						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
 					>
 				</kBlock>
