@@ -334,9 +334,9 @@ onMounted(() => {
 				</div>
 
 				<!-- Search Bar -->
-				<kBlock class="hidden md:block">
+				<kBlock class="hidden gap-2 md:flex">
 					<div
-						class="flex gap-2 rounded-3xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface-1"
+						class="flex w-full gap-2 rounded-3xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface-1"
 					>
 						<IconSearch></IconSearch>
 						<input
@@ -346,6 +346,9 @@ onMounted(() => {
 							type="text"
 						/>
 					</div>
+					<kButton class="my-auto ml-auto max-w-[6rem]" rounded tonal-material>
+						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
+					>
 				</kBlock>
 
 				<!-- Book List -->
