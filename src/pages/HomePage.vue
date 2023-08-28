@@ -3,7 +3,6 @@ import { StatusBar } from '@capacitor/status-bar';
 import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconBooks,
-	IconClock,
 	IconPlus,
 	IconSearch,
 	IconFlame,
@@ -14,7 +13,6 @@ import {
 	kBlock,
 	kBlockTitle,
 	kButton,
-	kChip,
 	kFab,
 	kLink,
 	kList,
@@ -30,7 +28,6 @@ import { Base64Binary } from '../../src/utilities/base';
 import AboutModal from '../components/AboutModal.vue';
 import BookItem from '../components/BookItem.vue';
 import BookList from '../components/BookList.vue';
-import DaysOfReading from '../components/DaysOfReading.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
 import localforage from 'localforage';
@@ -291,6 +288,8 @@ onMounted(() => {
 			</kPage>
 		</kPopup>
 
+		<!--Menu Drawer-->
+
 		<!-- Content -->
 		<div
 			class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface shadow-2xl dark:bg-md-dark-surface-1 md:overflow-hidden md:rounded-none md:shadow-none md:dark:bg-md-dark-surface lg:flex-row"
@@ -353,40 +352,6 @@ onMounted(() => {
 			<div
 				class="flex flex-auto flex-col gap-0 md:overflow-hidden lg:w-full lg:grow-0"
 			>
-				<div class="hidden">
-					<!--Stats-->
-					<k-block-title class="mt-28 md:mt-2">Stats</k-block-title>
-					<k-block strong-ios outline-ios>
-						<!-- Days Of Reading-->
-						<DaysOfReading></DaysOfReading>
-
-						<!-- Reading Time-->
-						<k-chip class="m-0.5">
-							<template #media>
-								<IconClock class="mr-1"></IconClock>
-							</template>
-
-							Reading Time: {{ ' ' }}
-							{{
-								Duration.fromISO(store.readingTimeThisMonth).toHuman({
-									listStyle: 'short',
-									unitDisplay: 'short',
-									maximumFractionDigits: 0,
-								})
-							}}
-						</k-chip>
-
-						<!-- Last Reading Time-->
-						<k-chip class="m-0.5">
-							<template #media>
-								<IconClock class="mr-1"></IconClock>
-							</template>
-							Last Reading Time: {{ ' ' }}
-							{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
-						</k-chip>
-					</k-block>
-				</div>
-
 				<!-- Search Bar -->
 				<kBlock class="hidden gap-2 md:flex">
 					<div
