@@ -6,7 +6,9 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vue-tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"android:build": "yarn build && npx cap sync && cd android && gradle build && cd ..",
+		"android:icons": "npx capacitor-assets generate --android --iconBackgroundColor '#141313' --logoSplashScale '0.6'"
 	},
 	"dependencies": {
 		"@capacitor/android": "^5.3.0",
