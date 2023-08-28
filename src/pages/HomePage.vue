@@ -210,9 +210,9 @@ onMounted(() => {
 
 				<kBlock>
 					<div
-						class="flex gap-2 rounded-2xl bg-md-light-surface-1 p-2 dark:bg-md-dark-surface-1"
+						class="flex gap-2 rounded-3xl bg-md-light-surface-1 p-2 dark:bg-md-dark-surface-1"
 					>
-						<IconSearch></IconSearch>
+						<IconSearch class="ml-1"></IconSearch>
 						<input class="w-full" v-model="query" type="text" />
 					</div>
 				</kBlock>
@@ -297,7 +297,7 @@ onMounted(() => {
 
 			<!-- Book List and Stats -->
 			<div
-				class="flex flex-auto flex-col gap-0 md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:shadow-xl md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
+				class="flex flex-auto flex-col gap-0 md:overflow-hidden lg:w-full lg:grow-0"
 			>
 				<div class="hidden">
 					<!--Stats-->
@@ -331,25 +331,27 @@ onMounted(() => {
 							{{ DateTime.fromISO(store.lastReadingTime).toRelative() }}
 						</k-chip>
 					</k-block>
-
-					<!-- Search Bar -->
-					<kBlock class="hidden md:block">
-						<div
-							class="flex gap-2 rounded-2xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface"
-						>
-							<IconSearch></IconSearch>
-							<input
-								class="w-full"
-								placeholder="Search"
-								v-model="query"
-								type="text"
-							/>
-						</div>
-					</kBlock>
 				</div>
 
+				<!-- Search Bar -->
+				<kBlock class="hidden md:block">
+					<div
+						class="flex gap-2 rounded-3xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface-1"
+					>
+						<IconSearch></IconSearch>
+						<input
+							class="w-full"
+							placeholder="Search"
+							v-model="query"
+							type="text"
+						/>
+					</div>
+				</kBlock>
+
 				<!-- Book List -->
-				<div class="flex h-full flex-col md:overflow-auto">
+				<div
+					class="flex h-full flex-col md:overflow-auto md:rounded-tl-2xl md:bg-md-light-surface-1 md:py-1 md:shadow-xl md:dark:bg-md-dark-surface-1"
+				>
 					<!-- Book List -->
 					<BookList
 						:books="
