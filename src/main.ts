@@ -11,9 +11,9 @@ import './style.css';
 
 /* Defining Routes */
 const routes = [
-	{ name: '/', path: '/:stats?/:search?/', component: HomePage },
-	{ path: '/about', component: AboutPage },
-	{ path: '/book/:id', name: 'book', component: BookPage },
+	{ name: '/', path: '/:stats?/:search?/:menu?/', component: HomePage },
+	{ name: 'about', path: '/about/:menu?', component: AboutPage },
+	{ name: 'book', path: '/book/:id', component: BookPage },
 ];
 
 /* Configure Local Forage Library */

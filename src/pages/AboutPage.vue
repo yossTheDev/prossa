@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { kPage, kNavbar, kLink } from 'konsta/vue';
 import { IconMenu2 } from '@tabler/icons-vue';
-import { useAppStore } from '../stores/AppStore';
-
-const store = useAppStore();
+import { kLink, kNavbar, kPage } from 'konsta/vue';
 </script>
 
 <template>
 	<kPage class="relative flex flex-col">
 		<kNavbar class="md:hidden" large title="About">
 			<template #left>
-				<kLink @click="() => store.setShowMenu(true)" navbar
+				<kLink
+					@click="
+						() => $router.push({ name: 'about', params: { menu: 'menu' } })
+					"
+					navbar
 					><IconMenu2></IconMenu2
 				></kLink>
 			</template>

@@ -1,25 +1,50 @@
 <script setup lang="ts">
-import {
-	kApp,
-	kProvider,
-	kPanel,
-	kMenuList,
-	kMenuListItem,
-	kPage,
-	kNavbar,
-	kButton,
-} from 'konsta/vue';
-import { useDark } from '@vueuse/core';
-import { onMounted } from 'vue';
+import { App } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { IconHome, IconInfoCircle } from '@tabler/icons-vue';
-import { useAppStore } from './stores/AppStore';
-import { useRouter } from 'vue-router';
+import { useDark } from '@vueuse/core';
+import {
+	kApp,
+	kButton,
+	kMenuList,
+	kMenuListItem,
+	kNavbar,
+	kPage,
+	kPanel,
+	kProvider,
+} from 'konsta/vue';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const store = useAppStore();
 const router = useRouter();
+const route = useRoute();
+const canGoBack = ref(false);
+
+watch(route, () => {
+	/* Define if the user can go back through navigation */
+	if (
+		route.name === ('/' || 'about' || 'book') &&
+		!route.params.stats &&
+		!route.params.search &&
+		!route.params.menu
+	) {
+		canGoBack.value = false;
+	} else {
+		canGoBack.value = true;
+	}
+});
 
 onMounted(() => {
+	/* Add back Button listener for Android */
+	App.addListener('backButton', () => {
+		if (!canGoBack.value) {
+			App.exitApp();
+		} else {
+			router.back();
+		}
+	});
+
+	/* Change Status Bar Colors based on Theme */
 	useDark({
 		onChanged: (isDark) => {
 			if (isDark) {
@@ -35,7 +60,6 @@ onMounted(() => {
 
 const moveTo = (path: string) => {
 	router.replace(path);
-	store.setShowMenu(false);
 };
 </script>
 
@@ -47,8 +71,8 @@ const moveTo = (path: string) => {
 			<div class="relative flex h-screen w-screen flex-auto overflow-hidden">
 				<!--Drawer Menu-->
 				<kPanel
-					:opened="store.showMenu"
-					@backdropclick="() => store.setShowMenu(false)"
+					:opened="$route.params.menu === 'menu'"
+					@backdropclick="$router.replace({ name: route.name! })"
 				>
 					<k-page>
 						<k-navbar large title="Prossa"> </k-navbar>

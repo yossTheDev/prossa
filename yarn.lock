@@ -1333,6 +1333,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capacitor/app@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "@capacitor/app@npm:5.0.6"
+  peerDependencies:
+    "@capacitor/core": ^5.0.0
+  checksum: dfc6a01353d0f4978b05f50f1492c5a0445045419d9f9187c7b7554a3d9e568c3bfb0a9b8e3515c16cc96e93197fe99a56c58d1867881ec991ed492ec05f1507
+  languageName: node
+  linkType: hard
+
 "@capacitor/assets@npm:^2.0.4":
   version: 2.0.4
   resolution: "@capacitor/assets@npm:2.0.4"
@@ -7821,6 +7830,7 @@ __metadata:
   resolution: "prossa@workspace:."
   dependencies:
     "@capacitor/android": ^5.3.0
+    "@capacitor/app": ^5.0.6
     "@capacitor/assets": ^2.0.4
     "@capacitor/cli": ^5.3.0
     "@capacitor/core": ^5.3.0

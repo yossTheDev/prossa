@@ -16,14 +16,12 @@ interface AppStore {
 	daysOfReading: number;
 	lastReadingTime: string;
 	readingTimeThisMonth: string;
-	showMenu: boolean;
 	books: Book[];
 }
 
 export const useAppStore = defineStore('app-store', {
 	state: (): AppStore => {
 		return {
-			showMenu: false,
 			currentBook: '',
 			books: [],
 			lastReadingTime: DateTime.now().toISO() as unknown as string,
@@ -38,9 +36,6 @@ export const useAppStore = defineStore('app-store', {
 	},
 
 	actions: {
-		setShowMenu(state: boolean) {
-			this.showMenu = state;
-		},
 		addBook(book: Book) {
 			this.books.push(book);
 		},

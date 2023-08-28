@@ -140,7 +140,9 @@ onMounted(() => {
 		<!--Nab Bar-->
 		<k-navbar class="sticky top-0 md:hidden" large>
 			<template #left>
-				<kLink @click="() => store.setShowMenu(true)" navbar
+				<kLink
+					@click="() => $router.push({ name: '/', params: { menu: 'menu' } })"
+					navbar
 					><IconMenu2></IconMenu2
 				></kLink>
 			</template>
