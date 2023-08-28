@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.3
+
+* New Popup with Reading Stats
+
 ## v 1.1.2
 
 * Improve Loading Books and some performance Optimizations
