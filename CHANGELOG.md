@@ -3,6 +3,7 @@
 ## v 1.1.3
 
 * New Popup with Reading Stats
+* fix: Active modals by route params
 
 ## v 1.1.2
 
