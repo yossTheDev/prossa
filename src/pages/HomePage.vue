@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { StatusBar } from '@capacitor/status-bar';
 import { TransitionRoot } from '@headlessui/vue';
-import { IconBooks, IconClock, IconPlus, IconSearch } from '@tabler/icons-vue';
+import {
+	IconBooks,
+	IconClock,
+	IconPlus,
+	IconSearch,
+	IconFlame,
+	IconMenu2,
+} from '@tabler/icons-vue';
 import { Book } from 'epubjs';
 import {
 	kBlock,
 	kBlockTitle,
+	kButton,
 	kChip,
 	kFab,
 	kLink,
@@ -133,9 +141,13 @@ onMounted(() => {
 	>
 		<!--Nab Bar-->
 		<k-navbar class="sticky top-0 md:hidden" :large="true">
+			<template #left>
+				<kLink navbar><IconMenu2></IconMenu2></kLink>
+			</template>
+
 			<template #title>
 				<!-- Current Book -->
-				<div class="-mt-6 flex max-h-28 flex-auto flex-col overflow-hidden">
+				<div class="-mt-1 flex max-h-28 flex-auto flex-col overflow-hidden">
 					<!-- Book Hero -->
 					<div class="mb-8 flex flex-auto select-none flex-row gap-2">
 						<img
@@ -165,7 +177,11 @@ onMounted(() => {
 			</template>
 
 			<template #subtitle>
-				<div class="mt-16 flex h-40 w-full">
+				<div v-if="store.currentBook !== ''" class="mt-16 flex h-40 w-full">
+					<p class="-mt-[1.31rem] text-2xl">Prossa</p>
+				</div>
+
+				<div v-else class="mt-24 flex h-40 w-full">
 					<p class="-mt-3 text-2xl">Prossa</p>
 				</div>
 			</template>
@@ -173,14 +189,17 @@ onMounted(() => {
 
 		<!-- Search Button Mobile -->
 		<div class="pointer-events-none absolute z-20 flex h-full w-full md:hidden">
-			<kLink
-				@click="() => (showSearch = true)"
-				class="pointer-events-auto fixed right-0 mt-2 ml-auto"
-				navbar
-				><IconSearch></IconSearch
-			></kLink>
+			<div class="pointer-events-auto fixed right-0 ml-auto mt-4 flex">
+				<kButton rounded tonal-material small>
+					<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
+				>
+				<kLink class="mt-1" @click="() => (showSearch = true)" navbar
+					><IconSearch></IconSearch
+				></kLink>
+			</div>
 		</div>
 
+		<!-- Search Popup-->
 		<kPopup @backdropclick="handleCloseSearchModal" :opened="showSearch">
 			<kPage>
 				<kNavbar title="Search">
@@ -200,24 +219,21 @@ onMounted(() => {
 
 				<kBlockTitle>Books</kBlockTitle>
 
-				<kBlock>
-					<kList>
-						<BookItem
-							:key="book.key"
-							v-for="book in store.books.filter(
-								(book) =>
-									book.metadata.title
-										.toUpperCase()
-										.indexOf(query.toUpperCase()) > -1
-							)"
-							:book-key="book.key"
-							:creator="book.metadata.creator"
-							:description="book.metadata.description"
-							:title="book.metadata.title"
-							:img="book.img"
-						></BookItem>
-					</kList>
-				</kBlock>
+				<kList>
+					<BookItem
+						:key="book.key"
+						v-for="book in store.books.filter(
+							(book) =>
+								book.metadata.title.toUpperCase().indexOf(query.toUpperCase()) >
+								-1
+						)"
+						:book-key="book.key"
+						:creator="book.metadata.creator"
+						:description="book.metadata.description"
+						:title="book.metadata.title"
+						:img="book.img"
+					></BookItem>
+				</kList>
 			</kPage>
 		</kPopup>
 
@@ -283,7 +299,7 @@ onMounted(() => {
 			<div
 				class="flex flex-auto flex-col gap-0 md:overflow-hidden md:rounded-l-2xl md:bg-md-light-surface-1 md:py-1 md:shadow-xl md:dark:bg-md-dark-surface-1 lg:w-full lg:grow-0"
 			>
-				<div>
+				<div class="hidden">
 					<!--Stats-->
 					<k-block-title class="mt-28 md:mt-2">Stats</k-block-title>
 					<k-block strong-ios outline-ios>
@@ -333,7 +349,7 @@ onMounted(() => {
 				</div>
 
 				<!-- Book List -->
-				<div class="md:flex md:h-full md:flex-col md:overflow-auto">
+				<div class="flex h-full flex-col md:overflow-auto">
 					<!-- Book List -->
 					<BookList
 						:books="
