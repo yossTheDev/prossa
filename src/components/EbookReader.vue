@@ -3,14 +3,7 @@ import { TransitionRoot } from '@headlessui/vue';
 import { IconArrowLeft, IconArrowRight, IconBook2 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book } from 'epubjs';
-import {
-	kBlock,
-	kBlockTitle,
-	kList,
-	kListItem,
-	kPage,
-	kPanel,
-} from 'konsta/vue';
+import { kBlockTitle, kList, kListItem, kPage, kPanel } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
@@ -288,28 +281,22 @@ function toggleChapters() {
 	<!-- Chapters Panel -->
 	<k-panel
 		side="left"
+		floating
 		:opened="showChapters"
 		@backdropclick="() => (showChapters = false)"
 	>
-		<k-page>
-			<k-navbar title="Left Panel">
-				<template #right>
-					<k-link navbar @click="() => (showChapters = false)"> Close </k-link>
-				</template>
-			</k-navbar>
+		<k-page class="flex h-full flex-col overflow-hidden">
 			<k-block-title>Chapters</k-block-title>
-			<k-block class="space-y-4">
-				<k-list>
-					<k-list-item
-						:title="item.label"
-						@click="toChapter(item.href)"
-						:key="item.id"
-						link
-						v-for="item in chapters"
-						class="hover:bg-neutral rounded-xl p-1"
-					></k-list-item>
-				</k-list>
-			</k-block>
+			<k-list class="flex h-full flex-col overflow-auto">
+				<k-list-item
+					:title="item.label"
+					@click="toChapter(item.href)"
+					:key="item.id"
+					link
+					v-for="item in chapters"
+					class="hover:bg-neutral rounded-xl p-1"
+				></k-list-item>
+			</k-list>
 		</k-page>
 	</k-panel>
 
