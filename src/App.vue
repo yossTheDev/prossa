@@ -75,12 +75,12 @@ const moveTo = (path: string) => {
 					@backdropclick="$router.replace({ name: route.name! })"
 				>
 					<k-page>
-						<k-navbar large title="Prossa"> </k-navbar>
+						<k-navbar large title="Prossa"></k-navbar>
 
 						<kMenuList>
 							<kMenuListItem
 								@click="() => moveTo('/')"
-								:active="$route.path === '/'"
+								:active="$route.name === '/'"
 								title="Home"
 							>
 								<template #media>
@@ -90,7 +90,7 @@ const moveTo = (path: string) => {
 
 							<kMenuListItem
 								@click="() => moveTo('/about')"
-								:active="$route.path === '/about'"
+								:active="$route.name === 'about'"
 								title="About"
 							>
 								<template #media>
