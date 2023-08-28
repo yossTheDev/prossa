@@ -4,6 +4,7 @@
 
 * New Popup with Reading Stats
 * fix: Active modals by route params
+* fix: Custom Back button Behavior on Android
 
 ## v 1.1.2
 
