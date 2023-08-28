@@ -3,10 +3,10 @@ import { StatusBar } from '@capacitor/status-bar';
 import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconBooks,
-	IconPlus,
-	IconSearch,
 	IconFlame,
 	IconMenu2,
+	IconPlus,
+	IconSearch,
 } from '@tabler/icons-vue';
 import { Book } from 'epubjs';
 import {
@@ -16,29 +16,28 @@ import {
 	kFab,
 	kLink,
 	kList,
+	kListItem,
 	kNavbar,
 	kPage,
 	kPopup,
 	kToast,
-	kListItem,
 } from 'konsta/vue';
+import localforage from 'localforage';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { Base64Binary } from '../../src/utilities/base';
-import AboutModal from '../components/AboutModal.vue';
 import BookItem from '../components/BookItem.vue';
 import BookList from '../components/BookList.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
-import localforage from 'localforage';
 
 const store = useAppStore();
+const router = useRouter();
 
 const visible = ref(false);
 const loading = ref(false);
-const showModal = ref(false);
-const showSearch = ref(false);
-const showStats = ref(false);
+
 const query = ref('');
 const message = ref('');
 
@@ -120,7 +119,7 @@ function onClosing() {
 }
 
 const handleCloseSearchModal = () => {
-	showSearch.value = false;
+	router.replace('/');
 	query.value = '';
 };
 
@@ -149,14 +148,21 @@ onMounted(() => {
 			<template #right>
 				<div class="fixed right-0 mr-1 flex">
 					<kButton
-						@click="() => (showStats = true)"
+						@click="
+							() => $router.push({ name: '/', params: { stats: 'stats' } })
+						"
 						rounded
 						tonal-material
 						small
 					>
 						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
 					>
-					<kLink class="mt-1" @click="() => (showSearch = true)" navbar
+					<kLink
+						class="mt-1"
+						@click="
+							() => $router.push({ name: '/', params: { search: 'search' } })
+						"
+						navbar
 						><IconSearch></IconSearch
 					></kLink>
 				</div>
@@ -205,7 +211,10 @@ onMounted(() => {
 		</k-navbar>
 
 		<!-- Search Popup-->
-		<kPopup @backdropclick="handleCloseSearchModal" :opened="showSearch">
+		<kPopup
+			@backdropclick="handleCloseSearchModal"
+			:opened="$route.params.search === 'search'"
+		>
 			<kPage>
 				<kNavbar large title="Search">
 					<template #right>
@@ -245,12 +254,15 @@ onMounted(() => {
 		</kPopup>
 
 		<!-- Stats Popup-->
-		<kPopup @backdropclick="() => (showStats = false)" :opened="showStats">
+		<kPopup
+			@backdropclick="$router.replace('/')"
+			:opened="$route.params.stats === 'stats'"
+		>
 			<kPage>
 				<kNavbar large title="Stats">
 					<template #right>
 						<div class="fixed right-0 mr-1">
-							<kLink @click="() => (showStats = false)" navbar>Cancel</kLink>
+							<kLink @click="$router.replace('/')" navbar>Cancel</kLink>
 						</div></template
 					>
 				</kNavbar>
@@ -365,8 +377,12 @@ onMounted(() => {
 							type="text"
 						/>
 					</div>
+
+					<!--Stats Button-->
 					<kButton
-						@click="() => (showStats = true)"
+						@click="
+							() => $router.push({ name: '/', params: { stats: 'stats' } })
+						"
 						class="my-auto ml-auto max-w-[6rem]"
 						rounded
 						tonal-material
@@ -416,15 +432,6 @@ onMounted(() => {
 			<template #button> </template>
 			<div class="shrink">{{ message }}</div>
 		</k-toast>
-
-		<!--About Modal-->
-		<div
-			@click="showModal = false"
-			v-if="showModal"
-			class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
-		>
-			<AboutModal></AboutModal>
-		</div>
 
 		<!-- Drawer -->
 		<div class="absolute h-full w-full">

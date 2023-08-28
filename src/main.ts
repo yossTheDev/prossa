@@ -11,7 +11,7 @@ import './style.css';
 
 /* Defining Routes */
 const routes = [
-	{ path: '/', component: HomePage },
+	{ name: '/', path: '/:stats?/:search?/', component: HomePage },
 	{ path: '/about', component: AboutPage },
 	{ path: '/book/:id', name: 'book', component: BookPage },
 ];
