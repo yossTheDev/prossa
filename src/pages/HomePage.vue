@@ -21,7 +21,6 @@ import {
 	kPopup,
 	kToast,
 	kListItem,
-	kPanel,
 } from 'konsta/vue';
 import { DateTime, Duration } from 'luxon';
 import { onMounted, ref } from 'vue';
@@ -40,7 +39,6 @@ const loading = ref(false);
 const showModal = ref(false);
 const showSearch = ref(false);
 const showStats = ref(false);
-const showMenu = ref(false);
 const query = ref('');
 const message = ref('');
 
@@ -143,7 +141,7 @@ onMounted(() => {
 		<!--Nab Bar-->
 		<k-navbar class="sticky top-0 md:hidden" large>
 			<template #left>
-				<kLink @click="() => (showMenu = true)" navbar
+				<kLink @click="() => store.setShowMenu(true)" navbar
 					><IconMenu2></IconMenu2
 				></kLink>
 			</template>
@@ -291,19 +289,6 @@ onMounted(() => {
 				</kList>
 			</kPage>
 		</kPopup>
-
-		<!--Menu Drawer-->
-		<kPanel :opened="showMenu" @backdropclick="() => (showMenu = false)">
-			<k-page>
-				<k-navbar title="Left Panel">
-					<template #right> </template>
-				</k-navbar>
-				<k-block-title>Chapters</k-block-title>
-				<k-block class="space-y-4">
-					<k-list> </k-list>
-				</k-block>
-			</k-page>
-		</kPanel>
 
 		<!-- Content -->
 		<div

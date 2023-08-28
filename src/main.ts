@@ -1,16 +1,18 @@
+import * as localforage from 'localforage';
 import { createPinia } from 'pinia';
+import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2';
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from './App.vue';
+import AboutPage from './pages/AboutPage.vue';
 import BookPage from './pages/BookPage.vue';
 import HomePage from './pages/HomePage.vue';
 import './style.css';
-import * as localforage from 'localforage';
-import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2';
 
 /* Defining Routes */
 const routes = [
 	{ path: '/', component: HomePage },
+	{ path: '/about', component: AboutPage },
 	{ path: '/book/:id', name: 'book', component: BookPage },
 ];
 
