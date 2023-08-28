@@ -24,22 +24,26 @@ const timeInterval = setInterval(() => {
 	console.log(time);
 
 	if (time === 60 * 10) {
-		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
-
 		if (
-			DateTime.fromISO(store.lastReadingTime).day ===
-			DateTime.now().minus({ days: 1 }).day
+			DateTime.fromISO(store.lastReadingTime).toISODate() ===
+			DateTime.now().minus({ days: 1 }).toISODate()
 		) {
 			store.addDayOfReading();
 			console.log('Add Day');
+		} else {
+			store.daysOfReading = 1;
 		}
+
+		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
 	}
 }, 1000);
 
-const startTime = DateTime.now();
+let startTime: DateTime;
 
-/* Hide Status Bar */
 onMounted(() => {
+	startTime = DateTime.now();
+
+	/* Hide Status Bar */
 	StatusBar.hide();
 	StatusBar.setOverlaysWebView({ overlay: true });
 });
@@ -47,21 +51,25 @@ onMounted(() => {
 onUnmounted(() => {
 	clearInterval(timeInterval);
 
-	if (DateTime.fromISO(store.lastReadingTime).month !== DateTime.now().month) {
-		/* Restart Reading Time */
-		store.setReadingTimeThisMonth(
-			Interval.after(DateTime.now(), DateTime.now())
-				.toDuration(['hours', 'minutes'])
-				.toISO() as unknown as string
-		);
-	} else {
-		/* Update Reading Time in Store */
-		store.setReadingTimeThisMonth(
-			Interval.fromDateTimes(startTime, DateTime.now())
-				.toDuration(['hours', 'minutes'])
-				.plus(Duration.fromISO(store.readingTimeThisMonth))
-				.toISO() as unknown as string
-		);
+	const readingTime = DateTime.fromISO(store.lastReadingTime);
+
+	if (readingTime.year === DateTime.now().year) {
+		if (readingTime.month === DateTime.now().month) {
+			/* Update Reading Time in Store */
+			store.setReadingTimeThisMonth(
+				Interval.fromDateTimes(startTime, DateTime.now())
+					.toDuration(['hours', 'minutes'])
+					.plus(Duration.fromISO(store.readingTimeThisMonth))
+					.toISO() as unknown as string
+			);
+		} else {
+			/* Restart Reading Time */
+			store.setReadingTimeThisMonth(
+				Interval.after(DateTime.now(), DateTime.now())
+					.toDuration(['hours', 'minutes'])
+					.toISO() as unknown as string
+			);
+		}
 	}
 });
 </script>
