@@ -129,7 +129,11 @@ const moveTo = (path: string) => {
 				</div>
 
 				<!--Router Outlet-->
-				<router-view></router-view>
+				<router-view v-slot="{ Component, route }">
+					<transition name="slide-left" mode="out-in">
+						<component :key="route.path" :is="Component"></component>
+					</transition>
+				</router-view>
 			</div>
 		</k-app>
 	</k-provider>

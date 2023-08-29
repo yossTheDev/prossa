@@ -4,16 +4,18 @@ import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2';
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from './App.vue';
-import AboutPage from './pages/AboutPage.vue';
-import BookPage from './pages/BookPage.vue';
-import HomePage from './pages/HomePage.vue';
+
 import './style.css';
+
+const Home = () => import('./pages/HomePage.vue');
+const About = () => import('./pages/AboutPage.vue');
+const Book = () => import('./pages/BookPage.vue');
 
 /* Defining Routes */
 const routes = [
-	{ name: '/', path: '/:stats?/:search?/:menu?/', component: HomePage },
-	{ name: 'about', path: '/about/:menu?', component: AboutPage },
-	{ name: 'book', path: '/book/:id', component: BookPage },
+	{ name: '/', path: '/:stats?/:search?/:menu?/', component: Home },
+	{ name: 'about', path: '/about/:menu?', component: About },
+	{ name: 'book', path: '/book/:id', component: Book },
 ];
 
 /* Configure Local Forage Library */
