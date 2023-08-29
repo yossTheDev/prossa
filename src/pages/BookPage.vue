@@ -26,7 +26,7 @@ const timeInterval = setInterval(() => {
 
 	if (time === 60 * 10) {
 		if (
-			DateTime.fromISO(store.lastReadingTime).toISODate() ===
+			DateTime.fromISO(store.lastReadingTime!).toISODate() ===
 			DateTime.now().minus({ days: 1 }).toISODate()
 		) {
 			store.addDayOfReading();
