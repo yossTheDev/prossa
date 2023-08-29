@@ -7,6 +7,7 @@ import {
 	kPage,
 	kPopup,
 	kBlock,
+	kLink,
 } from 'konsta/vue';
 // eslint-disable-next-line no-unused-vars
 import { DateTime, Duration, Interval } from 'luxon';
@@ -47,7 +48,7 @@ onMounted(() => {
 		<kPage>
 			<kNavbar large title="Stats">
 				<template #right>
-					<div class="fixed right-0 mr-1 md:mr-3">
+					<div class="fixed right-0 mr-1">
 						<kLink @click="$router.replace('/')" navbar>Cancel</kLink>
 					</div></template
 				>

@@ -288,11 +288,13 @@ function toggleChapters() {
 		:show="!isReady"
 		class="z-50"
 	>
-		<div class="absolute z-50 flex h-full w-full bg-md-dark-surface">
+		<div
+			class="absolute z-50 flex h-full w-full bg-md-light-surface dark:bg-md-dark-surface"
+		>
 			<div class="my-auto mx-auto flex flex-col text-center">
 				<p class="text-xl">Processing Book</p>
-				<p class="mb-3">It may take a while the fist time</p>
-				<kPreloader size="w-12 h-12 mx-auto"></kPreloader>
+				<p class="mb-4">It may take a while the fist time</p>
+				<kPreloader size="w-8 h-8 mx-auto"></kPreloader>
 			</div>
 		</div>
 	</TransitionRoot>

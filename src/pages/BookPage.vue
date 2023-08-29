@@ -6,6 +6,7 @@ import { useAppStore } from '../stores/AppStore';
 import { DateTime, Duration, Interval } from 'luxon';
 import { kPage } from 'konsta/vue';
 import { StatusBar } from '@capacitor/status-bar';
+import { KeepAwake } from '@capacitor-community/keep-awake';
 
 /* App Store */
 const store = useAppStore();
@@ -46,6 +47,9 @@ onMounted(() => {
 	/* Hide Status Bar */
 	StatusBar.hide();
 	StatusBar.setOverlaysWebView({ overlay: true });
+
+	/* Enable Keep Awake */
+	KeepAwake.keepAwake();
 });
 
 onUnmounted(() => {

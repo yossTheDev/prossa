@@ -33,6 +33,7 @@ import BookList from '../components/BookList.vue';
 import StatsPopup from '../components/Popups/StatsPopup.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
+import { KeepAwake } from '@capacitor-community/keep-awake';
 
 const store = useAppStore();
 const router = useRouter();
@@ -136,6 +137,9 @@ watch(message, () => {
 onMounted(() => {
 	StatusBar.show();
 	StatusBar.setOverlaysWebView({ overlay: false });
+
+	/* Disable Keep Awake */
+	KeepAwake.allowSleep();
 });
 </script>
 
@@ -237,7 +241,7 @@ onMounted(() => {
 
 				<kBlock>
 					<div
-						class="flex w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
+						class="flex max-h-12 w-full rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
 					>
 						<div class="ml-2 flex w-full">
 							<kSearchbar
@@ -353,7 +357,7 @@ onMounted(() => {
 				<!-- Search Bar -->
 				<kBlock class="hidden gap-2 md:flex">
 					<div
-						class="flex w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
+						class="flex max-h-14 w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
 					>
 						<div class="ml-2 flex w-full">
 							<kSearchbar
