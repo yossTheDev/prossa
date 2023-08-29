@@ -23,7 +23,7 @@ import {
 } from 'konsta/vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Base64Binary } from '../../src/utilities/base';
 import BookItem from '../components/BookItem.vue';
@@ -94,15 +94,12 @@ function handleAddBook(event: any) {
 						newBook.key(),
 						reader.result as unknown as string
 					);
+
+					/* Show Toast Message */
+					message.value = 'The book has been added to the library';
 				};
 			} else {
 				message.value = 'This book is already in the library';
-
-				const interval = setInterval(() => {
-					message.value = '';
-
-					clearInterval(interval);
-				}, 2000);
 			}
 		});
 
@@ -122,6 +119,16 @@ const handleCloseSearchModal = () => {
 	router.replace('/');
 	query.value = '';
 };
+
+watch(message, () => {
+	if (message.value !== '') {
+		const interval = setInterval(() => {
+			message.value = '';
+
+			clearInterval(interval);
+		}, 2000);
+	}
+});
 
 /* Show Status Bar */
 onMounted(() => {
