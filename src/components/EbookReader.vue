@@ -3,7 +3,14 @@ import { TransitionRoot } from '@headlessui/vue';
 import { IconArrowLeft, IconArrowRight, IconBook2 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book } from 'epubjs';
-import { kBlockTitle, kList, kListItem, kPage, kPanel } from 'konsta/vue';
+import {
+	kBlockTitle,
+	kList,
+	kListItem,
+	kPage,
+	kPanel,
+	kPreloader,
+} from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
@@ -14,9 +21,9 @@ const props = defineProps<{
 }>();
 
 /* Component State */
-const image = ref('');
 const showControls = ref(true);
 const currentPos = ref(0);
+const isReady = ref(false);
 
 /* App Store */
 const store = useAppStore();
@@ -27,6 +34,8 @@ const chapters = ref();
 /* Component State */
 const showChapters = ref(false);
 let book: Book | null = null;
+
+const isDark = useDark();
 
 /* Prepare and Load Ebook */
 onMounted(async () => {
@@ -40,33 +49,27 @@ onMounted(async () => {
 
 	/* Render Ebook */
 	const rendition = book.renderTo('epub', {
-		flow: 'auto',
+		flow: 'paginated',
+		manager: 'continuous',
+		spread: 'always',
 		snap: true,
 		resizeOnOrientationChange: true,
-		infinite: true,
 		width: '100%',
 		height: '100%',
 	});
 
-	/* Set Text Color based on Device Color Mode */
+	/* Change p element z-index */
 	book.rendition.themes.default({ p: { 'z-index': 20 } });
-	useDark({
-		onChanged: (isDark) => {
-			if (isDark) {
-				book?.rendition.themes.default({ body: { color: '#78817d' } });
-			}
-		},
-	});
-
-	/* Get Cover Image */
-	const cover = await book.coverUrl();
-	if (cover) image.value = cover;
-
-	/* Store Display Status */
-	let displayed;
 
 	/* Load book at the begin or at the last user position */
 	const getBook = store.getBook(props.id);
+
+	/* Change Book Text Color Based On Theme */
+	if (isDark) {
+		book?.rendition.themes.default({ body: { color: '#78817d' } });
+	}
+
+	let displayed;
 
 	getBook && getBook.currentCfi !== ''
 		? (displayed = rendition.display(getBook.currentCfi))
@@ -87,24 +90,39 @@ onMounted(async () => {
 		if (percentage) currentPos.value = Math.floor(percentage * 100);
 
 		chapters.value = book?.navigation.toc;
-
-		// console.log(book.navigation.toc);
 	});
 
 	/* On Book Ready */
 	book.ready.then(async () => {
-		/* Load Locations */
-		const loc = await localforage.getItem(`${book?.key}-locations`);
-		if (loc != null) {
+		/* Load or Generate Locations */
+		const loc = await localforage.getItem(`${book?.key()}-locations`);
+		if (loc !== null) {
 			book?.locations.load(loc as unknown as string);
+			isReady.value = true;
 		} else {
-			await book?.locations.generate(1600);
-
-			const nl = book?.locations.save();
-			await localforage.setItem(`${book?.key}-locations`, nl);
+			book?.locations.generate(1024).then(async (locations) => {
+				await localforage.setItem(`${book?.key()}-locations`, locations);
+				isReady.value = true;
+			});
 		}
+	});
 
-		setPercent();
+	/* On Relocated */
+	rendition.on('relocated', (locations: any) => {
+		const progress = book?.locations.percentageFromCfi(locations.start.cfi);
+
+		/* Set Current Position */
+		if (progress) currentPos.value = Math.floor(progress * 100);
+
+		/* Save Current Pos */
+		if (progress)
+			store.setBookCFI(props.id, locations.start.cfi, progress?.toString());
+
+		// console.log('Progress: ' + progress);
+		/* console.log(
+			'Current Page: ' + book?.locations.locationFromCfi(locations.start.cfi)
+		); */
+		/* console.log('Total Page: ' + book?.locations.length()); */
 	});
 });
 
@@ -113,65 +131,24 @@ onUnmounted(() => {
 	book?.destroy();
 });
 
-/* Set Current Read Percent */
-function setPercent() {
-	/* Get Current Location */
-	const current = book?.rendition.currentLocation();
-
-	/* Start Index */
-	const { start } = current as unknown as any;
-	/* Get Actual Book Completion Percent */
-	const percentage = book?.locations.percentageFromCfi(start.cfi);
-
-	/* Set Current Position */
-	if (percentage) currentPos.value = Math.floor(percentage * 100);
-
-	/* Save Current Pos */
-	store.setBookCFI(props.id, start.cfi, start.percentage);
-}
-
 /* Functions */
 
 /* Next page */
 async function next() {
 	/* Go To Next Page */
 	await book?.rendition.next();
-
-	/* Get Current Location */
-	setPercent();
-
-	console.log('book id ' + props.id);
-	console.log(store.books);
-	// console.log(book.locations.percentageFromCfi(start.cfi));
 }
 
 /* Back page */
 async function back() {
 	/* Go To Previous Page */
 	await book?.rendition.prev();
-
-	setPercent();
 }
 
 /* Go To Chapter */
 async function toChapter(href: string) {
 	/* Render Specific Page */
 	await book?.rendition.display(href);
-
-	/* Get Current Location */
-	const current = book?.rendition.currentLocation();
-
-	/* Start Index */
-	const { start } = current as unknown as any;
-
-	/* Get Actual Book Completion Percent */
-	const percentage = book?.locations.percentageFromCfi(start.cfi);
-
-	/* Set Current Position */
-	if (percentage) currentPos.value = Math.floor(percentage * 100);
-
-	/* Save Current Pos */
-	store.setBookCFI(props.id, start.cfi, start.percentage);
 }
 
 /* Toggle Controls */
@@ -299,6 +276,26 @@ function toggleChapters() {
 			</k-list>
 		</k-page>
 	</k-panel>
+
+	<!--Loading-->
+	<TransitionRoot
+		enter="transition-opacity duration-75"
+		enter-from="opacity-0"
+		enter-to="opacity-100"
+		leave="transition-opacity duration-150"
+		leave-from="opacity-100"
+		leave-to="opacity-0"
+		:show="!isReady"
+		class="z-50"
+	>
+		<div class="absolute z-50 flex h-full w-full bg-md-dark-surface">
+			<div class="my-auto mx-auto flex flex-col text-center">
+				<p class="text-xl">Processing Book</p>
+				<p>It may take a while the fist time</p>
+				<kPreloader size="w-16 h-16 mx-auto"></kPreloader>
+			</div>
+		</div>
+	</TransitionRoot>
 
 	<!-- Content -->
 	<div class="flex h-full w-full flex-auto flex-col">

@@ -21,7 +21,7 @@ let time = 0;
 const timeInterval = setInterval(() => {
 	time++;
 
-	console.log(time);
+	// console.log(time);
 
 	if (time === 60 * 10) {
 		if (
