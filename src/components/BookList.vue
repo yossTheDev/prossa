@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { kBlockTitle, kList, kListGroup, kListItem } from 'konsta/vue';
+import { computed } from 'vue';
 import { Book } from '../stores/AppStore';
-import { kListGroup, kListItem, kList, kBlockTitle } from 'konsta/vue';
 import BookItem from './BookItem.vue';
 
 /* App Store */
@@ -13,7 +14,7 @@ interface Group {
 	books: any;
 }
 
-const getGroups = () => {
+const getGroups = computed(() => {
 	let groups: Group[] = [];
 
 	/* Get Groups */
@@ -44,14 +45,16 @@ const getGroups = () => {
 	});
 
 	return groups;
-};
+});
 </script>
 
 <template>
 	<k-block-title>Library</k-block-title>
 
 	<k-list strong-ios outline-ios>
-		<k-list-group :key="group.name" v-for="group in getGroups()">
+		<k-list-item v-if="getGroups.length === 0" :title="'Not Found'" />
+
+		<k-list-group :key="group.name" v-for="group in getGroups">
 			<k-list-item
 				:title="group.name"
 				group-title

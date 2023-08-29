@@ -68,7 +68,9 @@ const moveTo = (path: string) => {
 
 	<k-provider theme="md">
 		<k-app theme="material">
-			<div class="relative flex h-screen w-screen flex-auto overflow-hidden">
+			<div
+				class="relative flex h-screen w-screen flex-auto overflow-hidden bg-md-light-surface dark:bg-md-dark-surface"
+			>
 				<!--Drawer Menu-->
 				<kPanel
 					:opened="$route.params.menu === 'menu'"

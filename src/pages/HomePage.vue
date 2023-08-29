@@ -16,14 +16,16 @@ import {
 	kFab,
 	kLink,
 	kList,
+	kListItem,
 	kNavbar,
 	kPage,
 	kPopup,
+	kSearchbar,
 	kToast,
 } from 'konsta/vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Base64Binary } from '../../src/utilities/base';
 import BookItem from '../components/BookItem.vue';
@@ -235,16 +237,37 @@ onMounted(() => {
 
 				<kBlock>
 					<div
-						class="flex gap-2 rounded-3xl bg-md-light-surface-1 p-2 dark:bg-md-dark-surface-1"
+						class="flex w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
 					>
-						<IconSearch class="ml-1"></IconSearch>
-						<input class="w-full" v-model="query" type="text" />
+						<div class="ml-2 flex w-full">
+							<kSearchbar
+								@input="(ev) => (query = ev.currentTarget.value)"
+								:value="query"
+								:clear-button="false"
+								:colors="{
+									inputBgMaterial:
+										'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
+								}"
+								input-style="padding-left: 2rem"
+							></kSearchbar>
+						</div>
 					</div>
 				</kBlock>
 
 				<kBlockTitle>Books</kBlockTitle>
 
 				<kList>
+					<kListItem
+						v-if="
+							store.books.filter(
+								(book) =>
+									book.metadata.title
+										.toUpperCase()
+										.indexOf(query.toUpperCase()) > -1
+							).length === 0
+						"
+						title="Not Found"
+					></kListItem>
 					<BookItem
 						:key="book.key"
 						v-for="book in store.books.filter(
@@ -330,15 +353,20 @@ onMounted(() => {
 				<!-- Search Bar -->
 				<kBlock class="hidden gap-2 md:flex">
 					<div
-						class="flex w-full gap-2 rounded-3xl bg-md-light-surface-3 p-3 dark:bg-md-dark-surface-1"
+						class="flex w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
 					>
-						<IconSearch></IconSearch>
-						<input
-							class="w-full"
-							placeholder="Search"
-							v-model="query"
-							type="text"
-						/>
+						<div class="ml-2 flex w-full">
+							<kSearchbar
+								@input="(ev) => (query = ev.currentTarget.value)"
+								:value="query"
+								:clear-button="false"
+								:colors="{
+									inputBgMaterial:
+										'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
+								}"
+								input-style="padding-left: 2rem"
+							></kSearchbar>
+						</div>
 					</div>
 
 					<!--Stats Button-->
@@ -361,12 +389,14 @@ onMounted(() => {
 					<!-- Book List -->
 					<BookList
 						:books="
-							store.books.filter(
-								(book) =>
-									book.metadata.title
-										.toUpperCase()
-										.indexOf(query.toUpperCase()) > -1
-							)
+							computed(() =>
+								store.books.filter(
+									(book) =>
+										book.metadata.title
+											.toUpperCase()
+											.indexOf(query.toUpperCase()) > -1
+								)
+							).value
 						"
 						v-if="store.books.length > 0"
 					></BookList>

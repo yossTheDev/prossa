@@ -291,8 +291,8 @@ function toggleChapters() {
 		<div class="absolute z-50 flex h-full w-full bg-md-dark-surface">
 			<div class="my-auto mx-auto flex flex-col text-center">
 				<p class="text-xl">Processing Book</p>
-				<p>It may take a while the fist time</p>
-				<kPreloader size="w-16 h-16 mx-auto"></kPreloader>
+				<p class="mb-3">It may take a while the fist time</p>
+				<kPreloader size="w-12 h-12 mx-auto"></kPreloader>
 			</div>
 		</div>
 	</TransitionRoot>
