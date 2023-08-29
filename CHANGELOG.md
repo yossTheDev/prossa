@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.4
+
+* fix: Incorrect progress of books
+
 ## v 1.1.3
 
 * New Popup with Reading Stats
