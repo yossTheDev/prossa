@@ -2,6 +2,7 @@
 
 ## v 1.1.4
 
+* feat: Preventing turning off the screen when reading on mobile devices
 * fix: Incorrect progress of books
 
 ## v 1.1.3
