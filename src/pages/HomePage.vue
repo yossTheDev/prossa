@@ -133,8 +133,8 @@ watch(message, () => {
 	}
 });
 
-/* Show Status Bar */
 onMounted(() => {
+	/* Show Status Bar */
 	StatusBar.show();
 	StatusBar.setOverlaysWebView({ overlay: false });
 
