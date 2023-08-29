@@ -16,19 +16,19 @@ import {
 	kFab,
 	kLink,
 	kList,
-	kListItem,
 	kNavbar,
 	kPage,
 	kPopup,
 	kToast,
 } from 'konsta/vue';
 import localforage from 'localforage';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Base64Binary } from '../../src/utilities/base';
 import BookItem from '../components/BookItem.vue';
 import BookList from '../components/BookList.vue';
+import StatsPopup from '../components/Popups/StatsPopup.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
 
@@ -256,53 +256,7 @@ onMounted(() => {
 		</kPopup>
 
 		<!-- Stats Popup-->
-		<kPopup
-			@backdropclick="$router.replace('/')"
-			:opened="$route.params.stats === 'stats'"
-		>
-			<kPage>
-				<kNavbar large title="Stats">
-					<template #right>
-						<div class="fixed right-0 mr-1">
-							<kLink @click="$router.replace('/')" navbar>Cancel</kLink>
-						</div></template
-					>
-				</kNavbar>
-
-				<kBlockTitle>Reading</kBlockTitle>
-				<kList>
-					<kListItem
-						:after="store.daysOfReading?.toString()"
-						title="Days of Reading"
-					></kListItem>
-
-					<kListItem
-						:after="
-							Duration.fromISO(store.readingTimeThisMonth).toHuman({
-								listStyle: 'short',
-								unitDisplay: 'short',
-								maximumFractionDigits: 0,
-							})
-						"
-						title="Reading Time"
-					></kListItem>
-
-					<kListItem
-						:after="DateTime.fromISO(store.lastReadingTime).toRelative()!"
-						title="Last Reading Reading Time"
-					></kListItem>
-				</kList>
-
-				<kBlockTitle>Books</kBlockTitle>
-
-				<kList>
-					<kListItem
-						title="Total Books"
-						:after="store.books.length"
-					></kListItem>
-				</kList>
-			</kPage>
-		</kPopup>
+		<StatsPopup></StatsPopup>
 
 		<!-- Content -->
 		<div

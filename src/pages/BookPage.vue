@@ -33,9 +33,9 @@ const timeInterval = setInterval(() => {
 		} else {
 			store.daysOfReading = 1;
 		}
-
-		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
 	}
+
+	store.lastReadingTime = DateTime.now().toISO() as unknown as string;
 }, 1000);
 
 let startTime: DateTime;
@@ -51,26 +51,13 @@ onMounted(() => {
 onUnmounted(() => {
 	clearInterval(timeInterval);
 
-	const readingTime = DateTime.fromISO(store.lastReadingTime);
-
-	if (readingTime.year === DateTime.now().year) {
-		if (readingTime.month === DateTime.now().month) {
-			/* Update Reading Time in Store */
-			store.setReadingTimeThisMonth(
-				Interval.fromDateTimes(startTime, DateTime.now())
-					.toDuration(['hours', 'minutes'])
-					.plus(Duration.fromISO(store.readingTimeThisMonth))
-					.toISO() as unknown as string
-			);
-		} else {
-			/* Restart Reading Time */
-			store.setReadingTimeThisMonth(
-				Interval.after(DateTime.now(), DateTime.now())
-					.toDuration(['hours', 'minutes'])
-					.toISO() as unknown as string
-			);
-		}
-	}
+	/* Update Reading Time in Store */
+	store.setReadingTimeThisMonth(
+		Interval.fromDateTimes(startTime, DateTime.now())
+			.toDuration(['hours', 'minutes'])
+			.plus(Duration.fromISO(store.readingTimeThisMonth))
+			.toISO() as unknown as string
+	);
 });
 </script>
 
