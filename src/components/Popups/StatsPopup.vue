@@ -9,7 +9,6 @@ import {
 	kBlock,
 	kLink,
 } from 'konsta/vue';
-// eslint-disable-next-line no-unused-vars
 import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted } from 'vue';
 import { useAppStore } from '../../stores/AppStore';
@@ -18,10 +17,19 @@ const store = useAppStore();
 
 onMounted(() => {
 	/* Restart Reading Time on the end of the Month or Year */
-	const readingTime = DateTime.fromISO(store.lastReadingTime);
+	const readingTime = DateTime.fromISO(store.lastReadingTime!);
 
-	if (readingTime.year === DateTime.now().year) {
-		if (readingTime.month !== DateTime.now().month) {
+	if (store.lastReadingTime) {
+		if (readingTime.year === DateTime.now().year) {
+			if (readingTime.month !== DateTime.now().month) {
+				/* Restart Reading Time */
+				store.setReadingTimeThisMonth(
+					Interval.after(DateTime.now(), DateTime.now())
+						.toDuration(['hours', 'minutes'])
+						.toISO() as unknown as string
+				);
+			}
+		} else {
 			/* Restart Reading Time */
 			store.setReadingTimeThisMonth(
 				Interval.after(DateTime.now(), DateTime.now())
@@ -29,13 +37,6 @@ onMounted(() => {
 					.toISO() as unknown as string
 			);
 		}
-	} else {
-		/* Restart Reading Time */
-		store.setReadingTimeThisMonth(
-			Interval.after(DateTime.now(), DateTime.now())
-				.toDuration(['hours', 'minutes'])
-				.toISO() as unknown as string
-		);
 	}
 });
 </script>
@@ -76,13 +77,17 @@ onMounted(() => {
 					></kListItem>
 
 					<kListItem
-						:after="DateTime.fromISO(store.lastReadingTime).toRelative()!"
+						:after="
+							store.lastReadingTime
+								? DateTime.fromISO(store.lastReadingTime).toRelative()!
+								: 'Not yet'
+						"
 						title="Last Reading"
 						subtitle="The last time you read"
 					></kListItem>
 
 					<kListItem
-						:after="DateTime.fromISO(store.lastReadingTime).toLocaleString()!"
+						:after="store.lastReadingTime ? DateTime.fromISO(store.lastReadingTime).toLocaleString()! : 'Not yet'"
 						title="Last Reading Date"
 						subtitle="The date of the last time you read"
 					></kListItem>
@@ -95,7 +100,7 @@ onMounted(() => {
 				<kList>
 					<kListItem
 						title="Total Books"
-						:after="store.books.length"
+						:after="store.books.length.toString()"
 						subtitle="Total books in your library"
 					></kListItem>
 				</kList>

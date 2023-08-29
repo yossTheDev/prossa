@@ -8,7 +8,6 @@ import {
 	IconPlus,
 	IconSearch,
 } from '@tabler/icons-vue';
-import { Book } from 'epubjs';
 import {
 	kBlock,
 	kBlockTitle,
@@ -44,8 +43,9 @@ const loading = ref(false);
 const query = ref('');
 const message = ref('');
 
-function handleAddBook(event: any) {
+async function handleAddBook(event: any) {
 	if (event.target.files && event.target.files.length > 0) {
+		const { Book } = await import('epubjs');
 		// Initialize File Reader
 		const reader = new FileReader();
 
