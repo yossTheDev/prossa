@@ -4,6 +4,7 @@
 
 * feat: Preventing turning off the screen when reading on mobile devices
 * improve: Add feedback when a book is added
+* improve: Add more description for the statistics
 * fix: Incorrect progress of books
 
 ## v 1.1.3
