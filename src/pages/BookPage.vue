@@ -17,26 +17,6 @@ const id = useRoute().params.id as unknown as string;
 /* Set Current Book ID */
 store.setCurrentBook(id);
 
-let time = 0;
-
-const timeInterval = setInterval(() => {
-	time++;
-
-	// console.log(time);
-
-	if (time >= 60 * 10) {
-		if (
-			DateTime.fromISO(store.lastReadingTime!).toISODate() ===
-			DateTime.now().minus({ days: 1 }).toISODate()
-		) {
-			store.addDayOfReading();
-			console.log('Add Day');
-		}
-
-		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
-	}
-}, 1000);
-
 let startTime: DateTime;
 
 onMounted(() => {
@@ -51,8 +31,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	clearInterval(timeInterval);
-
 	/* Update Reading Time in Store */
 	store.setReadingTimeThisMonth(
 		Interval.fromDateTimes(startTime, DateTime.now())
@@ -60,6 +38,21 @@ onUnmounted(() => {
 			.plus(Duration.fromISO(store.readingTimeThisMonth))
 			.toISO() as unknown as string
 	);
+
+	if (
+		Interval.fromDateTimes(startTime, DateTime.now()).toDuration(['minutes'])
+			.minutes >= 10
+	) {
+		if (
+			DateTime.fromISO(store.lastReadingTime!).toISODate() ===
+			DateTime.now().minus({ days: 1 }).toISODate()
+		) {
+			store.addDayOfReading();
+			console.log('Add Day');
+		}
+
+		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
+	}
 });
 </script>
 
