@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { TransitionRoot } from '@headlessui/vue';
-import { IconArrowLeft, IconArrowRight, IconBook2 } from '@tabler/icons-vue';
+import {
+	IconArrowLeft,
+	IconArrowRight,
+	IconBook2,
+	IconHighlight,
+} from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
-import { Book } from 'epubjs';
+import { Book, Contents, Rendition } from 'epubjs';
 import {
 	kBlockTitle,
+	kButton,
 	kList,
 	kListItem,
 	kPage,
@@ -15,15 +21,19 @@ import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
+import AnnotationsPanel from './Popups/AnnotationsPanel.vue';
 
 const props = defineProps<{
 	id: string;
 }>();
 
 /* Component State */
+const isDark = useDark();
 const showControls = ref(true);
 const currentPos = ref(0);
 const isReady = ref(false);
+let book: Book | null = null;
+let rendition: Rendition;
 
 /* App Store */
 const store = useAppStore();
@@ -31,11 +41,49 @@ const store = useAppStore();
 /* Chapters */
 const chapters = ref();
 
-/* Component State */
-const showChapters = ref(false);
-let book: Book | null = null;
+const setRenderSelection = (cfiRange: string, contents: Contents) => {
+	store.addBookHighlight(
+		props.id,
+		cfiRange,
+		rendition.location.start.href,
+		rendition.getRange(cfiRange).toString(),
+		getLabel(book?.navigation.toc, rendition.location.start.href)
+	);
 
-const isDark = useDark();
+	rendition.annotations.add('highlight', cfiRange, {}, undefined, 'hl', {
+		fill: 'red',
+		'fill-opacity': '0.5',
+		'mix-blend-mode': 'multiply',
+	});
+
+	contents.window.getSelection()?.removeAllRanges();
+};
+
+const removeSelection = (cfiRange: string, id: string) => {
+	rendition.annotations.remove(cfiRange, 'highlight');
+	store.removeBookHighlight(props.id, id);
+};
+
+const getLabel = (toc: any, href: any) => {
+	let label = 'n/a';
+
+	// eslint-disable-next-line array-callback-return
+	toc.some((item: any) => {
+		if (item.subitems.length > 0) {
+			const subChapter = getLabel(item.subitems, href);
+
+			if (subChapter !== 'n/a') {
+				label = subChapter;
+				return true;
+			}
+		} else if (item.href.includes(href)) {
+			label = item.label;
+			return true;
+		}
+	});
+
+	return label;
+};
 
 /* Prepare and Load Ebook */
 onMounted(async () => {
@@ -48,7 +96,7 @@ onMounted(async () => {
 	);
 
 	/* Render Ebook */
-	const rendition = book.renderTo('epub', {
+	rendition = book.renderTo('epub', {
 		flow: 'paginated',
 		manager: 'continuous',
 		spread: 'always',
@@ -59,10 +107,10 @@ onMounted(async () => {
 	});
 
 	/* Change p element z-index */
-	book.rendition.themes.default({ p: { 'z-index': 20 } });
-
-	/* Load book at the begin or at the last user position */
-	const getBook = store.getBook(props.id);
+	book.rendition.themes.default({
+		p: { 'z-index': 20 },
+		'::selection': { background: 'orange' },
+	});
 
 	/* Change Book Text Color Based On Theme */
 	if (isDark) {
@@ -71,9 +119,30 @@ onMounted(async () => {
 
 	let displayed;
 
-	getBook && getBook.currentCfi !== ''
-		? (displayed = rendition.display(getBook.currentCfi))
+	/* Load book at the begin or at the last user position */
+	const currentBook = store.getBook(props.id);
+	currentBook && currentBook.currentCfi !== ''
+		? (displayed = rendition.display(currentBook.currentCfi))
 		: (displayed = rendition.display());
+
+	/* Load Annotations */
+	rendition.on('selected', setRenderSelection);
+	if (currentBook?.selections) {
+		for (const annotation of currentBook.selections) {
+			rendition.annotations.add(
+				'highlight',
+				annotation.cfiRange,
+				{},
+				undefined,
+				'hl',
+				{
+					fill: 'red',
+					'fill-opacity': '0.5',
+					'mix-blend-mode': 'multiply',
+				}
+			);
+		}
+	}
 
 	/* On Book Display */
 	displayed.then(() => {
@@ -128,6 +197,7 @@ onMounted(async () => {
 
 /* Destroy Book Instance */
 onUnmounted(() => {
+	rendition.off('selected', setRenderSelection);
 	book?.destroy();
 });
 
@@ -156,11 +226,6 @@ function toggleControls() {
 	showControls.value = !showControls.value;
 	console.log(showControls);
 }
-
-/* Show Chapters Panel */
-function toggleChapters() {
-	showChapters.value = !showChapters.value;
-}
 </script>
 
 <template>
@@ -175,25 +240,17 @@ function toggleChapters() {
 		leave-to="opacity-0"
 		class="z-20"
 	>
-		<div class="absolute flex max-h-9 flex-auto text-gray-400">
-			<div class="my-auto flex flex-auto p-2">
-				<div class="my-auto flex w-1/3">
-					<router-link
-						class="rounded-full p-2 hover:bg-base-dark-light/20"
-						to="/"
-						><IconArrowLeft class="mx-auto my-auto h-6"></IconArrowLeft
-					></router-link>
-				</div>
-
-				<div class="my-auto flex w-1/3"></div>
-
-				<div class="my-auto flex w-1/3"></div>
+		<div class="absolute mt-4 ml-2 flex flex-auto">
+			<div class="flex">
+				<kButton @click="$router.push('/')" clear
+					><IconArrowLeft></IconArrowLeft
+				></kButton>
 			</div>
 		</div>
 	</TransitionRoot>
 
 	<!-- Virtual Controls-->
-	<div class="absolute z-10 flex h-full w-full flex-row">
+	<div class="absolute z-10 hidden h-full w-full flex-row">
 		<div @click="back" class="flex flex-auto"></div>
 		<div @click="toggleControls" class="flex flex-auto"></div>
 		<div @click="next" class="flex flex-auto"></div>
@@ -219,6 +276,23 @@ function toggleChapters() {
 					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-md-light-surface-1 p-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
 				>
 					<div class="flex w-1/3 flex-auto">
+						<!-- Chapters -->
+						<div
+							@click="
+								() =>
+									$router.push({
+										name: 'book',
+										params: {
+											id: $route.params.id,
+											chapter: 'chapter',
+										},
+									})
+							"
+							class="hover:bg-neutral my-auto ml-auto flex rounded-xl p-2 transition-all active:scale-90"
+						>
+							<IconBook2></IconBook2>
+						</div>
+
 						<!-- Arrow Back -->
 						<div
 							class="hover:bg-neutral my-auto cursor-pointer select-none rounded-xl p-2"
@@ -242,12 +316,21 @@ function toggleChapters() {
 					</div>
 
 					<div class="flex w-1/3 flex-auto items-end">
-						<!-- Chapters -->
+						<!-- Highlights -->
 						<div
-							@click="toggleChapters"
+							@click="
+								() =>
+									$router.push({
+										name: 'book',
+										params: {
+											id: $route.params.id,
+											annotations: 'annotations',
+										},
+									})
+							"
 							class="hover:bg-neutral my-auto ml-auto flex rounded-xl p-2 transition-all active:scale-90"
 						>
-							<IconBook2></IconBook2>
+							<IconHighlight></IconHighlight>
 						</div>
 					</div>
 				</div>
@@ -259,8 +342,10 @@ function toggleChapters() {
 	<k-panel
 		side="left"
 		floating
-		:opened="showChapters"
-		@backdropclick="() => (showChapters = false)"
+		:opened="$route.params.chapter === 'chapter'"
+		@backdropclick="
+			() => $router.replace({ name: 'book', params: { id: $route.params.id } })
+		"
 	>
 		<k-page class="flex h-full flex-col overflow-hidden">
 			<k-block-title>Chapters</k-block-title>
@@ -276,6 +361,13 @@ function toggleChapters() {
 			</k-list>
 		</k-page>
 	</k-panel>
+
+	<!-- Annotations Panel -->
+	<AnnotationsPanel
+		:remove-selection="removeSelection"
+		:to-chapter="toChapter"
+		:book-i-d="id"
+	></AnnotationsPanel>
 
 	<!--Loading-->
 	<TransitionRoot
@@ -300,7 +392,10 @@ function toggleChapters() {
 	</TransitionRoot>
 
 	<!-- Content -->
-	<div class="flex h-full w-full flex-auto flex-col">
+	<div
+		@click="() => (showControls = true)"
+		class="flex h-full w-full flex-auto flex-col"
+	>
 		<!-- Epub -->
 		<div class="flex h-full w-full flex-auto" id="epub"></div>
 	</div>

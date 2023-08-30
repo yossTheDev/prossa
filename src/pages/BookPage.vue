@@ -14,12 +14,12 @@ const store = useAppStore();
 /* Get book ID */
 const id = useRoute().params.id as unknown as string;
 
-/* Set Current Book ID */
-store.setCurrentBook(id);
-
 let startTime: DateTime;
 
 onMounted(() => {
+	/* Set Current Book ID */
+	store.setCurrentBook(id);
+
 	startTime = DateTime.now();
 
 	/* Hide Status Bar */

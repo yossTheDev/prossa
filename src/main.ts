@@ -15,7 +15,11 @@ const Book = () => import('./pages/BookPage.vue');
 const routes = [
 	{ name: '/', path: '/:stats?/:search?/:menu?/', component: Home },
 	{ name: 'about', path: '/about/:menu?', component: About },
-	{ name: 'book', path: '/book/:id', component: Book },
+	{
+		name: 'book',
+		path: '/book/:id/:chapter?/:annotations?/:popup?/',
+		component: Book,
+	},
 ];
 
 /* Configure Local Forage Library */

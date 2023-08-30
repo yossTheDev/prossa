@@ -1,6 +1,7 @@
 import { PackagingMetadataObject } from 'epubjs/types/packaging';
 import { defineStore } from 'pinia';
 import { DateTime, Duration, Interval } from 'luxon';
+import { getRandomNumber } from '../utilities/getRandom';
 
 export interface Book {
 	key: string;
@@ -9,6 +10,15 @@ export interface Book {
 	img: string;
 	added: string;
 	metadata: PackagingMetadataObject;
+	selections?: Annotation[];
+}
+
+interface Annotation {
+	id: string;
+	cfiRange: string;
+	text: string;
+	href: string;
+	label: string;
 }
 
 interface AppStore {
@@ -55,11 +65,49 @@ export const useAppStore = defineStore('app-store', {
 							added: this.books[i].added,
 							percent: percent,
 							currentCfi: cfi,
+							selections: this.books[i].selections,
 					  })
 					: newArray.push(this.books[i]);
 			}
 
 			this.books = newArray;
+		},
+
+		addBookHighlight(
+			bookId: string,
+			cfiRange: string,
+			href: string,
+			text: string,
+			label: string
+		) {
+			this.books = this.books.map((book) =>
+				book.key === bookId
+					? {
+							...book,
+							selections: book.selections
+								? [
+										...book.selections,
+										{ cfiRange, href, text, label, id: getRandomNumber() },
+								  ]
+								: [{ cfiRange, href, text, id: getRandomNumber() }],
+					  }
+					: book
+			) as Book[];
+		},
+
+		removeBookHighlight(bookId: string, id: string) {
+			console.log('removiendo ' + id);
+
+			this.books = this.books.map((book) =>
+				book.key === bookId
+					? {
+							...book,
+							selections: book.selections?.filter((item, j) => item.id !== id),
+					  }
+					: book
+			) as Book[];
+
+			console.log(this.books);
 		},
 
 		getBook(bookID: string) {
