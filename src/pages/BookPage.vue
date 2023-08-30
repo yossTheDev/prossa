@@ -49,6 +49,8 @@ onUnmounted(() => {
 		) {
 			store.addDayOfReading();
 			console.log('Add Day');
+		} else if (!store.lastReadingTime) {
+			store.addDayOfReading();
 		}
 
 		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
