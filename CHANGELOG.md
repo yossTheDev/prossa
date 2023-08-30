@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.5
+
+* feat: Book Highlights
+
 ## v 1.1.4
 
 * feat: Preventing turning off the screen when reading on mobile devices
