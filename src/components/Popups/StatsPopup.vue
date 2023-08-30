@@ -22,7 +22,7 @@ onMounted(() => {
 	if (store.lastReadingTime) {
 		if (readingTime.year === DateTime.now().year) {
 			if (readingTime.month !== DateTime.now().month) {
-				/* Restart Reading Time */
+				/* Restart Reading Time This Month */
 				store.setReadingTimeThisMonth(
 					Interval.after(DateTime.now(), DateTime.now())
 						.toDuration(['hours', 'minutes'])
@@ -30,12 +30,20 @@ onMounted(() => {
 				);
 			}
 		} else {
-			/* Restart Reading Time */
+			/* Restart Reading Time This Month */
 			store.setReadingTimeThisMonth(
 				Interval.after(DateTime.now(), DateTime.now())
 					.toDuration(['hours', 'minutes'])
 					.toISO() as unknown as string
 			);
+		}
+
+		/* Restart Reading Streak */
+		if (
+			Interval.fromDateTimes(readingTime, DateTime.now()).toDuration(['days'])
+				.days > 1
+		) {
+			store.daysOfReading = 0;
 		}
 	}
 });

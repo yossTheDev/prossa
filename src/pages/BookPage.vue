@@ -24,19 +24,17 @@ const timeInterval = setInterval(() => {
 
 	// console.log(time);
 
-	if (time === 60 * 10) {
+	if (time >= 60 * 10) {
 		if (
 			DateTime.fromISO(store.lastReadingTime!).toISODate() ===
 			DateTime.now().minus({ days: 1 }).toISODate()
 		) {
 			store.addDayOfReading();
 			console.log('Add Day');
-		} else {
-			store.daysOfReading = 1;
 		}
-	}
 
-	store.lastReadingTime = DateTime.now().toISO() as unknown as string;
+		store.lastReadingTime = DateTime.now().toISO() as unknown as string;
+	}
 }, 1000);
 
 let startTime: DateTime;
