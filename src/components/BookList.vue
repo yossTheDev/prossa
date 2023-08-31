@@ -75,6 +75,7 @@ const getGroups = computed(() => {
 				:title="book.metadata.title"
 				:percent="book.percent"
 				:img="book.img"
+				:metadata="book.metadata"
 			></BookItem>
 		</k-list-group>
 	</k-list>

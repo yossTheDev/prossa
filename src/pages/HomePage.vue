@@ -140,6 +140,8 @@ onMounted(() => {
 
 	/* Disable Keep Awake */
 	KeepAwake.allowSleep();
+
+	console.log(store.books);
 });
 </script>
 
@@ -304,6 +306,7 @@ onMounted(() => {
 						:description="book.metadata.description"
 						:title="book.metadata.title"
 						:img="book.img"
+						:metadata="book.metadata"
 					></BookItem>
 				</kList>
 			</kPage>

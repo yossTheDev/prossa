@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { kListItem, kDialog, kDialogButton } from 'konsta/vue';
+import { IconTrash } from '@tabler/icons-vue';
+import {
+	kBlock,
+	kButton,
+	kLink,
+	kList,
+	kListItem,
+	kSheet,
+	kToolbar,
+} from 'konsta/vue';
+import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 
@@ -13,6 +23,22 @@ const props = defineProps<{
 	creator: string;
 	percent?: number;
 	img: string;
+	metadata?: {
+		title: string;
+		creator: string;
+		description: string;
+		pubdate: string;
+		publisher: string;
+		identifier: string;
+		language: string;
+		rights: string;
+		modified_date: string;
+		layout: string;
+		orientation: string;
+		flow: string;
+		viewport: string;
+		spread: string;
+	};
 }>();
 
 const open = ref(false);
@@ -66,12 +92,60 @@ const handleDeleteBook = (e: MouseEvent) => {
 	</k-list-item>
 
 	<Teleport to="#popup-target">
-		<k-dialog class="z-50" :opened="open" @backdropclick="() => (open = false)">
-			<template #title>Delete Book?</template>
+		<kSheet
+			class="z-50 flex w-full flex-col md:ml-1 md:w-96"
+			:opened="open"
+			@backdropclick="() => (open = false)"
+		>
+			<kToolbar top>
+				<div class="fixed right-0 mr-2">
+					<kLink @click="() => (open = false)" toolbar> Close </kLink>
+				</div>
+			</kToolbar>
 
-			<template #buttons>
-				<k-dialog-button @click="handleDeleteBook"> Delete </k-dialog-button>
-			</template>
-		</k-dialog>
+			<kBlock>
+				<kList>
+					<kListItem title="Title" :after="title"></kListItem>
+
+					<kListItem title="Author" :after="creator"></kListItem>
+					<kListItem
+						title="Pub Date"
+						:after=" DateTime.fromISO(metadata?.pubdate!).toLocaleString(DateTime.DATETIME_FULL) || 'undefined'"
+					></kListItem>
+
+					<kListItem
+						title="Modified Date"
+						:after="metadata?.modified_date || 'undefined'"
+					></kListItem>
+
+					<kListItem
+						title="Identifier"
+						:after="metadata?.identifier! || 'undefined'"
+					></kListItem>
+
+					<kListItem
+						title="Publisher"
+						:after="metadata?.publisher! || 'undefined'"
+					></kListItem>
+
+					<kListItem
+						title="Language"
+						:after="metadata?.language! || 'undefined'"
+					></kListItem>
+
+					<kListItem
+						title="Rights"
+						:after="metadata?.rights! || 'undefined'"
+					></kListItem>
+				</kList>
+
+				<kButton @click="handleDeleteBook">
+					<template #media>
+						<IconTrash></IconTrash>
+					</template>
+					Delete
+				</kButton>
+			</kBlock>
+		</kSheet>
 	</Teleport>
 </template>
