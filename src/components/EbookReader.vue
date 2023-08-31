@@ -29,7 +29,7 @@ const props = defineProps<{
 
 /* Component State */
 const isDark = useDark();
-const showHighlightsPanel = ref(false);
+const showHighlightsCreator = ref(false);
 const currentCfiRange = ref(''); // Used for Highlights
 const showControls = ref(true);
 const currentPos = ref(0);
@@ -45,7 +45,7 @@ const store = useAppStore();
 const chapters = ref();
 
 const setRenderSelection = (cfiRange: string, content: Contents) => {
-	showHighlightsPanel.value = true;
+	showHighlightsCreator.value = true;
 	showControls.value = false;
 	currentCfiRange.value = cfiRange;
 	contents = content;
@@ -78,7 +78,7 @@ const createHighlight = (color: string) => {
 		}
 	);
 	contents.window.getSelection()?.removeAllRanges();
-	showHighlightsPanel.value = false;
+	showHighlightsCreator.value = false;
 };
 
 const removeSelection = (cfiRange: string, id: string) => {
@@ -170,7 +170,7 @@ onMounted(async () => {
 	rendition.on('rendered', (e: any, i: any) => {
 		i.document.documentElement.addEventListener('click', () => {
 			showControls.value = !showControls.value;
-			showHighlightsPanel.value = false;
+			showHighlightsCreator.value = false;
 		});
 
 		i.document.documentElement.addEventListener(
@@ -377,7 +377,7 @@ function toggleControls() {
 
 	<!--Highlight Creator-->
 	<div
-		v-if="showHighlightsPanel"
+		v-if="showHighlightsCreator"
 		class="pointer-events-none absolute z-50 flex h-full w-full"
 	>
 		<div
