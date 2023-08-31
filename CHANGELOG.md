@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.6
+
+* feat: Highlight Colors
+
 ## v 1.1.5
 
 * feat: Book Highlights
