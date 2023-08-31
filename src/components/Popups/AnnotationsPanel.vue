@@ -26,7 +26,7 @@ defineProps({
 			<k-list class="flex h-full flex-col gap-2 overflow-auto px-3">
 				<k-list-item
 					v-if="!store.getBook(bookID!)?.selections || store.getBook(bookID!)?.selections?.length === 0"
-					:title="'No Highlights yet'"
+					:title="'No highlights yet'"
 				/>
 
 				<AnnotationItem

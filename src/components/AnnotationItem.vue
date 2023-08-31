@@ -31,7 +31,6 @@ const handleContextMenu = (ev: MouseEvent) => {
 		:class="'popover-' + id"
 	>
 	</k-list-item>
-	<p>{{ title }}</p>
 	<kButton
 		@click="() => removeSelection!(cfiRange,id)"
 		class="mx-auto flex w-48"

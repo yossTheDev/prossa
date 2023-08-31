@@ -310,11 +310,12 @@ function toggleControls() {
 				class="mx-auto flex w-80 flex-auto select-none flex-col overflow-auto"
 			>
 				<div
-					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-xl bg-md-light-surface-1 p-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
+					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-2xl bg-md-light-surface-2 px-2 py-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
 				>
-					<div class="flex w-1/3 flex-auto">
+					<div class="flex flex-auto">
 						<!-- Chapters -->
-						<div
+						<kButton
+							clear
 							@click="
 								() =>
 									$router.replace({
@@ -325,36 +326,30 @@ function toggleControls() {
 										},
 									})
 							"
-							class="hover:bg-neutral my-auto ml-auto flex rounded-xl p-2 transition-all active:scale-90"
 						>
 							<IconBook2></IconBook2>
-						</div>
-
-						<!-- Arrow Back -->
-						<div
-							class="hover:bg-neutral my-auto cursor-pointer select-none rounded-xl p-2"
-							@click="back"
-						>
-							<IconArrowLeft></IconArrowLeft>
-						</div>
-
-						<!-- Arrow Next -->
-						<div
-							class="hover:bg-neutral my-auto cursor-pointer select-none rounded-xl p-2"
-							@click="next"
-						>
-							<IconArrowRight></IconArrowRight>
-						</div>
+						</kButton>
 					</div>
 
-					<div class="flex w-1/3 flex-auto">
+					<div class="flex flex-auto gap-1">
+						<!-- Arrow Back -->
+						<kButton clear @click="back">
+							<IconArrowLeft></IconArrowLeft>
+						</kButton>
+
 						<!-- Percent -->
 						<p class="my-auto mx-auto">{{ currentPos + '%' }}</p>
+
+						<!-- Arrow Next -->
+						<kButton clear @click="next">
+							<IconArrowRight></IconArrowRight>
+						</kButton>
 					</div>
 
-					<div class="flex w-1/3 flex-auto items-end">
+					<div class="flex flex-auto items-end">
 						<!-- Highlights -->
-						<div
+						<kButton
+							clear
 							@click="
 								() =>
 									$router.push({
@@ -365,10 +360,9 @@ function toggleControls() {
 										},
 									})
 							"
-							class="hover:bg-neutral my-auto ml-auto flex rounded-xl p-2 transition-all active:scale-90"
 						>
 							<IconHighlight></IconHighlight>
-						</div>
+						</kButton>
 					</div>
 				</div>
 			</div>
