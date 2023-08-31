@@ -3,29 +3,35 @@ import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconArrowLeft,
 	IconArrowRight,
-	IconBook2,
 	IconHighlight,
+	IconChevronUp,
 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book, Contents, Rendition } from 'epubjs';
 import {
-	kBlockTitle,
 	kButton,
 	kList,
 	kListItem,
 	kPage,
-	kPanel,
 	kPreloader,
+	kNavbar,
+	kPopup,
+	kTabbar,
+	kTabbarLink,
+	kFab,
 } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
-import AnnotationsPanel from './Popups/AnnotationsPanel.vue';
+import AnnotationItem from './AnnotationItem.vue';
 
 const props = defineProps<{
 	id: string;
 }>();
+
+/* App Store */
+const store = useAppStore();
 
 /* Component State */
 const isDark = useDark();
@@ -34,12 +40,10 @@ const currentCfiRange = ref(''); // Used for Highlights
 const showControls = ref(true);
 const currentPos = ref(0);
 const isReady = ref(false);
+const tab = ref<'Contents' | 'Highlights'>('Contents');
 let book: Book | null = null;
 let rendition: Rendition;
 let contents: Contents;
-
-/* App Store */
-const store = useAppStore();
 
 /* Chapters */
 const chapters = ref();
@@ -307,30 +311,11 @@ function toggleControls() {
 		>
 			<!-- Controls -->
 			<div
-				class="mx-auto flex w-80 flex-auto select-none flex-col overflow-auto"
+				class="mx-auto flex w-72 flex-auto select-none flex-col overflow-auto"
 			>
 				<div
 					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-2xl bg-md-light-surface-2 px-2 py-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
 				>
-					<div class="flex flex-auto">
-						<!-- Chapters -->
-						<kButton
-							clear
-							@click="
-								() =>
-									$router.replace({
-										name: 'book',
-										params: {
-											id: $route.params.id,
-											chapter: 'chapter',
-										},
-									})
-							"
-						>
-							<IconBook2></IconBook2>
-						</kButton>
-					</div>
-
 					<div class="flex flex-auto gap-1">
 						<!-- Arrow Back -->
 						<kButton clear @click="back">
@@ -345,27 +330,28 @@ function toggleControls() {
 							<IconArrowRight></IconArrowRight>
 						</kButton>
 					</div>
-
-					<div class="flex flex-auto items-end">
-						<!-- Highlights -->
-						<kButton
-							clear
-							@click="
-								() =>
-									$router.push({
-										name: 'book',
-										params: {
-											id: $route.params.id,
-											annotations: 'annotations',
-										},
-									})
-							"
-						>
-							<IconHighlight></IconHighlight>
-						</kButton>
-					</div>
 				</div>
 			</div>
+
+			<!-- Menu FAB -->
+			<k-fab
+				v-if="showControls"
+				@click="
+					() =>
+						$router.replace({
+							name: 'book',
+							params: {
+								id: $route.params.id,
+								book_menu: 'book_menu',
+							},
+						})
+				"
+				class="fixed z-20 right-4-safe bottom-4-safe"
+			>
+				<template #icon>
+					<IconChevronUp></IconChevronUp>
+				</template>
+			</k-fab>
 		</TransitionRoot>
 	</div>
 
@@ -400,37 +386,6 @@ function toggleControls() {
 		</div>
 	</div>
 
-	<!-- Chapters Panel -->
-	<k-panel
-		side="left"
-		floating
-		:opened="$route.params.chapter === 'chapter'"
-		@backdropclick="
-			() => $router.replace({ name: 'book', params: { id: $route.params.id } })
-		"
-	>
-		<k-page class="flex h-full flex-col overflow-hidden">
-			<k-block-title>Chapters</k-block-title>
-			<k-list class="flex h-full flex-col overflow-auto">
-				<k-list-item
-					:title="item.label"
-					@click="toChapter(item.href)"
-					:key="item.id"
-					link
-					v-for="item in chapters"
-					class="hover:bg-neutral rounded-xl p-1"
-				></k-list-item>
-			</k-list>
-		</k-page>
-	</k-panel>
-
-	<!-- Annotations Panel -->
-	<AnnotationsPanel
-		:remove-selection="removeSelection"
-		:to-chapter="toChapter"
-		:book-i-d="id"
-	></AnnotationsPanel>
-
 	<!--Loading-->
 	<TransitionRoot
 		enter="transition-opacity duration-75"
@@ -452,6 +407,97 @@ function toggleControls() {
 			</div>
 		</div>
 	</TransitionRoot>
+
+	<!--Menu-->
+	<kPopup
+		@backdropclick="
+			() =>
+				$router.replace({
+					name: 'book',
+					params: {
+						id: $route.params.id,
+					},
+				})
+		"
+		:opened="$route.params.book_menu === 'book_menu'"
+	>
+		<kPage class="flex flex-col md:overflow-hidden">
+			<kNavbar
+				:subtitle="store.getBook(id)?.metadata?.creator"
+				:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata.title.slice(0,27) + '...' : store.getBook(id)?.metadata.title!"
+			>
+				<template #right>
+					<div class="fixed right-0 mr-2 cursor-pointer select-none md:mr-4">
+						<kLink
+							@click="
+								() =>
+									$router.replace({
+										name: 'book',
+										params: {
+											id: $route.params.id,
+										},
+									})
+							"
+							navbar
+							>Close</kLink
+						>
+					</div>
+				</template>
+			</kNavbar>
+
+			<kTabbar>
+				<kTabbarLink
+					:active="tab === 'Contents'"
+					@click="tab = 'Contents'"
+					label="Chapters"
+				></kTabbarLink>
+				<kTabbarLink
+					:active="tab === 'Highlights'"
+					@click="tab = 'Highlights'"
+					label="Highlights"
+				></kTabbarLink>
+			</kTabbar>
+
+			<div class="flex h-full overflow-auto">
+				<k-list v-if="tab === 'Contents'" class="flex h-full w-full flex-col">
+					<k-list-item
+						:title="item.label"
+						@click="toChapter(item.href)"
+						:key="item.id"
+						link
+						v-for="item in chapters"
+						class="hover:bg-neutral rounded-xl p-1"
+					></k-list-item>
+				</k-list>
+
+				<k-list
+					v-if="tab === 'Highlights'"
+					class="flex h-full w-full flex-col px-1"
+				>
+					<k-list-item
+						v-if="!store.getBook(id!)?.selections || store.getBook(id!)?.selections?.length === 0"
+						:title="'No highlights yet'"
+					/>
+
+					<AnnotationItem
+						:to-chapter="toChapter"
+						:cfi-range="selection.cfiRange"
+						:remove-selection="removeSelection"
+						v-for="(selection) in store.getBook(id!)?.selections"
+						:id="selection.id"
+						:title="selection.label"
+						:key="selection.id"
+						:text="
+							selection.text.length > 240
+								? selection.text.slice(0, 237) + '...'
+								: selection.text
+						"
+					>
+					</AnnotationItem>
+				</k-list>
+			</div>
+		</kPage>
+	</kPopup>
 
 	<!-- Content -->
 	<div

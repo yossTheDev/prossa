@@ -223,6 +223,26 @@ onMounted(() => {
 					<p class="-mt-3 text-2xl">Prossa</p>
 				</div>
 			</template>
+
+			<template #subnavbar>
+				<div
+					class="flex max-h-10 w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
+				>
+					<div class="ml-2 flex w-full">
+						<kSearchbar
+							disable-button
+							@input="(ev) => (query = ev.currentTarget.value)"
+							:value="query"
+							:clear-button="false"
+							:colors="{
+								inputBgMaterial:
+									'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
+							}"
+							input-style="padding-left: 2rem"
+						></kSearchbar>
+					</div>
+				</div>
+			</template>
 		</k-navbar>
 
 		<!-- Search Popup-->

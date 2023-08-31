@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { kButton, kList, kListItem, kPopover } from 'konsta/vue';
+import { kButton, kListItem } from 'konsta/vue';
 import { ref } from 'vue';
+import { IconClipboardCopy, IconShare, IconTrash } from '@tabler/icons-vue';
 
 defineProps({
 	id: String,
@@ -22,35 +23,24 @@ const handleContextMenu = (ev: MouseEvent) => {
 
 <template>
 	<k-list-item
-		class="z-50"
 		:title="title"
 		:subtitle="text?.length! > 240 ? text?.slice(0, 237) + '...' : text"
 		@click="toChapter!(cfiRange)"
 		@contextmenu="handleContextMenu"
 		link
-		:class="'popover-' + id"
 	>
 	</k-list-item>
-	<kButton
-		@click="() => removeSelection!(cfiRange,id)"
-		class="mx-auto flex w-48"
-		>Remove</kButton
-	>
 
-	<Teleport to="#popup-target">
-		<kPopover
-			@backdropclick="
-				() => {
-					//backdropClick!()
-					openPopover = false;
-				}
-			"
-			:target="'.popover-' + id"
-			:opened="openPopover"
-		>
-			<kList>
-				<kListItem title="Delete"></kListItem>
-			</kList>
-		</kPopover>
-	</Teleport>
+	<div class="mx-2 my-2 flex">
+		<kButton inline clear><IconClipboardCopy></IconClipboardCopy> </kButton>
+
+		<kButton inline clear><IconShare></IconShare> </kButton>
+		<kButton
+			inline
+			tonal
+			@click="() => removeSelection!(cfiRange,id)"
+			class="my-auto ml-auto"
+			><IconTrash></IconTrash>
+		</kButton>
+	</div>
 </template>

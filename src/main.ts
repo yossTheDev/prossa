@@ -17,7 +17,7 @@ const routes = [
 	{ name: 'about', path: '/about/:menu?', component: About },
 	{
 		name: 'book',
-		path: '/book/:id/:chapter?/:annotations?/:popup?/',
+		path: '/book/:id/:book_menu?/',
 		component: Book,
 	},
 ];
