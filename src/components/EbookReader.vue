@@ -458,7 +458,7 @@ function toggleControls() {
 				></kTabbarLink>
 			</kTabbar>
 
-			<div class="flex h-full overflow-auto">
+			<div class="flex h-full md:overflow-auto">
 				<k-list v-if="tab === 'Contents'" class="flex h-full w-full flex-col">
 					<k-list-item
 						:title="item.label"
