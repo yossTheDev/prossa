@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 defineProps({
 	id: String,
-	label: String,
+	title: String,
 	cfiRange: String,
 	text: String,
 	toChapter: Function,
@@ -23,7 +23,7 @@ const handleContextMenu = (ev: MouseEvent) => {
 <template>
 	<k-list-item
 		class="z-50"
-		:title="label"
+		:title="title"
 		:subtitle="text?.length! > 240 ? text?.slice(0, 237) + '...' : text"
 		@click="toChapter!(cfiRange)"
 		@contextmenu="handleContextMenu"
@@ -31,6 +31,7 @@ const handleContextMenu = (ev: MouseEvent) => {
 		:class="'popover-' + id"
 	>
 	</k-list-item>
+	<p>{{ title }}</p>
 	<kButton
 		@click="() => removeSelection!(cfiRange,id)"
 		class="mx-auto flex w-48"

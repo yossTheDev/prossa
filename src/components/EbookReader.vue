@@ -29,11 +29,14 @@ const props = defineProps<{
 
 /* Component State */
 const isDark = useDark();
+const showHighlightsPanel = ref(false);
+const currentCfiRange = ref(''); // Used for Highlights
 const showControls = ref(true);
 const currentPos = ref(0);
 const isReady = ref(false);
 let book: Book | null = null;
 let rendition: Rendition;
+let contents: Contents;
 
 /* App Store */
 const store = useAppStore();
@@ -41,22 +44,41 @@ const store = useAppStore();
 /* Chapters */
 const chapters = ref();
 
-const setRenderSelection = (cfiRange: string, contents: Contents) => {
+const setRenderSelection = (cfiRange: string, content: Contents) => {
+	showHighlightsPanel.value = true;
+	showControls.value = false;
+	currentCfiRange.value = cfiRange;
+	contents = content;
+};
+
+const createHighlight = (color: string) => {
 	store.addBookHighlight(
 		props.id,
-		cfiRange,
+		color,
+		currentCfiRange.value,
 		rendition.location.start.href,
-		rendition.getRange(cfiRange).toString(),
+		rendition.getRange(currentCfiRange.value).toString(),
 		getLabel(book?.navigation.toc, rendition.location.start.href)
 	);
 
-	rendition.annotations.add('highlight', cfiRange, {}, undefined, 'hl', {
-		fill: 'red',
-		'fill-opacity': '0.5',
-		'mix-blend-mode': 'multiply',
-	});
+	console.log(
+		'label ' + getLabel(book?.navigation.toc, rendition.location.start.href)
+	);
 
+	rendition.annotations.add(
+		'highlight',
+		currentCfiRange.value,
+		{},
+		undefined,
+		'hl',
+		{
+			fill: color,
+			'fill-opacity': '0.5',
+			'mix-blend-mode': 'multiply',
+		}
+	);
 	contents.window.getSelection()?.removeAllRanges();
+	showHighlightsPanel.value = false;
 };
 
 const removeSelection = (cfiRange: string, id: string) => {
@@ -136,13 +158,28 @@ onMounted(async () => {
 				undefined,
 				'hl',
 				{
-					fill: 'red',
+					fill: annotation.color ?? 'red',
 					'fill-opacity': '0.5',
 					'mix-blend-mode': 'multiply',
 				}
 			);
 		}
 	}
+
+	/* Add Click Events to Rendition */
+	rendition.on('rendered', (e: any, i: any) => {
+		i.document.documentElement.addEventListener('click', () => {
+			showControls.value = !showControls.value;
+			showHighlightsPanel.value = false;
+		});
+
+		i.document.documentElement.addEventListener(
+			'contextmenu',
+			(ev: MouseEvent) => {
+				ev.preventDefault();
+			}
+		);
+	});
 
 	/* On Book Display */
 	displayed.then(() => {
@@ -280,7 +317,7 @@ function toggleControls() {
 						<div
 							@click="
 								() =>
-									$router.push({
+									$router.replace({
 										name: 'book',
 										params: {
 											id: $route.params.id,
@@ -336,6 +373,37 @@ function toggleControls() {
 				</div>
 			</div>
 		</TransitionRoot>
+	</div>
+
+	<!--Highlight Creator-->
+	<div
+		v-if="showHighlightsPanel"
+		class="pointer-events-none absolute z-50 flex h-full w-full"
+	>
+		<div
+			class="pointer-events-auto mt-4 ml-2 flex h-fit flex-col gap-2 rounded-2xl bg-md-light-surface-1 p-2 dark:bg-md-dark-surface-1"
+		>
+			<IconHighlight class="mx-auto mb-2"></IconHighlight>
+			<button
+				@click="() => createHighlight('#2682DC')"
+				class="h-6 w-6 rounded-2xl bg-[#2682DC]"
+			></button>
+
+			<button
+				@click="() => createHighlight('#C6292C')"
+				class="h-6 w-6 rounded-2xl bg-[#C6292C]"
+			></button>
+
+			<button
+				@click="() => createHighlight('#EBFF38')"
+				class="h-6 w-6 rounded-2xl bg-[#EBFF38]"
+			></button>
+
+			<button
+				@click="() => createHighlight('#5BFF3E')"
+				class="h-6 w-6 rounded-2xl bg-[#5BFF3E]"
+			></button>
+		</div>
 	</div>
 
 	<!-- Chapters Panel -->

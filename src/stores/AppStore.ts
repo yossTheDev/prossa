@@ -15,6 +15,7 @@ export interface Book {
 
 interface Annotation {
 	id: string;
+	color: string;
 	cfiRange: string;
 	text: string;
 	href: string;
@@ -75,6 +76,7 @@ export const useAppStore = defineStore('app-store', {
 
 		addBookHighlight(
 			bookId: string,
+			color: string,
 			cfiRange: string,
 			href: string,
 			text: string,
@@ -87,9 +89,25 @@ export const useAppStore = defineStore('app-store', {
 							selections: book.selections
 								? [
 										...book.selections,
-										{ cfiRange, href, text, label, id: getRandomNumber() },
+										{
+											cfiRange,
+											href,
+											text,
+											label,
+											id: getRandomNumber(),
+											color,
+										},
 								  ]
-								: [{ cfiRange, href, text, id: getRandomNumber() }],
+								: [
+										{
+											cfiRange,
+											href,
+											text,
+											label,
+											id: getRandomNumber(),
+											color,
+										},
+								  ],
 					  }
 					: book
 			) as Book[];

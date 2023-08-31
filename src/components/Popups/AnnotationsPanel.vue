@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { kBlockTitle, kList, kListItem, kPage, kPanel } from 'konsta/vue';
 import { useAppStore } from '../../stores/AppStore';
-
 import AnnotationItem from '../AnnotationItem.vue';
 
 const store = useAppStore();
@@ -24,7 +23,7 @@ defineProps({
 		<k-page class="flex h-full flex-col overflow-hidden">
 			<k-block-title>Highlights</k-block-title>
 
-			<k-list class="flex h-full flex-col overflow-auto">
+			<k-list class="flex h-full flex-col gap-2 overflow-auto px-3">
 				<k-list-item
 					v-if="!store.getBook(bookID!)?.selections || store.getBook(bookID!)?.selections?.length === 0"
 					:title="'No Highlights yet'"
