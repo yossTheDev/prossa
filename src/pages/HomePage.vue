@@ -163,7 +163,7 @@ onMounted(() => {
 			</template>
 
 			<template #right>
-				<div class="fixed right-0 mr-1 flex">
+				<div class="fixed right-0 mr-2 flex">
 					<kButton
 						@click="
 							() => $router.push({ name: '/', params: { stats: 'stats' } })

@@ -412,7 +412,7 @@ function toggleControls() {
 
 	<!--Menu-->
 	<kSheet
-		class="flex max-h-[80%] w-full flex-col md:ml-1 md:h-[95%] md:w-96"
+		class="flex h-[80%] w-full flex-col md:ml-1 md:h-[95%] md:w-96"
 		@backdropclick="
 			() =>
 				$router.replace({
