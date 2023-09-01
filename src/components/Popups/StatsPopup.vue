@@ -30,9 +30,7 @@ onMounted(() => {
 		} else {
 			/* Restart Reading Time This Month */
 			store.setReadingTimeThisMonth(
-				Interval.after(DateTime.now(), DateTime.now())
-					.toDuration(['hours', 'minutes'])
-					.toISO() as unknown as string
+				Duration.fromMillis(0).toISO() as unknown as string
 			);
 		}
 

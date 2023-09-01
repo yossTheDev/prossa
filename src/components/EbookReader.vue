@@ -18,6 +18,7 @@ import {
 	kTabbar,
 	kTabbarLink,
 	kFab,
+	kLink,
 } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -426,8 +427,9 @@ function toggleControls() {
 			:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata.title.slice(0,27) + '...' : store.getBook(id)?.metadata.title!"
 		>
 			<template #right>
-				<div class="fixed right-0 mr-2 cursor-pointer select-none md:mr-4">
+				<div class="fixed right-0 mr-2 cursor-pointer select-none">
 					<kLink
+						toolbar
 						@click="
 							() =>
 								$router.replace({
@@ -437,7 +439,6 @@ function toggleControls() {
 									},
 								})
 						"
-						navbar
 						>Close</kLink
 					>
 				</div>

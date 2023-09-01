@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { IconTrash } from '@tabler/icons-vue';
-import {
-	kBlock,
-	kButton,
-	kLink,
-	kList,
-	kListItem,
-	kSheet,
-	kToolbar,
-} from 'konsta/vue';
+import { kButton, kLink, kList, kListItem, kSheet, kToolbar } from 'konsta/vue';
 import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
@@ -93,7 +85,7 @@ const handleDeleteBook = (e: MouseEvent) => {
 
 	<Teleport to="#popup-target">
 		<kSheet
-			class="z-50 flex w-full flex-col md:ml-1 md:w-96"
+			class="z-50 flex max-h-[80%] w-full flex-col md:ml-1 md:max-h-[90%] md:w-96"
 			:opened="open"
 			@backdropclick="() => (open = false)"
 		>
@@ -103,49 +95,51 @@ const handleDeleteBook = (e: MouseEvent) => {
 				</div>
 			</kToolbar>
 
-			<kBlock>
-				<kList>
-					<kListItem title="Title" :after="title"></kListItem>
+			<div
+				class="flex h-full flex-col overflow-hidden bg-md-light-surface dark:bg-md-dark-surface"
+			>
+				<kList class="flex h-full flex-col overflow-auto">
+					<kListItem title="Title" :subtitle="title"></kListItem>
 
-					<kListItem title="Author" :after="creator"></kListItem>
+					<kListItem title="Author" :subtitle="creator"></kListItem>
 					<kListItem
 						title="Pub Date"
-						:after=" DateTime.fromISO(metadata?.pubdate!).toLocaleString(DateTime.DATETIME_FULL) || 'undefined'"
+						:subtitle=" DateTime.fromISO(metadata?.pubdate!).toLocaleString(DateTime.DATETIME_FULL) || 'undefined'"
 					></kListItem>
 
 					<kListItem
 						title="Modified Date"
-						:after="metadata?.modified_date || 'undefined'"
+						:subtitle="metadata?.modified_date || 'undefined'"
 					></kListItem>
 
 					<kListItem
 						title="Identifier"
-						:after="metadata?.identifier! || 'undefined'"
+						:subtitle="metadata?.identifier! || 'undefined'"
 					></kListItem>
 
 					<kListItem
 						title="Publisher"
-						:after="metadata?.publisher! || 'undefined'"
+						:subtitle="metadata?.publisher! || 'undefined'"
 					></kListItem>
 
 					<kListItem
 						title="Language"
-						:after="metadata?.language! || 'undefined'"
+						:subtitle="metadata?.language! || 'undefined'"
 					></kListItem>
 
 					<kListItem
 						title="Rights"
-						:after="metadata?.rights! || 'undefined'"
+						:subtitle="metadata?.rights! || 'undefined'"
 					></kListItem>
 				</kList>
 
-				<kButton @click="handleDeleteBook">
-					<template #media>
+				<div class="mx-6 my-2">
+					<kButton @click="handleDeleteBook">
 						<IconTrash></IconTrash>
-					</template>
-					Delete
-				</kButton>
-			</kBlock>
+						Delete
+					</kButton>
+				</div>
+			</div>
 		</kSheet>
 	</Teleport>
 </template>
