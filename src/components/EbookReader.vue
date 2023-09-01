@@ -22,7 +22,7 @@ import {
 } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
-import { useAppStore } from '../stores/AppStore';
+import { useAppStore, Book as StoredBook } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
 import AnnotationItem from './AnnotationItem.vue';
 
@@ -44,6 +44,7 @@ const tab = ref<'Contents' | 'Highlights'>('Contents');
 let book: Book | null = null;
 let rendition: Rendition;
 let contents: Contents;
+let StoreBook: StoredBook | undefined;
 
 /* Chapters */
 const chapters = ref();
@@ -113,6 +114,7 @@ const getLabel = (toc: any, href: any) => {
 
 /* Prepare and Load Ebook */
 onMounted(async () => {
+	StoreBook = store.getBook(props.id);
 	const _book = await localforage.getItem(props.id);
 
 	book = new Book(
@@ -410,7 +412,7 @@ function toggleControls() {
 
 	<!--Menu-->
 	<kSheet
-		class="flex max-h-[80%] w-full flex-col md:ml-1 md:max-h-[90%] md:w-96"
+		class="flex max-h-[80%] w-full flex-col md:ml-1 md:h-[90%] md:w-96"
 		@backdropclick="
 			() =>
 				$router.replace({
@@ -423,8 +425,8 @@ function toggleControls() {
 		:opened="$route.params.book_menu === 'book_menu'"
 	>
 		<kNavbar
-			:subtitle="store.getBook(id)?.metadata?.creator"
-			:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata.title.slice(0,27) + '...' : store.getBook(id)?.metadata.title!"
+			:subtitle="StoreBook?.metadata?.creator!"
+			:title="StoreBook?.metadata?.title?.length! > 30 ? StoreBook?.metadata?.title?.slice(0,27) + '...' : StoreBook?.metadata?.title!"
 		>
 			<template #right>
 				<div class="fixed right-0 mr-2 cursor-pointer select-none">
@@ -479,18 +481,21 @@ function toggleControls() {
 				class="flex h-full w-full flex-col px-1"
 			>
 				<k-list-item
-					v-if="!store.getBook(id!)?.selections || store.getBook(id!)?.selections?.length === 0"
+					v-if="!StoreBook?.selections || StoreBook.selections?.length === 0"
 					:title="'No highlights yet'"
 				/>
 
 				<AnnotationItem
+					v-for="selection in StoreBook?.selections"
 					:to-chapter="toChapter"
 					:cfi-range="selection.cfiRange"
 					:remove-selection="removeSelection"
-					v-for="(selection) in store.getBook(id!)?.selections"
+					:author="StoreBook?.metadata.creator"
+					:book-title="StoreBook?.metadata.title"
 					:id="selection.id"
 					:title="selection.label"
 					:key="selection.id"
+					:full-text="selection.text"
 					:text="
 						selection.text.length > 240
 							? selection.text.slice(0, 237) + '...'
