@@ -412,7 +412,7 @@ function toggleControls() {
 
 	<!--Menu-->
 	<kSheet
-		class="flex max-h-[80%] w-full flex-col md:ml-1 md:h-[90%] md:w-96"
+		class="flex max-h-[80%] w-full flex-col md:ml-1 md:h-[95%] md:w-96"
 		@backdropclick="
 			() =>
 				$router.replace({
@@ -481,12 +481,15 @@ function toggleControls() {
 				class="flex h-full w-full flex-col px-1"
 			>
 				<k-list-item
-					v-if="!StoreBook?.selections || StoreBook.selections?.length === 0"
+					v-if="
+						!store.getBook(id)?.selections ||
+						store.getBook(id)?.selections?.length === 0
+					"
 					:title="'No highlights yet'"
 				/>
 
 				<AnnotationItem
-					v-for="selection in StoreBook?.selections"
+					v-for="selection in store.getBook(id)?.selections"
 					:to-chapter="toChapter"
 					:cfi-range="selection.cfiRange"
 					:remove-selection="removeSelection"
