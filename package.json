@@ -8,7 +8,7 @@
 		"build": "vue-tsc && vite build",
 		"preview": "vite preview",
 		"android:build": "yarn build && npx cap sync && cd android && gradle build && cd ..",
-		"android:icons": "npx capacitor-assets generate --android --iconBackgroundColor '#59ADFF' --logoSplashScale '0.6'"
+		"android:icons": "npx capacitor-assets generate --android --iconBackgroundColor '#FFFFFF' --logoSplashScale '0.6'"
 	},
 	"dependencies": {
 		"@capacitor-community/keep-awake": "^4.0.0",
