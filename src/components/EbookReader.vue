@@ -12,10 +12,9 @@ import {
 	kButton,
 	kList,
 	kListItem,
-	kPage,
+	kSheet,
 	kPreloader,
 	kNavbar,
-	kPopup,
 	kTabbar,
 	kTabbarLink,
 	kFab,
@@ -311,10 +310,10 @@ function toggleControls() {
 		>
 			<!-- Controls -->
 			<div
-				class="mx-auto flex w-72 flex-auto select-none flex-col overflow-auto"
+				class="mx-auto flex w-56 flex-auto select-none flex-col overflow-hidden md:w-72"
 			>
 				<div
-					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto overflow-auto rounded-2xl bg-md-light-surface-2 px-2 py-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
+					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto rounded-2xl bg-md-light-surface-2 px-2 py-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
 				>
 					<div class="flex flex-auto gap-1">
 						<!-- Arrow Back -->
@@ -338,7 +337,7 @@ function toggleControls() {
 				v-if="showControls"
 				@click="
 					() =>
-						$router.replace({
+						$router.push({
 							name: 'book',
 							params: {
 								id: $route.params.id,
@@ -409,7 +408,8 @@ function toggleControls() {
 	</TransitionRoot>
 
 	<!--Menu-->
-	<kPopup
+	<kSheet
+		class="flex max-h-[80%] w-full flex-col md:ml-1 md:max-h-[90%] md:w-96"
 		@backdropclick="
 			() =>
 				$router.replace({
@@ -421,83 +421,85 @@ function toggleControls() {
 		"
 		:opened="$route.params.book_menu === 'book_menu'"
 	>
-		<kPage class="flex flex-col md:overflow-hidden">
-			<kNavbar
-				:subtitle="store.getBook(id)?.metadata?.creator"
-				:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata.title.slice(0,27) + '...' : store.getBook(id)?.metadata.title!"
-			>
-				<template #right>
-					<div class="fixed right-0 mr-2 cursor-pointer select-none md:mr-4">
-						<kLink
-							@click="
-								() =>
-									$router.replace({
-										name: 'book',
-										params: {
-											id: $route.params.id,
-										},
-									})
-							"
-							navbar
-							>Close</kLink
-						>
-					</div>
-				</template>
-			</kNavbar>
-
-			<kTabbar>
-				<kTabbarLink
-					:active="tab === 'Contents'"
-					@click="tab = 'Contents'"
-					label="Chapters"
-				></kTabbarLink>
-				<kTabbarLink
-					:active="tab === 'Highlights'"
-					@click="tab = 'Highlights'"
-					label="Highlights"
-				></kTabbarLink>
-			</kTabbar>
-
-			<div class="flex h-full md:overflow-auto">
-				<k-list v-if="tab === 'Contents'" class="flex h-full w-full flex-col">
-					<k-list-item
-						:title="item.label"
-						@click="toChapter(item.href)"
-						:key="item.id"
-						link
-						v-for="item in chapters"
-						class="hover:bg-neutral rounded-xl p-1"
-					></k-list-item>
-				</k-list>
-
-				<k-list
-					v-if="tab === 'Highlights'"
-					class="flex h-full w-full flex-col px-1"
-				>
-					<k-list-item
-						v-if="!store.getBook(id!)?.selections || store.getBook(id!)?.selections?.length === 0"
-						:title="'No highlights yet'"
-					/>
-
-					<AnnotationItem
-						:to-chapter="toChapter"
-						:cfi-range="selection.cfiRange"
-						:remove-selection="removeSelection"
-						v-for="(selection) in store.getBook(id!)?.selections"
-						:id="selection.id"
-						:title="selection.label"
-						:key="selection.id"
-						:text="
-							selection.text.length > 240
-								? selection.text.slice(0, 237) + '...'
-								: selection.text
+		<kNavbar
+			:subtitle="store.getBook(id)?.metadata?.creator"
+			:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata.title.slice(0,27) + '...' : store.getBook(id)?.metadata.title!"
+		>
+			<template #right>
+				<div class="fixed right-0 mr-2 cursor-pointer select-none md:mr-4">
+					<kLink
+						@click="
+							() =>
+								$router.replace({
+									name: 'book',
+									params: {
+										id: $route.params.id,
+									},
+								})
 						"
+						navbar
+						>Close</kLink
 					>
-					</AnnotationItem>
-				</k-list>
-			</div>
-		</kPage>
-	</kPopup>
+				</div>
+			</template>
+
+			<template #subnavbar>
+				<kTabbar>
+					<kTabbarLink
+						:active="tab === 'Contents'"
+						@click="tab = 'Contents'"
+						label="Chapters"
+					></kTabbarLink>
+					<kTabbarLink
+						:active="tab === 'Highlights'"
+						@click="tab = 'Highlights'"
+						label="Highlights"
+					></kTabbarLink>
+				</kTabbar>
+			</template>
+		</kNavbar>
+
+		<div
+			class="flex h-full overflow-auto bg-md-light-surface dark:bg-md-dark-surface"
+		>
+			<k-list v-if="tab === 'Contents'" class="flex h-full w-full flex-col">
+				<k-list-item
+					:title="item.label"
+					@click="toChapter(item.href)"
+					:key="item.id"
+					link
+					v-for="item in chapters"
+					class="hover:bg-neutral rounded-xl p-1"
+				></k-list-item>
+			</k-list>
+
+			<k-list
+				v-if="tab === 'Highlights'"
+				class="flex h-full w-full flex-col px-1"
+			>
+				<k-list-item
+					v-if="!store.getBook(id!)?.selections || store.getBook(id!)?.selections?.length === 0"
+					:title="'No highlights yet'"
+				/>
+
+				<AnnotationItem
+					:to-chapter="toChapter"
+					:cfi-range="selection.cfiRange"
+					:remove-selection="removeSelection"
+					v-for="(selection) in store.getBook(id!)?.selections"
+					:id="selection.id"
+					:title="selection.label"
+					:key="selection.id"
+					:text="
+						selection.text.length > 240
+							? selection.text.slice(0, 237) + '...'
+							: selection.text
+					"
+				>
+				</AnnotationItem>
+			</k-list>
+		</div>
+	</kSheet>
 
 	<!-- Content -->
 	<div
