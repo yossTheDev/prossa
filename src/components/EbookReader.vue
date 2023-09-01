@@ -465,7 +465,7 @@ function toggleControls() {
 		<div
 			class="flex h-full overflow-auto bg-md-light-surface dark:bg-md-dark-surface"
 		>
-			<k-list v-if="tab === 'Contents'" class="flex h-full w-full flex-col">
+			<k-list v-if="tab === 'Contents'" class="flex w-full flex-col">
 				<k-list-item
 					:title="item.label"
 					@click="toChapter(item.href)"
@@ -476,16 +476,13 @@ function toggleControls() {
 				></k-list-item>
 			</k-list>
 
-			<k-list
-				v-if="tab === 'Highlights'"
-				class="flex h-full w-full flex-col px-1"
-			>
+			<k-list v-if="tab === 'Highlights'" class="flex w-full flex-col px-1">
 				<k-list-item
 					v-if="
 						!store.getBook(id)?.selections ||
 						store.getBook(id)?.selections?.length === 0
 					"
-					:title="'No highlights yet'"
+					:title="'You have not made any entries yet'"
 				/>
 
 				<AnnotationItem

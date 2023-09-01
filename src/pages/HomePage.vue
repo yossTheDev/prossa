@@ -175,7 +175,7 @@ onMounted(() => {
 						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
 					>
 					<kLink
-						class="mt-1"
+						class="mt-1 hidden"
 						@click="
 							() => $router.push({ name: '/', params: { search: 'search' } })
 						"
@@ -232,7 +232,6 @@ onMounted(() => {
 				>
 					<div class="ml-2 flex w-full">
 						<kSearchbar
-							disable-button
 							@input="(ev) => (query = ev.currentTarget.value)"
 							:value="query"
 							:clear-button="false"
