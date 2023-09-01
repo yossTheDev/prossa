@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.7
+
+* feat: Share and Copy To Clipboard book highlights
+
 ## v 1.1.6
 
 * feat: Highlight Colors
