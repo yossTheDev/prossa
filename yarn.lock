@@ -1428,12 +1428,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capacitor/clipboard@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "@capacitor/clipboard@npm:5.0.6"
+  peerDependencies:
+    "@capacitor/core": ^5.0.0
+  checksum: 6a9289e669e949b90e5963a50d9570a4c1f0dcd790c4718b311078f3093fa95cf0ec7dfd608ebb8169308d36df486f304a50e86b139bd9bcfe2910a4a6cd3087
+  languageName: node
+  linkType: hard
+
 "@capacitor/core@npm:^5.3.0":
   version: 5.3.0
   resolution: "@capacitor/core@npm:5.3.0"
   dependencies:
     tslib: ^2.1.0
   checksum: 1de631e0141bfefee3272239d3b3bfd5d50613bf5e4ebb0602fe6afb533f1a401a8cf35663389bbbff78959b2f11fa9c33e68feb44112d18fd07610658210d21
+  languageName: node
+  linkType: hard
+
+"@capacitor/share@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "@capacitor/share@npm:5.0.6"
+  peerDependencies:
+    "@capacitor/core": ^5.0.0
+  checksum: 2b04b298b6fb391647827de958040bb173fb203bda03a92db56e1aee74d916255ff63a50f986f27512888d6dd173e9a310025d8a212d2cbba81b55a1df3ff27f
   languageName: node
   linkType: hard
 
@@ -7843,7 +7861,9 @@ __metadata:
     "@capacitor/app": ^5.0.6
     "@capacitor/assets": ^2.0.4
     "@capacitor/cli": ^5.3.0
+    "@capacitor/clipboard": ^5.0.6
     "@capacitor/core": ^5.3.0
+    "@capacitor/share": ^5.0.6
     "@capacitor/status-bar": ^5.0.6
     "@headlessui-float/vue": ^0.11.1
     "@headlessui/vue": ^1.7.8
