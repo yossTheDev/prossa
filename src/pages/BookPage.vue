@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { KeepAwake } from '@capacitor-community/keep-awake';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
+import { kPage } from 'konsta/vue';
+import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import EbookReader from '../components/EbookReader.vue';
 import { useAppStore } from '../stores/AppStore';
-import { DateTime, Duration, Interval } from 'luxon';
-import { kPage } from 'konsta/vue';
-import { StatusBar } from '@capacitor/status-bar';
-import { KeepAwake } from '@capacitor-community/keep-awake';
 
 /* App Store */
 const store = useAppStore();
@@ -23,8 +24,10 @@ onMounted(() => {
 	startTime = DateTime.now();
 
 	/* Hide Status Bar */
-	StatusBar.hide();
-	StatusBar.setOverlaysWebView({ overlay: true });
+	if (Capacitor.isNativePlatform()) {
+		StatusBar.hide();
+		StatusBar.setOverlaysWebView({ overlay: true });
+	}
 
 	/* Enable Keep Awake */
 	KeepAwake.keepAwake();

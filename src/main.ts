@@ -4,6 +4,10 @@ import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2';
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import App from './App.vue';
+import Framework7 from 'framework7';
+import Framework7Vue from 'framework7-vue';
+
+Framework7.use(Framework7Vue);
 
 import './style.css';
 

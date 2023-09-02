@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { KeepAwake } from '@capacitor-community/keep-awake';
+import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
 import { TransitionRoot } from '@headlessui/vue';
 import {
@@ -32,7 +34,6 @@ import BookList from '../components/BookList.vue';
 import StatsPopup from '../components/Popups/StatsPopup.vue';
 import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
-import { KeepAwake } from '@capacitor-community/keep-awake';
 
 const store = useAppStore();
 const router = useRouter();
@@ -135,8 +136,10 @@ watch(message, () => {
 
 onMounted(() => {
 	/* Show Status Bar */
-	StatusBar.show();
-	StatusBar.setOverlaysWebView({ overlay: false });
+	if (Capacitor.isNativePlatform()) {
+		StatusBar.show();
+		StatusBar.setOverlaysWebView({ overlay: false });
+	}
 
 	/* Disable Keep Awake */
 	KeepAwake.allowSleep();
