@@ -398,7 +398,12 @@ function toggleControls() {
 	<!--Menu-->
 	<f7Popup
 		@popup:closed="() => f7.statusbar.hide()"
-		@popup:opened="() => f7.statusbar.show()"
+		@popup:opened="
+			() => {
+				f7.statusbar.show();
+				f7.statusbar.overlaysWebView(true);
+			}
+		"
 		close-on-escape
 		class="menu_popup"
 	>

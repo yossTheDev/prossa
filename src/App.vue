@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { StatusBar, Style } from '@capacitor/status-bar';
 import { useDark } from '@vueuse/core';
 import { f7App, f7Panel, f7View } from 'framework7-vue';
 import { kProvider } from 'konsta/vue';
@@ -37,9 +36,8 @@ onMounted(() => {
 			router.back();
 		}
 	}); */
-
 	/* Change Status Bar Colors based on Theme */
-	useDark({
+	/* useDark({
 		onChanged: (isDark) => {
 			if (isDark) {
 				StatusBar.setBackgroundColor({ color: '#272931' });
@@ -49,14 +47,18 @@ onMounted(() => {
 				StatusBar.setStyle({ style: Style.Light });
 			}
 		},
-	});
+	}); */
 });
 </script>
 
 <template>
 	<k-provider theme="parent">
 		<f7App
-			:statusbar="{ enabled: true, androidOverlaysWebView: true }"
+			:statusbar="{
+				enabled: true,
+				androidOverlaysWebView: true,
+				androidTextColor: dark ? 'light' : 'dark',
+			}"
 			v-bind="{
 				dark: dark,
 				routes: [

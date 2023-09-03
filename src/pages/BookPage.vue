@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { KeepAwake } from '@capacitor-community/keep-awake';
-import { Capacitor } from '@capacitor/core';
-import { StatusBar } from '@capacitor/status-bar';
-import { f7Page } from 'framework7-vue';
+import { f7, f7Page } from 'framework7-vue';
 import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted, onUnmounted } from 'vue';
 import EbookReader from '../components/EbookReader.vue';
@@ -22,21 +20,21 @@ onMounted(() => {
 	startTime = DateTime.now();
 
 	/* Hide Status Bar */
-	if (Capacitor.isNativePlatform()) {
+	/* if (Capacitor.isNativePlatform()) {
 		StatusBar.hide();
 		StatusBar.setOverlaysWebView({ overlay: true });
-	}
+	} */
+
+	f7.statusbar.hide();
 
 	/* Enable Keep Awake */
 	KeepAwake.keepAwake();
 });
 
 onUnmounted(() => {
-	/* Show Status Bar */
-	if (Capacitor.isNativePlatform()) {
-		StatusBar.show();
-		StatusBar.setOverlaysWebView({ overlay: true });
-	}
+	/* Show StatusBar */
+	f7.statusbar.show();
+	f7.statusbar.overlaysWebView(true);
 
 	/* Enable Keep Awake */
 	KeepAwake.allowSleep();
