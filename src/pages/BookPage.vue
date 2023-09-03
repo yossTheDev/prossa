@@ -19,14 +19,8 @@ onMounted(() => {
 
 	startTime = DateTime.now();
 
-	/* Hide Status Bar */
-	/* if (Capacitor.isNativePlatform()) {
-		StatusBar.hide();
-		StatusBar.setOverlaysWebView({ overlay: true });
-	} */
-
 	f7.statusbar.hide();
-
+	f7.statusbar.overlaysWebView(true);
 	/* Enable Keep Awake */
 	KeepAwake.keepAwake();
 });

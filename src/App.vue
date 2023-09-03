@@ -2,30 +2,13 @@
 import { useDark } from '@vueuse/core';
 import { f7App, f7Panel, f7View } from 'framework7-vue';
 import { kProvider } from 'konsta/vue';
-import { onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted } from 'vue';
 import HomePage from './pages/HomePage.vue';
 import StatsPopup from './components/Popups/StatsPopup.vue';
 import BookPage from './pages/BookPage.vue';
 
 // const router = useRouter();
-const route = useRoute();
-const canGoBack = ref(false);
 const dark = useDark();
-
-watch(route, () => {
-	/* Define if the user can go back through navigation */
-	if (
-		route.name === ('/' || 'about' || 'book') &&
-		!route.params.stats &&
-		!route.params.search &&
-		!route.params.menu
-	) {
-		canGoBack.value = false;
-	} else {
-		canGoBack.value = true;
-	}
-});
 
 onMounted(() => {
 	/* Add back Button listener for Android */
@@ -57,7 +40,7 @@ onMounted(() => {
 			:statusbar="{
 				enabled: true,
 				androidOverlaysWebView: true,
-				androidTextColor: dark ? 'light' : 'dark',
+				androidTextColor: dark ? 'white' : 'black',
 			}"
 			v-bind="{
 				dark: dark,

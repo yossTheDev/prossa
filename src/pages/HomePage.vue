@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-	IconBooks,
-	IconFlame,
-	IconMenu2,
-	IconPlus,
-	IconSearch,
-} from '@tabler/icons-vue';
+import { IconBooks, IconFlame, IconMenu2, IconPlus } from '@tabler/icons-vue';
 import {
 	f7Button,
 	f7Fab,
@@ -15,7 +9,6 @@ import {
 	f7Searchbar,
 	f7Subnavbar,
 } from 'framework7-vue';
-import { kLink } from 'konsta/vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
 import { computed, ref, watch } from 'vue';
@@ -23,10 +16,9 @@ import { Base64Binary } from '../../src/utilities/base';
 import BookList from '../components/BookList.vue';
 import { useAppStore } from '../stores/AppStore';
 
+/* Control State */
 const store = useAppStore();
-
 const loading = ref(false);
-
 const query = ref('');
 const message = ref('');
 
@@ -121,26 +113,22 @@ watch(message, () => {
 </script>
 
 <template>
-	<f7Page class="relative flex flex-col">
+	<f7Page hide-navbar-on-scroll class="relative flex flex-col">
 		<!--Nab Bar-->
-		<f7Navbar :title="store.currentBook === '' ? '' : 'Prossa'" large>
+		<f7Navbar
+			transparent
+			:title="store.currentBook === '' ? '' : 'Prossa'"
+			large
+		>
 			<template #left>
 				<f7Link panel-open="left" navbar><IconMenu2></IconMenu2></f7Link>
 			</template>
 
 			<template #right>
 				<div class="fixed right-0 mr-2 flex">
-					<f7Button popup-open=".stats-popup" rounded tonal-material small>
+					<f7Button popup-open=".stats-popup" tonal round small>
 						<IconFlame></IconFlame> {{ store.daysOfReading }}</f7Button
 					>
-					<kLink
-						class="mt-1 hidden"
-						@click="
-							() => $router.push({ name: '/', params: { search: 'search' } })
-						"
-						navbar
-						><IconSearch></IconSearch
-					></kLink>
 				</div>
 			</template>
 

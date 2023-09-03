@@ -2,7 +2,13 @@
 import { computed } from 'vue';
 import { Book } from '../stores/AppStore';
 import BookItem from './BookItem.vue';
-import { f7List, f7ListItem, f7ListGroup, f7BlockTitle } from 'framework7-vue';
+import {
+	f7List,
+	f7ListItem,
+	f7BlockTitle,
+	f7ListIndex,
+	f7ListGroup,
+} from 'framework7-vue';
 
 /* App Store */
 const props = defineProps<{
@@ -51,25 +57,31 @@ const getGroups = computed(() => {
 <template>
 	<f7BlockTitle>Library</f7BlockTitle>
 
-	<f7List media-list strong-ios outline-ios>
+	<f7ListIndex
+		class="fixed"
+		label
+		scroll-list
+		list-el=".list.contacts-list"
+		indexes="auto"
+	></f7ListIndex>
+
+	<f7List contacts-list media-list strong-ios outline-ios>
 		<f7ListItem v-if="getGroups.length === 0" title="Not Found" />
 
-		<template :key="group.name" v-for="group in getGroups">
+		<f7ListGroup :key="group.name" v-for="group in getGroups">
 			<f7ListItem :title="group.name" group-title />
 
-			<f7ListGroup class="my-2">
-				<BookItem
-					:key="book.key"
-					v-for="book in group.books"
-					:book-key="book.key"
-					:creator="book.metadata.creator"
-					:description="book.metadata.description"
-					:title="book.metadata.title"
-					:percent="book.percent"
-					:img="book.img"
-					:metadata="book.metadata"
-				></BookItem>
-			</f7ListGroup>
-		</template>
+			<BookItem
+				:key="book.key"
+				v-for="book in group.books"
+				:book-key="book.key"
+				:creator="book.metadata.creator"
+				:description="book.metadata.description"
+				:title="book.metadata.title"
+				:percent="book.percent"
+				:img="book.img"
+				:metadata="book.metadata"
+			></BookItem>
+		</f7ListGroup>
 	</f7List>
 </template>
