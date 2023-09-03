@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { useDark } from '@vueuse/core';
-import { f7App, f7Panel, f7View } from 'framework7-vue';
+import {
+	f7App,
+	f7Panel,
+	f7View,
+	f7Page,
+	f7Navbar,
+	f7List,
+	f7ListItem,
+} from 'framework7-vue';
 import { kProvider } from 'konsta/vue';
 import { onMounted } from 'vue';
 import HomePage from './pages/HomePage.vue';
@@ -43,7 +51,7 @@ onMounted(() => {
 				androidTextColor: dark ? 'white' : 'black',
 			}"
 			v-bind="{
-				dark: dark,
+				darkMode: 'auto',
 				routes: [
 					{ path: '/', component: HomePage },
 					{ path: '/book/:id', component: BookPage },
@@ -56,7 +64,18 @@ onMounted(() => {
 
 			<StatsPopup></StatsPopup>
 
-			<f7Panel swipe left></f7Panel>
+			<f7Panel swipe left>
+				<f7View>
+					<f7Page>
+						<f7Navbar large title="Prossa"></f7Navbar>
+
+						<f7List menu-list>
+							<f7ListItem>Home</f7ListItem>
+							<f7ListItem>About</f7ListItem>
+						</f7List>
+					</f7Page>
+				</f7View>
+			</f7Panel>
 		</f7App>
 	</k-provider>
 </template>

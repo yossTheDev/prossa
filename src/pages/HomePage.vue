@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { IconBooks, IconFlame, IconMenu2, IconPlus } from '@tabler/icons-vue';
+import { useDark } from '@vueuse/core';
 import {
+	f7,
 	f7Button,
 	f7Fab,
 	f7Link,
@@ -11,7 +13,7 @@ import {
 } from 'framework7-vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
 import BookList from '../components/BookList.vue';
 import { useAppStore } from '../stores/AppStore';
@@ -20,7 +22,7 @@ import { useAppStore } from '../stores/AppStore';
 const store = useAppStore();
 const loading = ref(false);
 const query = ref('');
-const message = ref('');
+const dark = useDark();
 
 async function handleAddBook(files: any) {
 	if (files && files.length > 0) {
@@ -78,10 +80,16 @@ async function handleAddBook(files: any) {
 					);
 
 					/* Show Toast Message */
-					message.value = 'The book has been added to the library';
+					f7.toast.show({
+						text: 'The book has been added to the library',
+						closeTimeout: 2000,
+					});
 				};
 			} else {
-				message.value = 'This book is already in the library';
+				f7.toast.show({
+					text: 'This book is already in the library',
+					closeTimeout: 2000,
+				});
 			}
 		});
 
@@ -100,20 +108,22 @@ const pickFile = () => {
 	input.addEventListener('change', () => handleAddBook(input.files));
 	input.click();
 };
-
-watch(message, () => {
-	if (message.value !== '') {
-		const interval = setInterval(() => {
-			message.value = '';
-
-			clearInterval(interval);
-		}, 2000);
-	}
-});
 </script>
 
 <template>
-	<f7Page hide-navbar-on-scroll class="relative flex flex-col">
+	<f7Page
+		@page:mounted="
+			() => {
+				if (dark) {
+					f7.statusbar.setTextColor('white');
+				} else {
+					f7.statusbar.setTextColor('black');
+				}
+			}
+		"
+		hide-navbar-on-scroll
+		class="relative flex flex-col"
+	>
 		<!--Nab Bar-->
 		<f7Navbar
 			transparent

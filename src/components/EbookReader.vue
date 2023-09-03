@@ -16,12 +16,12 @@ import {
 	f7Page,
 	f7Popup,
 	f7Preloader,
-	f7Subnavbar,
 	f7Tab,
 	f7Tabs,
 	f7Toolbar,
+	f7View,
 } from 'framework7-vue';
-import { kButton, kList, kListItem, kTabbar, kTabbarLink } from 'konsta/vue';
+import { kButton, kList, kListItem } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Book as StoredBook, useAppStore } from '../stores/AppStore';
@@ -42,7 +42,6 @@ const currentCfiRange = ref(''); // Used for Highlights
 const showControls = ref(true);
 const currentPos = ref(0);
 const isReady = ref(false);
-const tab = ref<'Contents' | 'Highlights'>('Contents');
 let book: Book | null = null;
 let rendition: Rendition;
 let contents: Contents;
@@ -407,84 +406,71 @@ function toggleControls() {
 		close-on-escape
 		class="menu_popup"
 	>
-		<f7Page :page-content="false">
-			<f7Navbar
-				:subtitle="store.getBook(id)?.metadata?.creator!"
-				:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata?.title?.slice(0,27) + '...' : store.getBook(id)?.metadata?.title!"
-			>
-				<template #right>
-					<div class="fixed right-0 mr-2 cursor-pointer select-none">
-						<f7Link toolbar popup-close>Close</f7Link>
-					</div>
-				</template>
+		<f7View>
+			<f7Page :page-content="false">
+				<f7Navbar
+					:subtitle="store.getBook(id)?.metadata?.creator!"
+					:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata?.title?.slice(0,27) + '...' : store.getBook(id)?.metadata?.title!"
+				>
+					<template #right>
+						<div class="fixed right-0 mr-2 cursor-pointer select-none">
+							<f7Link toolbar popup-close>Close</f7Link>
+						</div>
+					</template>
+				</f7Navbar>
 
-				<f7Subnavbar>
-					<kTabbar>
-						<kTabbarLink
-							:active="tab === 'Contents'"
-							@click="tab = 'Contents'"
-							label="Chapters"
-						></kTabbarLink>
-						<kTabbarLink
-							:active="tab === 'Highlights'"
-							@click="tab = 'Highlights'"
-							label="Highlights"
-						></kTabbarLink>
-					</kTabbar>
-				</f7Subnavbar>
-			</f7Navbar>
+				<f7Toolbar tabbar bottom>
+					<f7Link tab-link="#contents">Chapters</f7Link>
+					<f7Link tab-link="#highlights">Highlights</f7Link>
+				</f7Toolbar>
 
-			<f7Toolbar tabbar bottom>
-				<f7Link tab-link="#contents">Chapters</f7Link>
-				<f7Link tab-link="#highlights">Highlights</f7Link>
-			</f7Toolbar>
+				<f7Tabs swipeable>
+					<f7Tab class="page-content" id="contents">
+						<k-list class="flex w-full flex-col">
+							<k-list-item
+								:title="item.label"
+								@click="toChapter(item.href)"
+								:key="item.id"
+								link
+								v-for="item in chapters"
+								class="hover:bg-neutral rounded-xl p-1"
+							></k-list-item>
+						</k-list>
+					</f7Tab>
 
-			<f7Tabs swipeable>
-				<f7Tab class="page-content" id="contents">
-					<k-list class="flex w-full flex-col">
-						<k-list-item
-							:title="item.label"
-							@click="toChapter(item.href)"
-							:key="item.id"
-							link
-							v-for="item in chapters"
-							class="hover:bg-neutral rounded-xl p-1"
-						></k-list-item>
-					</k-list>
-				</f7Tab>
+					<f7Tab class="page-content" id="highlights">
+						<k-list class="flex w-full flex-col px-1">
+							<k-list-item
+								v-if="
+									!store.getBook(id)?.selections ||
+									store.getBook(id)?.selections?.length === 0
+								"
+								:title="'You have not made any entries yet'"
+							/>
 
-				<f7Tab class="page-content" id="highlights">
-					<k-list class="flex w-full flex-col px-1">
-						<k-list-item
-							v-if="
-								!store.getBook(id)?.selections ||
-								store.getBook(id)?.selections?.length === 0
-							"
-							:title="'You have not made any entries yet'"
-						/>
-
-						<AnnotationItem
-							v-for="selection in store.getBook(id)?.selections"
-							:to-chapter="toChapter"
-							:cfi-range="selection.cfiRange"
-							:remove-selection="removeSelection"
-							:author="StoreBook?.metadata.creator"
-							:book-title="StoreBook?.metadata.title"
-							:id="selection.id"
-							:title="selection.label"
-							:key="selection.id"
-							:full-text="selection.text"
-							:text="
-								selection.text.length > 240
-									? selection.text.slice(0, 237) + '...'
-									: selection.text
-							"
-						>
-						</AnnotationItem>
-					</k-list>
-				</f7Tab>
-			</f7Tabs>
-		</f7Page>
+							<AnnotationItem
+								v-for="selection in store.getBook(id)?.selections"
+								:to-chapter="toChapter"
+								:cfi-range="selection.cfiRange"
+								:remove-selection="removeSelection"
+								:author="StoreBook?.metadata.creator"
+								:book-title="StoreBook?.metadata.title"
+								:id="selection.id"
+								:title="selection.label"
+								:key="selection.id"
+								:full-text="selection.text"
+								:text="
+									selection.text.length > 240
+										? selection.text.slice(0, 237) + '...'
+										: selection.text
+								"
+							>
+							</AnnotationItem>
+						</k-list>
+					</f7Tab>
+				</f7Tabs>
+			</f7Page>
+		</f7View>
 	</f7Popup>
 
 	<!-- Content -->
