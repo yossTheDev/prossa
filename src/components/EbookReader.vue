@@ -3,26 +3,28 @@ import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconArrowLeft,
 	IconArrowRight,
-	IconHighlight,
 	IconChevronUp,
+	IconHighlight,
 } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import { Book, Contents, Rendition } from 'epubjs';
 import {
-	kButton,
-	kList,
-	kListItem,
-	kSheet,
-	kPreloader,
-	kNavbar,
-	kTabbar,
-	kTabbarLink,
-	kFab,
-	kLink,
-} from 'konsta/vue';
+	f7,
+	f7Fab,
+	f7Link,
+	f7Navbar,
+	f7Page,
+	f7Popup,
+	f7Preloader,
+	f7Subnavbar,
+	f7Tab,
+	f7Tabs,
+	f7Toolbar,
+} from 'framework7-vue';
+import { kButton, kList, kListItem, kTabbar, kTabbarLink } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
-import { useAppStore, Book as StoredBook } from '../stores/AppStore';
+import { Book as StoredBook, useAppStore } from '../stores/AppStore';
 import { Base64Binary } from '../utilities/base';
 import AnnotationItem from './AnnotationItem.vue';
 
@@ -173,7 +175,7 @@ onMounted(async () => {
 	}
 
 	/* Add Click Events to Rendition */
-	rendition.on('rendered', (e: any, i: any) => {
+	rendition.on('rendered', (_e: any, i: any) => {
 		i.document.documentElement.addEventListener('click', () => {
 			showControls.value = !showControls.value;
 			showHighlightsCreator.value = false;
@@ -285,7 +287,7 @@ function toggleControls() {
 	>
 		<div class="absolute mt-4 ml-2 flex flex-auto">
 			<div class="flex">
-				<kButton @click="$router.push('/')" clear
+				<kButton @click="f7.views.main.router.back()" clear
 					><IconArrowLeft></IconArrowLeft
 				></kButton>
 			</div>
@@ -335,25 +337,9 @@ function toggleControls() {
 				</div>
 			</div>
 
-			<!-- Menu FAB -->
-			<k-fab
-				v-if="showControls"
-				@click="
-					() =>
-						$router.push({
-							name: 'book',
-							params: {
-								id: $route.params.id,
-								book_menu: 'book_menu',
-							},
-						})
-				"
-				class="fixed z-20 right-4-safe bottom-4-safe"
-			>
-				<template #icon>
-					<IconChevronUp></IconChevronUp>
-				</template>
-			</k-fab>
+			<f7Fab v-if="isReady" @click="() => f7.popup.open('.menu_popup')"
+				><IconChevronUp></IconChevronUp>
+			</f7Fab>
 		</TransitionRoot>
 	</div>
 
@@ -397,121 +383,107 @@ function toggleControls() {
 		leave-from="opacity-100"
 		leave-to="opacity-0"
 		:show="!isReady"
-		class="z-50"
 	>
 		<div
-			class="absolute z-50 flex h-full w-full bg-md-light-surface dark:bg-md-dark-surface"
+			class="absolute z-[99] flex h-full w-full bg-md-light-surface dark:bg-md-dark-surface"
 		>
 			<div class="my-auto mx-auto flex flex-col text-center">
 				<p class="text-xl">Processing Book</p>
 				<p class="mb-4">It may take a while the fist time</p>
-				<kPreloader size="w-8 h-8 mx-auto"></kPreloader>
+				<f7Preloader class="mx-auto"></f7Preloader>
 			</div>
 		</div>
 	</TransitionRoot>
 
 	<!--Menu-->
-	<kSheet
-		class="flex h-[80%] w-full flex-col md:ml-1 md:h-[95%] md:w-96"
-		@backdropclick="
-			() =>
-				$router.replace({
-					name: 'book',
-					params: {
-						id: $route.params.id,
-					},
-				})
-		"
-		:opened="$route.params.book_menu === 'book_menu'"
+	<f7Popup
+		@popup:closed="() => f7.statusbar.hide()"
+		@popup:opened="() => f7.statusbar.show()"
+		close-on-escape
+		class="menu_popup"
 	>
-		<kNavbar
-			:subtitle="StoreBook?.metadata?.creator!"
-			:title="StoreBook?.metadata?.title?.length! > 30 ? StoreBook?.metadata?.title?.slice(0,27) + '...' : StoreBook?.metadata?.title!"
-		>
-			<template #right>
-				<div class="fixed right-0 mr-2 cursor-pointer select-none">
-					<kLink
-						toolbar
-						@click="
-							() =>
-								$router.replace({
-									name: 'book',
-									params: {
-										id: $route.params.id,
-									},
-								})
-						"
-						>Close</kLink
-					>
-				</div>
-			</template>
+		<f7Page :page-content="false">
+			<f7Navbar
+				:subtitle="store.getBook(id)?.metadata?.creator!"
+				:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata?.title?.slice(0,27) + '...' : store.getBook(id)?.metadata?.title!"
+			>
+				<template #right>
+					<div class="fixed right-0 mr-2 cursor-pointer select-none">
+						<f7Link toolbar popup-close>Close</f7Link>
+					</div>
+				</template>
 
-			<template #subnavbar>
-				<kTabbar>
-					<kTabbarLink
-						:active="tab === 'Contents'"
-						@click="tab = 'Contents'"
-						label="Chapters"
-					></kTabbarLink>
-					<kTabbarLink
-						:active="tab === 'Highlights'"
-						@click="tab = 'Highlights'"
-						label="Highlights"
-					></kTabbarLink>
-				</kTabbar>
-			</template>
-		</kNavbar>
+				<f7Subnavbar>
+					<kTabbar>
+						<kTabbarLink
+							:active="tab === 'Contents'"
+							@click="tab = 'Contents'"
+							label="Chapters"
+						></kTabbarLink>
+						<kTabbarLink
+							:active="tab === 'Highlights'"
+							@click="tab = 'Highlights'"
+							label="Highlights"
+						></kTabbarLink>
+					</kTabbar>
+				</f7Subnavbar>
+			</f7Navbar>
 
-		<div
-			class="flex h-full overflow-auto bg-md-light-surface dark:bg-md-dark-surface"
-		>
-			<k-list v-if="tab === 'Contents'" class="flex w-full flex-col">
-				<k-list-item
-					:title="item.label"
-					@click="toChapter(item.href)"
-					:key="item.id"
-					link
-					v-for="item in chapters"
-					class="hover:bg-neutral rounded-xl p-1"
-				></k-list-item>
-			</k-list>
+			<f7Toolbar tabbar bottom>
+				<f7Link tab-link-active tab-link="#contents">Chapters</f7Link>
+				<f7Link tab-link="#highlights">Highlights</f7Link>
+			</f7Toolbar>
 
-			<k-list v-if="tab === 'Highlights'" class="flex w-full flex-col px-1">
-				<k-list-item
-					v-if="
-						!store.getBook(id)?.selections ||
-						store.getBook(id)?.selections?.length === 0
-					"
-					:title="'You have not made any entries yet'"
-				/>
+			<f7Tabs swipeable>
+				<f7Tab tab-active class="page-content" id="contents">
+					<k-list class="flex w-full flex-col">
+						<k-list-item
+							:title="item.label"
+							@click="toChapter(item.href)"
+							:key="item.id"
+							link
+							v-for="item in chapters"
+							class="hover:bg-neutral rounded-xl p-1"
+						></k-list-item>
+					</k-list>
+				</f7Tab>
 
-				<AnnotationItem
-					v-for="selection in store.getBook(id)?.selections"
-					:to-chapter="toChapter"
-					:cfi-range="selection.cfiRange"
-					:remove-selection="removeSelection"
-					:author="StoreBook?.metadata.creator"
-					:book-title="StoreBook?.metadata.title"
-					:id="selection.id"
-					:title="selection.label"
-					:key="selection.id"
-					:full-text="selection.text"
-					:text="
-						selection.text.length > 240
-							? selection.text.slice(0, 237) + '...'
-							: selection.text
-					"
-				>
-				</AnnotationItem>
-			</k-list>
-		</div>
-	</kSheet>
+				<f7Tab class="page-content" id="highlights">
+					<k-list class="flex w-full flex-col px-1">
+						<k-list-item
+							v-if="
+								!store.getBook(id)?.selections ||
+								store.getBook(id)?.selections?.length === 0
+							"
+							:title="'You have not made any entries yet'"
+						/>
+
+						<AnnotationItem
+							v-for="selection in store.getBook(id)?.selections"
+							:to-chapter="toChapter"
+							:cfi-range="selection.cfiRange"
+							:remove-selection="removeSelection"
+							:author="StoreBook?.metadata.creator"
+							:book-title="StoreBook?.metadata.title"
+							:id="selection.id"
+							:title="selection.label"
+							:key="selection.id"
+							:full-text="selection.text"
+							:text="
+								selection.text.length > 240
+									? selection.text.slice(0, 237) + '...'
+									: selection.text
+							"
+						>
+						</AnnotationItem>
+					</k-list>
+				</f7Tab>
+			</f7Tabs>
+		</f7Page>
+	</f7Popup>
 
 	<!-- Content -->
-	<div
-		@click="() => (showControls = true)"
-		class="flex h-full w-full flex-auto flex-col"
-	>
+	<div class="flex h-full w-full flex-auto flex-col">
 		<!-- Epub -->
 		<div class="flex h-full w-full flex-auto" id="epub"></div>
 	</div>

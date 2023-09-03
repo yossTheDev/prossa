@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { KeepAwake } from '@capacitor-community/keep-awake';
-import { Capacitor } from '@capacitor/core';
-import { StatusBar } from '@capacitor/status-bar';
-import { TransitionRoot } from '@headlessui/vue';
 import {
 	IconBooks,
 	IconFlame,
@@ -11,41 +7,30 @@ import {
 	IconSearch,
 } from '@tabler/icons-vue';
 import {
-	kBlock,
-	kBlockTitle,
-	kButton,
-	kFab,
-	kLink,
-	kList,
-	kListItem,
-	kNavbar,
-	kPage,
-	kPopup,
-	kSearchbar,
-	kToast,
-} from 'konsta/vue';
+	f7Button,
+	f7Fab,
+	f7Link,
+	f7Navbar,
+	f7Page,
+	f7Searchbar,
+} from 'framework7-vue';
+import { kLink } from 'konsta/vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, ref, watch } from 'vue';
 import { Base64Binary } from '../../src/utilities/base';
-import BookItem from '../components/BookItem.vue';
 import BookList from '../components/BookList.vue';
-import StatsPopup from '../components/Popups/StatsPopup.vue';
-import SpinnerItem from '../components/SpinnerItem.vue';
 import { useAppStore } from '../stores/AppStore';
 
 const store = useAppStore();
-const router = useRouter();
 
-const visible = ref(false);
 const loading = ref(false);
 
 const query = ref('');
 const message = ref('');
 
-async function handleAddBook(event: any) {
-	if (event.target.files && event.target.files.length > 0) {
+async function handleAddBook(files: any) {
+	if (files && files.length > 0) {
 		const { Book } = await import('epubjs');
 		// Initialize File Reader
 		const reader = new FileReader();
@@ -108,20 +93,19 @@ async function handleAddBook(event: any) {
 		});
 
 		/* Read */
-		reader.readAsDataURL(event.target.files[0]);
+		reader.readAsDataURL(files[0]);
 
 		/* Hide Global Spinner */
 		loading.value = false;
 	}
 }
 
-function onClosing() {
-	visible.value = !visible.value;
-}
-
-const handleCloseSearchModal = () => {
-	router.replace('/');
-	query.value = '';
+const pickFile = () => {
+	const input = document.createElement('input');
+	input.type = 'file';
+	input.accept = '.epub';
+	input.addEventListener('change', () => handleAddBook(input.files));
+	input.click();
 };
 
 watch(message, () => {
@@ -133,49 +117,20 @@ watch(message, () => {
 		}, 2000);
 	}
 });
-
-onMounted(() => {
-	/* Show Status Bar */
-	if (Capacitor.isNativePlatform()) {
-		StatusBar.show();
-		StatusBar.setOverlaysWebView({ overlay: false });
-	}
-
-	/* Disable Keep Awake */
-	KeepAwake.allowSleep();
-
-	console.log(store.books);
-});
 </script>
 
 <template>
-	<k-page
-		:colors="{
-			bgMaterial: 'bg-md-light-surface-2 dark:bg-md-dark-surface-2',
-		}"
-		class="relative flex flex-col"
-	>
+	<f7Page class="relative flex flex-col">
 		<!--Nab Bar-->
-		<k-navbar class="sticky top-0 md:hidden" large>
+		<f7Navbar :title="store.currentBook === '' ? '' : 'Prossa'" large>
 			<template #left>
-				<kLink
-					@click="() => $router.push({ name: '/', params: { menu: 'menu' } })"
-					navbar
-					><IconMenu2></IconMenu2
-				></kLink>
+				<f7Link panel-open="left" navbar><IconMenu2></IconMenu2></f7Link>
 			</template>
 
 			<template #right>
 				<div class="fixed right-0 mr-2 flex">
-					<kButton
-						@click="
-							() => $router.push({ name: '/', params: { stats: 'stats' } })
-						"
-						rounded
-						tonal-material
-						small
-					>
-						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
+					<f7Button popup-open=".stats-popup" rounded tonal-material small>
+						<IconFlame></IconFlame> {{ store.daysOfReading }}</f7Button
 					>
 					<kLink
 						class="mt-1 hidden"
@@ -188,22 +143,25 @@ onMounted(() => {
 				</div>
 			</template>
 
-			<template #title>
+			<template #title-large>
 				<!-- Current Book -->
-				<div class="-mt-1 flex max-h-28 flex-auto flex-col overflow-hidden">
+				<div class="flex w-full flex-auto flex-col">
 					<!-- Book Hero -->
-					<div class="mb-8 flex flex-auto select-none flex-row gap-2">
+					<div
+						v-if="store.currentBook !== ''"
+						class="mb-8 flex flex-auto select-none flex-row gap-2 overflow-hidden"
+					>
 						<img
-							class="my-auto flex h-24 rounded shadow"
+							class="my-auto flex h-20 rounded shadow"
 							v-if="store.currentBook !== ''"
 							:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
 						/>
 						<div
 							v-if="store.currentBook !== ''"
-							class="my-auto flex flex-auto flex-col gap-1 overflow-hidden text-md-dark-surface-2 dark:text-md-light-surface-2"
+							class="my-auto flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"
 						>
-							<div class="my-auto flex flex-col">
-								<p class="max-w-[16rem] overflow-hidden text-lg font-bold">
+							<div class="my-auto flex max-w-sm flex-col">
+								<p class="max-w-[16rem] text-lg font-bold">
 									{{ store.getBook(store.currentBook)?.metadata.title }}
 								</p>
 								<p class="text-xs">
@@ -211,290 +169,46 @@ onMounted(() => {
 								</p>
 							</div>
 						</div>
-
-						<p class="mx-auto my-auto text-center text-gray-500" v-else>
-							Lets read a book
-						</p>
-					</div>
-				</div>
-			</template>
-
-			<template #subtitle>
-				<div v-if="store.currentBook !== ''" class="mt-16 flex h-40 w-full">
-					<p class="-mt-[1.31rem] text-2xl">Prossa</p>
-				</div>
-
-				<div v-else class="mt-24 flex h-40 w-full">
-					<p class="-mt-3 text-2xl">Prossa</p>
-				</div>
-			</template>
-
-			<template #subnavbar>
-				<div
-					class="flex max-h-10 w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
-				>
-					<div class="ml-2 flex w-full">
-						<kSearchbar
-							@input="(ev) => (query = ev.currentTarget.value)"
-							:value="query"
-							:clear-button="false"
-							:colors="{
-								inputBgMaterial:
-									'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
-							}"
-							input-style="padding-left: 2rem"
-						></kSearchbar>
-					</div>
-				</div>
-			</template>
-		</k-navbar>
-
-		<!-- Search Popup-->
-		<kPopup
-			@backdropclick="handleCloseSearchModal"
-			:opened="$route.params.search === 'search'"
-		>
-			<kPage>
-				<kNavbar large title="Search">
-					<template #right>
-						<div class="fixed right-0 mr-1">
-							<kLink @click="handleCloseSearchModal" navbar>Cancel</kLink>
-						</div></template
-					>
-				</kNavbar>
-
-				<kBlock>
-					<div
-						class="flex max-h-12 w-full rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
-					>
-						<div class="ml-2 flex w-full">
-							<kSearchbar
-								@input="(ev) => (query = ev.currentTarget.value)"
-								:value="query"
-								:clear-button="false"
-								:colors="{
-									inputBgMaterial:
-										'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
-								}"
-								input-style="padding-left: 2rem"
-							></kSearchbar>
-						</div>
-					</div>
-				</kBlock>
-
-				<kBlockTitle>Books</kBlockTitle>
-
-				<kList>
-					<kListItem
-						v-if="
-							store.books.filter(
-								(book) =>
-									book.metadata.title
-										.toUpperCase()
-										.indexOf(query.toUpperCase()) > -1
-							).length === 0
-						"
-						title="Not Found"
-					></kListItem>
-					<BookItem
-						:key="book.key"
-						v-for="book in store.books.filter(
-							(book) =>
-								book.metadata.title.toUpperCase().indexOf(query.toUpperCase()) >
-								-1
-						)"
-						:book-key="book.key"
-						:creator="book.metadata.creator"
-						:description="book.metadata.description"
-						:title="book.metadata.title"
-						:img="book.img"
-						:metadata="book.metadata"
-					></BookItem>
-				</kList>
-			</kPage>
-		</kPopup>
-
-		<!-- Stats Popup-->
-		<StatsPopup></StatsPopup>
-
-		<!-- Content -->
-		<div
-			class="flex h-fit flex-auto flex-col rounded-t-2xl bg-md-light-surface shadow-2xl dark:bg-md-dark-surface-1 md:overflow-hidden md:rounded-none md:shadow-none md:dark:bg-md-dark-surface lg:flex-row"
-		>
-			<!-- Current Book -->
-			<div
-				class="hidden max-h-40 flex-auto flex-col gap-2 overflow-hidden p-4 md:mt-0 md:flex lg:h-full lg:max-h-full lg:w-1/3"
-			>
-				<!-- Book Hero -->
-				<div class="flex flex-auto select-none flex-row gap-2">
-					<img
-						class="my-auto h-36 rounded md:h-60"
-						v-if="store.currentBook !== ''"
-						:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
-					/>
-					<div
-						v-if="store.currentBook !== ''"
-						class="flex flex-auto flex-col gap-1"
-					>
-						<div class="my-auto">
-							<p class="text-xl font-bold">
-								{{ store.getBook(store.currentBook)?.metadata.title }}
-							</p>
-							<p class="text md:text-xs">
-								{{ store.getBook(store.currentBook)?.metadata.creator }}
-							</p>
-
-							<p class="mt-2 hidden text-xs">
-								{{
-									Math.round(
-										(store.getBook(store.currentBook)
-											?.percent as unknown as number) * 100
-									)
-								}}
-
-								% - Complete
-							</p>
-						</div>
 					</div>
 
 					<p class="mx-auto my-auto text-center text-gray-500" v-else>
 						Lets read a book
 					</p>
 				</div>
+			</template>
 
-				<!-- Book Description -->
-				<div
-					v-if="store.currentBook !== ''"
-					class="hidden flex-auto select-none overflow-auto lg:flex"
-				>
-					<span
-						v-html="store.getBook(store.currentBook)?.metadata.description"
-						class="text-xs text-gray-500"
-					>
-					</span>
-				</div>
+			<template #subnavbar>
+				<f7Searchbar></f7Searchbar>
+			</template>
+		</f7Navbar>
+
+		<!-- Book List -->
+		<BookList
+			:books="
+				computed(() =>
+					store.books.filter(
+						(book) =>
+							book.metadata.title.toUpperCase().indexOf(query.toUpperCase()) >
+							-1
+					)
+				).value
+			"
+			v-if="store.books.length > 0"
+		></BookList>
+
+		<!-- Empty State -->
+		<div class="mx-auto my-auto flex h-full text-gray-400" v-else>
+			<div class="my-auto mx-auto">
+				<IconBooks :size="84" class="mx-auto"></IconBooks>
+				<p class="mx-auto text-center">No Books</p>
 			</div>
-
-			<!-- Book List and Stats -->
-			<div
-				class="flex flex-auto flex-col gap-0 md:overflow-hidden lg:w-full lg:grow-0"
-			>
-				<!-- Search Bar -->
-				<kBlock class="hidden gap-2 md:flex">
-					<div
-						class="flex max-h-14 w-full gap-2 rounded-full bg-md-light-surface-3 px-3 dark:bg-md-dark-surface-1"
-					>
-						<div class="ml-2 flex w-full">
-							<kSearchbar
-								@input="(ev) => (query = ev.currentTarget.value)"
-								:value="query"
-								:clear-button="false"
-								:colors="{
-									inputBgMaterial:
-										'dark:bg-md-dark-surface-1 bg-md-light-surface-3',
-								}"
-								input-style="padding-left: 2rem"
-							></kSearchbar>
-						</div>
-					</div>
-
-					<!--Stats Button-->
-					<kButton
-						@click="
-							() => $router.push({ name: '/', params: { stats: 'stats' } })
-						"
-						class="my-auto ml-auto max-w-[6rem]"
-						rounded
-						tonal-material
-					>
-						<IconFlame></IconFlame> {{ store.daysOfReading }}</kButton
-					>
-				</kBlock>
-
-				<!-- Book List -->
-				<div
-					class="flex h-full flex-col md:overflow-auto md:rounded-tl-2xl md:bg-md-light-surface-1 md:py-1 md:shadow-xl md:dark:bg-md-dark-surface-1"
-				>
-					<!-- Book List -->
-					<BookList
-						:books="
-							computed(() =>
-								store.books.filter(
-									(book) =>
-										book.metadata.title
-											.toUpperCase()
-											.indexOf(query.toUpperCase()) > -1
-								)
-							).value
-						"
-						v-if="store.books.length > 0"
-					></BookList>
-
-					<!-- Empty State -->
-					<div class="mx-auto my-auto flex h-full text-gray-400" v-else>
-						<div class="my-auto">
-							<IconBooks :size="84" class="mx-auto"></IconBooks>
-							<p class="mx-auto text-center">No Books</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!--Global Spinner-->
-		<div
-			v-if="loading"
-			class="absolute z-50 flex h-screen w-screen flex-auto bg-black/80"
-		>
-			<SpinnerItem class="fill-white"></SpinnerItem>
-		</div>
-
-		<!-- Toast -->
-		<k-toast position="center" :opened="message !== ''">
-			<template #button> </template>
-			<div class="shrink">{{ message }}</div>
-		</k-toast>
-
-		<!-- Drawer -->
-		<div class="absolute h-full w-full">
-			<div
-				@click="onClosing"
-				v-if="visible"
-				class="absolute z-20 flex h-full w-full flex-auto bg-gray-100/5"
-			></div>
-			<TransitionRoot
-				:show="visible"
-				enter="duration-150"
-				enter-from="-ml-96"
-				enter-to="ml-0"
-				leave="duration-150"
-				leave-from="opacity-100"
-				leave-to="-ml-96"
-				class="absolute z-20 h-full bg-yellow-300"
-			>
-				<div
-					class="absolute flex h-full w-80 max-w-xs flex-auto bg-white dark:bg-base-dark-light"
-				>
-					<p>Header</p>
-				</div>
-			</TransitionRoot>
 		</div>
 
 		<!-- FAB -->
-		<label for="file-input">
-			<k-fab class="fixed z-20 right-4-safe bottom-4-safe">
-				<template #icon>
-					<IconPlus></IconPlus>
-				</template>
-			</k-fab>
-
-			<input
-				hidden
-				accept=".epub"
-				@input="handleAddBook"
-				type="file"
-				id="file-input"
-			/>
-		</label>
-	</k-page>
+		<template #fixed>
+			<f7Fab @click="pickFile">
+				<IconPlus></IconPlus>
+			</f7Fab>
+		</template>
+	</f7Page>
 </template>

@@ -1,6 +1,6 @@
 import { PackagingMetadataObject } from 'epubjs/types/packaging';
 import { defineStore } from 'pinia';
-import { DateTime, Duration, Interval } from 'luxon';
+import { Duration } from 'luxon';
 import { getRandomNumber } from '../utilities/getRandom';
 
 export interface Book {
@@ -120,7 +120,7 @@ export const useAppStore = defineStore('app-store', {
 				book.key === bookId
 					? {
 							...book,
-							selections: book.selections?.filter((item, j) => item.id !== id),
+							selections: book.selections?.filter((item) => item.id !== id),
 					  }
 					: book
 			) as Book[];

@@ -2,25 +2,20 @@ import * as localforage from 'localforage';
 import { createPinia } from 'pinia';
 import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2';
 import { createApp } from 'vue';
-import { createRouter, createWebHashHistory } from 'vue-router';
 import App from './App.vue';
-
 import './style.css';
 
-const Home = () => import('./pages/HomePage.vue');
-const About = () => import('./pages/AboutPage.vue');
-const Book = () => import('./pages/BookPage.vue');
+// Import Framework7
+import Framework7 from 'framework7/lite-bundle';
 
-/* Defining Routes */
-const routes = [
-	{ name: '/', path: '/:stats?/:search?/:menu?/', component: Home },
-	{ name: 'about', path: '/about/:menu?', component: About },
-	{
-		name: 'book',
-		path: '/book/:id/:book_menu?/',
-		component: Book,
-	},
-];
+// Import Framework7-Vue Plugin
+import Framework7Vue from 'framework7-vue/bundle';
+
+Framework7.use(Framework7Vue);
+
+/* const Home = () => import('./pages/HomePage.vue');
+const About = () => import('./pages/AboutPage.vue');
+const Book = () => import('./pages/BookPage.vue'); */
 
 /* Configure Local Forage Library */
 localforage.config({
@@ -51,11 +46,4 @@ pinia.use(
 	})
 );
 
-/* Creater Router */
-const router = createRouter({
-	// 4. Provide the history implementation to use. We are using the hash history for simplicity here.
-	history: createWebHashHistory(),
-	routes, // short for `routes: routes`
-});
-
-createApp(App).use(router).use(pinia).mount('#app');
+createApp(App).use(pinia).mount('#app');

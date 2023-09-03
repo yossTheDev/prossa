@@ -3943,6 +3943,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cordova-plugin-statusbar@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "cordova-plugin-statusbar@npm:3.0.0"
+  checksum: 0c60a4e0a1398cdd91d90e0bb93574fae4b4065e513b7e964135df1fc45e5c3687d59de8d6b2ee4d08c7684eea7342a0cb1fc0d854a7b89872a99b7c4346c35d
+  languageName: node
+  linkType: hard
+
 "core-js-compat@npm:^3.25.1":
   version: 3.30.1
   resolution: "core-js-compat@npm:3.30.1"
@@ -7875,6 +7882,7 @@ __metadata:
     "@vitejs/plugin-vue": ^4.0.0
     "@vueuse/core": ^9.12.0
     autoprefixer: ^10.4.13
+    cordova-plugin-statusbar: ^3.0.0
     daisyui: ^2.51.5
     epubjs: ^0.3.93
     eslint: ^8.0.1

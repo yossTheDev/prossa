@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { IconTrash } from '@tabler/icons-vue';
-import { kButton, kLink, kList, kListItem, kSheet, kToolbar } from 'konsta/vue';
+import { kButton, kLink, kList, kListItem, kToolbar } from 'konsta/vue';
 import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import { useAppStore } from '../stores/AppStore';
+import { f7Sheet, f7ListItem, f7 } from 'framework7-vue';
 
 /* App Store */
 const store = useAppStore();
@@ -37,10 +38,10 @@ const open = ref(false);
 
 const handleContextMenu = (e: MouseEvent) => {
 	e.preventDefault();
-	open.value = true;
+	f7.sheet.open(`#book_sheet_${props.bookKey}`);
 };
 
-const handleDeleteBook = (e: MouseEvent) => {
+const handleDeleteBook = () => {
 	if (store.currentBook === props.bookKey) {
 		store.setCurrentBook('');
 	}
@@ -50,11 +51,11 @@ const handleDeleteBook = (e: MouseEvent) => {
 </script>
 
 <template>
-	<k-list-item
+	<f7ListItem
+		media-list
+		media-item
 		@contextmenu="handleContextMenu"
-		:chevron-material="false"
-		@click="$router.push({ name: 'book', params: { id: props.bookKey } })"
-		link
+		:link="'/book/' + bookKey"
 		:title="title"
 		:text="
 			description.length > 200 ? description.slice(0, 197) + '...' : description
@@ -81,14 +82,10 @@ const handleDeleteBook = (e: MouseEvent) => {
 				></div>
 			</div>
 		</template>
-	</k-list-item>
+	</f7ListItem>
 
 	<Teleport to="#popup-target">
-		<kSheet
-			class="z-50 flex max-h-[80%] w-full flex-col md:ml-1 md:max-h-[90%] md:w-96"
-			:opened="open"
-			@backdropclick="() => (open = false)"
-		>
+		<f7Sheet backdrop :id="`book_sheet_${metadata?.identifier}`">
 			<kToolbar top>
 				<div class="fixed right-0 mr-2">
 					<kLink @click="() => (open = false)" toolbar> Close </kLink>
@@ -140,6 +137,6 @@ const handleDeleteBook = (e: MouseEvent) => {
 					</kButton>
 				</div>
 			</div>
-		</kSheet>
+		</f7Sheet>
 	</Teleport>
 </template>

@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import {
-	kBlockTitle,
-	kList,
-	kListItem,
-	kNavbar,
-	kPage,
-	kPopup,
-	kBlock,
-	kLink,
-} from 'konsta/vue';
+import { kBlockTitle, kList, kListItem, kBlock } from 'konsta/vue';
+import { f7Popup, f7Link, f7Navbar, f7Page } from 'framework7-vue';
 import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted } from 'vue';
 import { useAppStore } from '../../stores/AppStore';
@@ -46,18 +38,13 @@ onMounted(() => {
 </script>
 
 <template>
-	<kPopup
-		@backdropclick="$router.replace('/')"
-		:opened="$route.params.stats === 'stats'"
-	>
-		<kPage>
-			<kNavbar large title="Stats">
+	<f7Popup swipe-to-close close-on-escape animate class="stats-popup">
+		<f7Page>
+			<f7Navbar large title="Stats">
 				<template #right>
-					<div class="fixed right-0 mr-1">
-						<kLink @click="$router.replace('/')" navbar>Cancel</kLink>
-					</div></template
-				>
-			</kNavbar>
+					<f7Link popup-close=".stats-popup" navbar>Cancel</f7Link>
+				</template>
+			</f7Navbar>
 
 			<kBlockTitle>Reading</kBlockTitle>
 			<kBlock>
@@ -109,6 +96,6 @@ onMounted(() => {
 					></kListItem>
 				</kList>
 			</kBlock>
-		</kPage>
-	</kPopup>
+		</f7Page>
+	</f7Popup>
 </template>

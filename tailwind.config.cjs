@@ -3,7 +3,7 @@ const konstaConfig = require('konsta/config');
 /** @type {import('tailwindcss').Config} */
 module.exports = konstaConfig({
 	content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-
+	darkMode: 'class',
 	theme: {
 		extend: {
 			colors: {
