@@ -430,12 +430,12 @@ function toggleControls() {
 			</f7Navbar>
 
 			<f7Toolbar tabbar bottom>
-				<f7Link tab-link-active tab-link="#contents">Chapters</f7Link>
+				<f7Link tab-link="#contents">Chapters</f7Link>
 				<f7Link tab-link="#highlights">Highlights</f7Link>
 			</f7Toolbar>
 
 			<f7Tabs swipeable>
-				<f7Tab tab-active class="page-content" id="contents">
+				<f7Tab class="page-content" id="contents">
 					<k-list class="flex w-full flex-col">
 						<k-list-item
 							:title="item.label"
