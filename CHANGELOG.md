@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v 1.1.8
+
+* Add Framework7
+* Change Book List Appearance and Add List Index
+
 ## v 1.1.7
 
 * feat: Share and Copy To Clipboard book highlights
