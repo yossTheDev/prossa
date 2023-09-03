@@ -13,6 +13,7 @@ import {
 	f7Navbar,
 	f7Page,
 	f7Searchbar,
+	f7Subnavbar,
 } from 'framework7-vue';
 import { kLink } from 'konsta/vue';
 import localforage from 'localforage';
@@ -180,6 +181,14 @@ watch(message, () => {
 			<template #subnavbar>
 				<f7Searchbar></f7Searchbar>
 			</template>
+
+			<f7Subnavbar>
+				<f7Searchbar
+					@click:disable="query = ''"
+					@input="(ev) => (query = ev.target.value)"
+					:value="query"
+				></f7Searchbar>
+			</f7Subnavbar>
 		</f7Navbar>
 
 		<!-- Book List -->

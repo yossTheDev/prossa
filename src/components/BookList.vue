@@ -52,7 +52,7 @@ const getGroups = computed(() => {
 	<f7BlockTitle>Library</f7BlockTitle>
 
 	<f7List media-list strong-ios outline-ios>
-		<f7ListItem v-if="getGroups.length === 0" title="'Not Found'" />
+		<f7ListItem v-if="getGroups.length === 0" title="Not Found" />
 
 		<template :key="group.name" v-for="group in getGroups">
 			<f7ListItem :title="group.name" group-title />
