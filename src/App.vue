@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { IconHome, IconInfoCircle, IconSettings } from '@tabler/icons-vue';
 import { useDark } from '@vueuse/core';
 import {
+	f7,
 	f7App,
 	f7List,
 	f7ListItem,
@@ -10,14 +12,18 @@ import {
 	f7View,
 } from 'framework7-vue';
 import { kProvider } from 'konsta/vue';
-import { onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import StatsPopup from './components/Popups/StatsPopup.vue';
+import AboutPage from './pages/AboutPage.vue';
 import BookInfo from './pages/BookInfo.vue';
 import BookPage from './pages/BookPage.vue';
 import HomePage from './pages/HomePage.vue';
+import SettingPage from './pages/SettingPage.vue';
+import { useAppStore } from './stores/AppStore';
 
-// const router = useRouter();
 const dark = useDark();
+const store = useAppStore();
+const page = ref('/');
 
 onMounted(() => {
 	/* Add back Button listener for Android */
@@ -41,6 +47,16 @@ onMounted(() => {
 		},
 	}); */
 });
+
+watch(store, () => {
+	f7.setDarkMode(store.Theme);
+	f7.setColorTheme(store.Color);
+});
+
+const goTo = (to: string) => {
+	page.value = to;
+	f7.views.main.router.navigate(to);
+};
 </script>
 
 <template>
@@ -52,9 +68,11 @@ onMounted(() => {
 				androidTextColor: dark ? 'white' : 'black',
 			}"
 			v-bind="{
-				darkMode: 'auto',
+				darkMode: store.Theme,
 				routes: [
 					{ path: '/', component: HomePage },
+					{ path: '/about/', component: AboutPage },
+					{ path: '/settings/', component: SettingPage },
 					{ path: '/book/:id', component: BookPage },
 					{
 						path: '/book_info/',
@@ -71,16 +89,44 @@ onMounted(() => {
 			<StatsPopup></StatsPopup>
 
 			<f7Panel swipe left>
-				<f7View>
-					<f7Page>
-						<f7Navbar large title="Prossa"></f7Navbar>
+				<f7Page>
+					<f7Navbar large title="Prossa"></f7Navbar>
 
-						<f7List menu-list>
-							<f7ListItem>Home</f7ListItem>
-							<f7ListItem>About</f7ListItem>
-						</f7List>
-					</f7Page>
-				</f7View>
+					<f7List menu-list>
+						<f7ListItem
+							@click="() => goTo('/')"
+							:selected="page === '/'"
+							link
+							title="Home"
+						>
+							<template #media>
+								<IconHome></IconHome>
+							</template>
+						</f7ListItem>
+
+						<f7ListItem
+							link
+							@click="() => goTo('/settings/')"
+							:selected="page === '/settings/'"
+							title="Settings"
+						>
+							<template #media>
+								<IconSettings></IconSettings>
+							</template>
+						</f7ListItem>
+
+						<f7ListItem
+							@click="() => goTo('/about/')"
+							link
+							:selected="page === '/about/'"
+							title="About"
+						>
+							<template #media>
+								<IconInfoCircle></IconInfoCircle>
+							</template>
+						</f7ListItem>
+					</f7List>
+				</f7Page>
 			</f7Panel>
 		</f7App>
 	</k-provider>

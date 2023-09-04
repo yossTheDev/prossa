@@ -28,6 +28,10 @@ interface AppStore {
 	lastReadingTime: string | null;
 	readingTimeThisMonth: string;
 	books: Book[];
+
+	/* Settings */
+	Theme: 'auto' | false | true;
+	Color: string;
 }
 
 export const useAppStore = defineStore('app-store', {
@@ -38,6 +42,10 @@ export const useAppStore = defineStore('app-store', {
 			lastReadingTime: null,
 			daysOfReading: 0,
 			readingTimeThisMonth: Duration.fromMillis(0).toISO() as unknown as string,
+
+			/* Settings */
+			Theme: 'auto',
+			Color: '#2196f3',
 		};
 	},
 

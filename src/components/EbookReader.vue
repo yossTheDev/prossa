@@ -10,6 +10,7 @@ import { useDark } from '@vueuse/core';
 import { Book, Contents, Rendition } from 'epubjs';
 import {
 	f7,
+	f7Button,
 	f7Fab,
 	f7Link,
 	f7List,
@@ -23,7 +24,6 @@ import {
 	f7Toolbar,
 	f7View,
 } from 'framework7-vue';
-import { kButton } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Book as StoredBook, useAppStore } from '../stores/AppStore';
@@ -287,10 +287,10 @@ function toggleControls() {
 		class="z-20"
 	>
 		<div class="absolute mt-4 ml-2 flex flex-auto">
-			<div class="flex">
-				<kButton @click="f7.views.main.router.back()" clear
+			<div class="z-50 flex">
+				<f7Button @click="f7.views.main.router.back()" clear
 					><IconArrowLeft></IconArrowLeft
-				></kButton>
+				></f7Button>
 			</div>
 		</div>
 	</TransitionRoot>
@@ -319,25 +319,26 @@ function toggleControls() {
 				class="mx-auto flex w-56 flex-auto select-none flex-col overflow-hidden md:w-72"
 			>
 				<div
-					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto rounded-2xl bg-md-light-surface-2 px-2 py-1 shadow dark:bg-md-dark-surface-2 md:mx-2"
+					class="dark:bg-base-200/80 z-20 my-auto mx-6 flex flex-auto rounded-2xl px-2 py-1 md:mx-2"
 				>
 					<div class="flex flex-auto gap-1">
 						<!-- Arrow Back -->
-						<kButton clear @click="back">
+						<f7Button clear @click="back">
 							<IconArrowLeft></IconArrowLeft>
-						</kButton>
+						</f7Button>
 
 						<!-- Percent -->
 						<p class="my-auto mx-auto">{{ currentPos + '%' }}</p>
 
 						<!-- Arrow Next -->
-						<kButton clear @click="next">
+						<f7Button clear @click="next">
 							<IconArrowRight></IconArrowRight>
-						</kButton>
+						</f7Button>
 					</div>
 				</div>
 			</div>
 
+			<!-- Fab -->
 			<f7Fab v-if="isReady" @click="() => f7.popup.open('.menu_popup')"
 				><IconChevronUp></IconChevronUp>
 			</f7Fab>

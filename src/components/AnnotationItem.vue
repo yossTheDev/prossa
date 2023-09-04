@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { kButton } from 'konsta/vue';
 import { ref } from 'vue';
 import { IconClipboardCopy, IconShare, IconTrash } from '@tabler/icons-vue';
 import { Clipboard } from '@capacitor/clipboard';
 import { Share } from '@capacitor/share';
-import { f7, f7ListItem } from 'framework7-vue';
+import { f7, f7Button, f7ListItem } from 'framework7-vue';
 
 const props = defineProps({
 	id: String,
@@ -51,19 +50,19 @@ const handleShare = () => {
 	</f7ListItem>
 
 	<div class="mx-2 my-2 flex">
-		<kButton @click="handleCopyToClipboard" inline clear
+		<f7Button @click="handleCopyToClipboard" inline clear
 			><IconClipboardCopy></IconClipboardCopy>
-		</kButton>
+		</f7Button>
 
-		<kButton @click="handleShare" inline clear
+		<f7Button @click="handleShare" inline clear
 			><IconShare></IconShare>
-		</kButton>
-		<kButton
+		</f7Button>
+		<f7Button
 			inline
 			tonal
 			@click="() => removeSelection!(cfiRange,id)"
 			class="my-auto ml-auto"
 			><IconTrash></IconTrash>
-		</kButton>
+		</f7Button>
 	</div>
 </template>

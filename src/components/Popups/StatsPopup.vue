@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { kBlockTitle, kList, kListItem, kBlock } from 'konsta/vue';
-import { f7Popup, f7Link, f7Navbar, f7Page, f7View } from 'framework7-vue';
+import { kList, kListItem, kBlock } from 'konsta/vue';
+import {
+	f7Popup,
+	f7Link,
+	f7Navbar,
+	f7Page,
+	f7View,
+	f7BlockTitle,
+} from 'framework7-vue';
 import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted } from 'vue';
 import { useAppStore } from '../../stores/AppStore';
@@ -47,7 +54,7 @@ onMounted(() => {
 					</template>
 				</f7Navbar>
 
-				<kBlockTitle>Reading</kBlockTitle>
+				<f7BlockTitle>Reading</f7BlockTitle>
 				<kBlock>
 					<kList>
 						<kListItem
@@ -86,7 +93,7 @@ onMounted(() => {
 					</kList>
 				</kBlock>
 
-				<kBlockTitle>Books</kBlockTitle>
+				<f7BlockTitle>Books</f7BlockTitle>
 
 				<kBlock>
 					<kList>

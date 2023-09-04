@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { kNavbar, kPage } from 'konsta/vue';
+import { f7Navbar, f7Page } from 'framework7-vue';
 </script>
 
 <template>
-	<kPage class="relative flex flex-col">
-		<kNavbar class="md:hidden" large title="About">
+	<f7Page class="relative flex flex-col">
+		<f7Navbar large title="About">
 			<template #left> </template>
-		</kNavbar>
+		</f7Navbar>
 
 		<p>Prossa</p>
-	</kPage>
+	</f7Page>
 </template>
