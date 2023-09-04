@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v 1.1.9
+
+* feat: Change Accent Color and New Settings Page
+
 ## v 1.1.8
 
 * Add Framework7
