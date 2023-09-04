@@ -12,6 +12,8 @@ import {
 	f7,
 	f7Fab,
 	f7Link,
+	f7List,
+	f7ListItem,
 	f7Navbar,
 	f7Page,
 	f7Popup,
@@ -21,7 +23,7 @@ import {
 	f7Toolbar,
 	f7View,
 } from 'framework7-vue';
-import { kButton, kList, kListItem } from 'konsta/vue';
+import { kButton } from 'konsta/vue';
 import localforage from 'localforage';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Book as StoredBook, useAppStore } from '../stores/AppStore';
@@ -407,7 +409,7 @@ function toggleControls() {
 		class="menu_popup"
 	>
 		<f7View>
-			<f7Page :page-content="false">
+			<f7Page hide-bars-on-scroll :page-content="false">
 				<f7Navbar
 					:subtitle="store.getBook(id)?.metadata?.creator!"
 					:title="store.getBook(id)?.metadata?.title?.length! > 30 ? store.getBook(id)?.metadata?.title?.slice(0,27) + '...' : store.getBook(id)?.metadata?.title!"
@@ -424,23 +426,23 @@ function toggleControls() {
 					<f7Link tab-link="#highlights">Highlights</f7Link>
 				</f7Toolbar>
 
-				<f7Tabs swipeable>
+				<f7Tabs animated swipeable>
 					<f7Tab class="page-content" id="contents">
-						<k-list class="flex w-full flex-col">
-							<k-list-item
+						<f7List class="flex w-full flex-col">
+							<f7ListItem
 								:title="item.label"
 								@click="toChapter(item.href)"
 								:key="item.id"
 								link
 								v-for="item in chapters"
 								class="hover:bg-neutral rounded-xl p-1"
-							></k-list-item>
-						</k-list>
+							></f7ListItem>
+						</f7List>
 					</f7Tab>
 
 					<f7Tab class="page-content" id="highlights">
-						<k-list class="flex w-full flex-col px-1">
-							<k-list-item
+						<f7List media-list>
+							<f7ListItem
 								v-if="
 									!store.getBook(id)?.selections ||
 									store.getBook(id)?.selections?.length === 0
@@ -466,7 +468,7 @@ function toggleControls() {
 								"
 							>
 							</AnnotationItem>
-						</k-list>
+						</f7List>
 					</f7Tab>
 				</f7Tabs>
 			</f7Page>

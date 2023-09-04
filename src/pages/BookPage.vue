@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { KeepAwake } from '@capacitor-community/keep-awake';
+import { useDark } from '@vueuse/core';
 import { f7, f7Page } from 'framework7-vue';
 import { DateTime, Duration, Interval } from 'luxon';
 import { onMounted, onUnmounted } from 'vue';
@@ -10,6 +11,7 @@ const props = defineProps({ f7router: Object, f7route: Object, id: String });
 
 /* App Store */
 const store = useAppStore();
+const dark = useDark();
 
 let startTime: DateTime;
 
@@ -19,8 +21,8 @@ onMounted(() => {
 
 	startTime = DateTime.now();
 
-	f7.statusbar.hide();
 	f7.statusbar.overlaysWebView(true);
+	f7.statusbar.hide();
 	/* Enable Keep Awake */
 	KeepAwake.keepAwake();
 });
@@ -29,6 +31,12 @@ onUnmounted(() => {
 	/* Show StatusBar */
 	f7.statusbar.show();
 	f7.statusbar.overlaysWebView(true);
+
+	if (dark.value) {
+		f7.statusbar.setTextColor('white');
+	} else {
+		f7.statusbar.setTextColor('black');
+	}
 
 	/* Enable Keep Awake */
 	KeepAwake.allowSleep();
@@ -61,7 +69,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<f7Page>
+	<f7Page @page:beforeout="() => f7.popup.close('.menu_popup')">
 		<!--Epub Reader-->
 		<EbookReader :id="id!"></EbookReader>
 	</f7Page>

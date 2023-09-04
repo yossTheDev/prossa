@@ -41,7 +41,7 @@ onMounted(() => {
 	<f7Popup swipe-to-close close-on-escape animate class="stats-popup">
 		<f7View>
 			<f7Page>
-				<f7Navbar large title="Stats">
+				<f7Navbar transparent large title="Stats">
 					<template #right>
 						<f7Link popup-close navbar>Cancel</f7Link>
 					</template>

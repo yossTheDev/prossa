@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { IconBooks, IconFlame, IconMenu2, IconPlus } from '@tabler/icons-vue';
-import { useDark } from '@vueuse/core';
+import {
+	IconBooks,
+	IconFlame,
+	IconMenu2,
+	IconPlus,
+	IconSearch,
+} from '@tabler/icons-vue';
 import {
 	f7,
 	f7Button,
+	f7Card,
 	f7Fab,
 	f7Link,
 	f7Navbar,
 	f7Page,
 	f7Searchbar,
-	f7Subnavbar,
 } from 'framework7-vue';
 import localforage from 'localforage';
 import { DateTime } from 'luxon';
@@ -22,7 +27,7 @@ import { useAppStore } from '../stores/AppStore';
 const store = useAppStore();
 const loading = ref(false);
 const query = ref('');
-const dark = useDark();
+const searchBarCollapse = ref(false);
 
 async function handleAddBook(files: any) {
 	if (files && files.length > 0) {
@@ -111,83 +116,78 @@ const pickFile = () => {
 </script>
 
 <template>
-	<f7Page
-		@page:mounted="
-			() => {
-				if (dark) {
-					f7.statusbar.setTextColor('white');
-				} else {
-					f7.statusbar.setTextColor('black');
-				}
-			}
-		"
-		hide-navbar-on-scroll
-		class="relative flex flex-col"
-	>
+	<f7Page>
 		<!--Nab Bar-->
-		<f7Navbar
-			transparent
-			:title="store.currentBook === '' ? '' : 'Prossa'"
-			large
-		>
+		<f7Navbar transparent title="Prossa" large>
 			<template #left>
 				<f7Link panel-open="left" navbar><IconMenu2></IconMenu2></f7Link>
 			</template>
 
 			<template #right>
-				<div class="fixed right-0 mr-2 flex">
-					<f7Button popup-open=".stats-popup" tonal round small>
-						<IconFlame></IconFlame> {{ store.daysOfReading }}</f7Button
-					>
-				</div>
+				<f7Button popup-open=".stats-popup" tonal round small>
+					<IconFlame></IconFlame> {{ store.daysOfReading }}
+				</f7Button>
+
+				<f7Link navbar searchbar-toggle>
+					<IconSearch></IconSearch>
+				</f7Link>
 			</template>
 
-			<template #title-large>
-				<!-- Current Book -->
-				<div class="flex w-full flex-auto flex-col">
-					<!-- Book Hero -->
+			<f7Searchbar
+				@searchbar:enable="searchBarCollapse = true"
+				@searchbar:disable="searchBarCollapse = false"
+				expandable
+				@click:disable="query = ''"
+				@input="(ev) => (query = ev.target.value)"
+				:value="query"
+			></f7Searchbar>
+		</f7Navbar>
+
+		<!--Current Book Card-->
+		<f7Card v-if="!searchBarCollapse">
+			<div class="my-auto flex w-full flex-auto flex-col p-4">
+				<!-- Book Hero -->
+				<div
+					v-if="store.currentBook !== ''"
+					class="flex flex-auto select-none flex-row gap-2 overflow-hidden"
+				>
+					<img
+						class="my-auto flex h-20 rounded shadow"
+						v-if="store.currentBook !== ''"
+						:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
+					/>
 					<div
 						v-if="store.currentBook !== ''"
-						class="mb-8 flex flex-auto select-none flex-row gap-2 overflow-hidden"
+						class="my-auto flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"
 					>
-						<img
-							class="my-auto flex h-20 rounded shadow"
-							v-if="store.currentBook !== ''"
-							:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
-						/>
-						<div
-							v-if="store.currentBook !== ''"
-							class="my-auto flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"
-						>
-							<div class="my-auto flex max-w-sm flex-col">
-								<p class="max-w-[16rem] text-lg font-bold">
-									{{ store.getBook(store.currentBook)?.metadata.title }}
-								</p>
-								<p class="text-xs">
-									{{ store.getBook(store.currentBook)?.metadata.creator }}
-								</p>
-							</div>
+						<div class="my-auto flex max-w-sm flex-col">
+							<p class="max-w-[16rem] text-lg font-bold">
+								{{ store.getBook(store.currentBook)?.metadata.title }}
+							</p>
+							<p class="text-xs">
+								{{ store.getBook(store.currentBook)?.metadata.creator }}
+							</p>
+
+							<f7Button
+								@click="
+									() =>
+										f7.views.main.router.navigate('/book/' + store.currentBook)
+								"
+								class="mt-2 w-20"
+								tonal
+								round
+								small
+								>Continue</f7Button
+							>
 						</div>
 					</div>
-
-					<p class="mx-auto my-auto text-center text-gray-500" v-else>
-						Lets read a book
-					</p>
 				</div>
-			</template>
 
-			<template #subnavbar>
-				<f7Searchbar></f7Searchbar>
-			</template>
-
-			<f7Subnavbar>
-				<f7Searchbar
-					@click:disable="query = ''"
-					@input="(ev) => (query = ev.target.value)"
-					:value="query"
-				></f7Searchbar>
-			</f7Subnavbar>
-		</f7Navbar>
+				<p class="mx-auto my-auto text-center text-gray-500" v-else>
+					Lets read a book
+				</p>
+			</div>
+		</f7Card>
 
 		<!-- Book List -->
 		<BookList

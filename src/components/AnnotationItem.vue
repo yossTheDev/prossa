@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { kButton, kListItem } from 'konsta/vue';
+import { kButton } from 'konsta/vue';
 import { ref } from 'vue';
 import { IconClipboardCopy, IconShare, IconTrash } from '@tabler/icons-vue';
 import { Clipboard } from '@capacitor/clipboard';
 import { Share } from '@capacitor/share';
+import { f7, f7ListItem } from 'framework7-vue';
 
 const props = defineProps({
 	id: String,
@@ -26,6 +27,7 @@ const handleContextMenu = (ev: MouseEvent) => {
 };
 
 const handleCopyToClipboard = () => {
+	f7.toast.show({ text: 'copied!', closeTimeout: 2000 });
 	Clipboard.write({
 		string: `"${props.fullText}" - ${props.bookTitle}, ${props.author}`,
 	});
@@ -39,14 +41,14 @@ const handleShare = () => {
 </script>
 
 <template>
-	<k-list-item
+	<f7ListItem
 		:title="title"
 		:subtitle="text?.length! > 240 ? text?.slice(0, 237) + '...' : text"
 		@click="toChapter!(cfiRange)"
 		@contextmenu="handleContextMenu"
 		link
 	>
-	</k-list-item>
+	</f7ListItem>
 
 	<div class="mx-2 my-2 flex">
 		<kButton @click="handleCopyToClipboard" inline clear

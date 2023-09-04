@@ -68,7 +68,7 @@ const getGroups = computed(() => {
 	<f7List contacts-list media-list strong-ios outline-ios>
 		<f7ListItem v-if="getGroups.length === 0" title="Not Found" />
 
-		<f7ListGroup :key="group.name" v-for="group in getGroups">
+		<f7ListGroup class="-ml-8" :key="group.name" v-for="group in getGroups">
 			<f7ListItem :title="group.name" group-title />
 
 			<BookItem

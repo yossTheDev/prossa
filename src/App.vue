@@ -2,18 +2,19 @@
 import { useDark } from '@vueuse/core';
 import {
 	f7App,
-	f7Panel,
-	f7View,
-	f7Page,
-	f7Navbar,
 	f7List,
 	f7ListItem,
+	f7Navbar,
+	f7Page,
+	f7Panel,
+	f7View,
 } from 'framework7-vue';
 import { kProvider } from 'konsta/vue';
 import { onMounted } from 'vue';
-import HomePage from './pages/HomePage.vue';
 import StatsPopup from './components/Popups/StatsPopup.vue';
+import BookInfo from './pages/BookInfo.vue';
 import BookPage from './pages/BookPage.vue';
+import HomePage from './pages/HomePage.vue';
 
 // const router = useRouter();
 const dark = useDark();
@@ -55,6 +56,11 @@ onMounted(() => {
 				routes: [
 					{ path: '/', component: HomePage },
 					{ path: '/book/:id', component: BookPage },
+					{
+						path: '/book_info/',
+						options: { props: { id: '' } },
+						component: BookInfo,
+					},
 				],
 			}"
 		>
