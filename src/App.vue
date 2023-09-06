@@ -55,19 +55,15 @@ watch(store, () => {
 
 const goTo = (to: string) => {
 	page.value = to;
-	f7.views.main.router.navigate(to);
+	f7.views.main.router.navigate(to, { history: false });
 };
 </script>
 
 <template>
 	<k-provider theme="parent">
 		<f7App
-			:statusbar="{
-				enabled: true,
-				androidOverlaysWebView: true,
-				androidTextColor: dark ? 'white' : 'black',
-			}"
 			v-bind="{
+				name: 'Prossa',
 				darkMode: store.Theme,
 				routes: [
 					{ path: '/', component: HomePage },
@@ -80,6 +76,11 @@ const goTo = (to: string) => {
 						component: BookInfo,
 					},
 				],
+				statusbar: {
+					enabled: true,
+					androidOverlaysWebView: true,
+					androidTextColor: dark ? 'white' : 'black',
+				},
 			}"
 		>
 			<f7View browser-history main></f7View>

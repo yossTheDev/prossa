@@ -9,12 +9,12 @@ import {
 	f7BlockTitle,
 } from 'framework7-vue';
 import { DateTime, Duration, Interval } from 'luxon';
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 import { useAppStore } from '../../stores/AppStore';
 
 const store = useAppStore();
 
-onMounted(() => {
+watch(store, () => {
 	/* Restart Reading Time on the end of the Month or Year */
 	const readingTime = DateTime.fromISO(store.lastReadingTime!);
 
@@ -45,7 +45,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<f7Popup swipe-to-close close-on-escape animate class="stats-popup">
+	<f7Popup id="stats-popup" swipe-to-close close-on-escape animate>
 		<f7View>
 			<f7Page>
 				<f7Navbar transparent large title="Stats">

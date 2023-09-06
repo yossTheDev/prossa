@@ -124,7 +124,7 @@ const pickFile = () => {
 			</template>
 
 			<template #right>
-				<f7Button popup-open=".stats-popup" tonal round small>
+				<f7Button popup-open="#stats-popup" tonal round small>
 					<IconFlame></IconFlame> {{ store.daysOfReading }}
 				</f7Button>
 
