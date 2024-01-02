@@ -34,6 +34,7 @@ pinia.use(
 	createPersistedStatePlugin({
 		storage: {
 			getItem: async (key) => {
+				console.log('get', key)
 				return localforage.getItem(key);
 			},
 			setItem: async (key, value) => {
