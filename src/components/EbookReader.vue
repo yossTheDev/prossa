@@ -130,7 +130,7 @@ onMounted(async () => {
 	/* Render Ebook */
 	rendition = book.renderTo('epub', {
 		flow: 'paginated',
-		manager: 'scrolled-doc',
+		manager: 'continuous',
 		spread: 'always',
 		snap: true,
 		resizeOnOrientationChange: true,
