@@ -151,11 +151,11 @@ const pickFile = () => {
 					v-if="store.currentBook !== ''"
 					class="flex flex-auto select-none flex-row gap-2 overflow-hidden"
 				>
-					<img
+					<!-- <img
 						class="my-auto flex h-20 rounded shadow"
 						v-if="store.currentBook !== ''"
 						:src="JSON.parse(store.getBook(store.currentBook)?.img as unknown as string)"
-					/>
+					/> -->
 					<div
 						v-if="store.currentBook !== ''"
 						class="my-auto flex flex-auto flex-col gap-1 text-md-dark-surface-2 dark:text-md-light-surface-2"

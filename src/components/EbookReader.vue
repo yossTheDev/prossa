@@ -118,6 +118,7 @@ const getLabel = (toc: any, href: any) => {
 /* Prepare and Load Ebook */
 onMounted(async () => {
 	StoreBook = store.getBook(props.id);
+	// tutaj pobiera konkretną ksiąke z local storage
 	const _book = await localforage.getItem(props.id);
 
 	book = new Book(
@@ -128,7 +129,7 @@ onMounted(async () => {
 
 	/* Render Ebook */
 	rendition = book.renderTo('epub', {
-		flow: 'paginated',
+		flow: 'scrolled-doc',
 		manager: 'continuous',
 		spread: 'always',
 		snap: true,

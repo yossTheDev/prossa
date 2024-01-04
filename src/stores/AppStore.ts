@@ -78,7 +78,7 @@ export const useAppStore = defineStore('app-store', {
 					  })
 					: newArray.push(this.books[i]);
 			}
-
+			console.log('newArray', newArray)
 			this.books = newArray;
 		},
 
@@ -133,7 +133,7 @@ export const useAppStore = defineStore('app-store', {
 					: book
 			) as Book[];
 
-			console.log(this.books);
+			console.log('removeBookHighlight', this.books);
 		},
 
 		getBook(bookID: string) {
