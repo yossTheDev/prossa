@@ -51,7 +51,6 @@ export const useAppStore = defineStore('app-store', {
 
 	actions: {
 		addBook(book: Book) {
-			console.log('addBook', book)
 			this.books.push(book);
 		},
 
@@ -134,11 +133,10 @@ export const useAppStore = defineStore('app-store', {
 					: book
 			) as Book[];
 
-			console.log(this.books);
+			console.log('removeBookHighlight', this.books);
 		},
 
 		getBook(bookID: string) {
-			console.log('this.books', this.books)
 			for (const book of this.books) {
 				if (book.key === bookID) return book;
 			}

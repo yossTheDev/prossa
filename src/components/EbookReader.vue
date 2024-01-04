@@ -118,8 +118,8 @@ const getLabel = (toc: any, href: any) => {
 /* Prepare and Load Ebook */
 onMounted(async () => {
 	StoreBook = store.getBook(props.id);
+	// tutaj pobiera konkretną ksiąke z local storage
 	const _book = await localforage.getItem(props.id);
-	console.log('_book', _book)
 
 	book = new Book(
 		Base64Binary.decodeArrayBuffer(
@@ -212,7 +212,6 @@ onMounted(async () => {
 	book.ready.then(async () => {
 		/* Load or Generate Locations */
 		const loc = await localforage.getItem(`${book?.key()}-locations`);
-		console.log('loc', loc)
 		if (loc !== null) {
 			book?.locations.load(loc as unknown as string);
 			isReady.value = true;
